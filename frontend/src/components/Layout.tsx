@@ -21,30 +21,6 @@ export default function Layout({ children, pageTitle }: LayoutProps) {
 
   const { user, refetch } = useAuth(); 
 
-/*
-  if (router.pathname === "/") {
-    body.classList.remove("group1", "group2", "group3", "md:staff-large");
-    body.classList.add("home", "md:home-large");
-  }
-
-  if (router.pathname === "/admin") {
-    body.classList.remove("group1", "group2", "group3", "md:staff-large");
-    body.classList.add("home", "md:home-large");
-  }
-
-  if (router.pathname === "/staff") {
-    body.classList.remove("home", "md:home-large");
-    body.classList.add(`group${user?.group?.id}`, "md:staff-large");
-  }
-
-  if (router.pathname === "/parent") {
-    body.classList.add("home", "md:home-large");
-  }
-
-  if (router.pathname.startsWith("/profil")) {
-    body.classList.add("home", "md:home-large");
-  }
-*/
   return (
     <>
       <Head>

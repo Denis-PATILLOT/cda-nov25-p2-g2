@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import { useAuth } from "@/hooks/CurrentProfile";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import getUserInitial from "@/utils/getUserInitial";
 
 export default function StaffDashboard() {
   const router = useRouter();
@@ -20,17 +21,12 @@ export default function StaffDashboard() {
   // date du jour
   const date = new Date();
 
-  // fn pour afficher mette la première lettre du nom de famille si pas d'avatar
-  const getUserInitial = (lastName: string) => {
-    return lastName.charAt(0).toUpperCase();
-  };
-
   if (user)
     return (
       <Layout pageTitle="Staff">
-        <div className="max-w-full mx-auto md:max-w-[600px]">
-          <h2 className="p-4 text-right text-[#1b3c79] font-light">{date.toLocaleDateString()}</h2>
-          <div className="w-[85%] py-10 bg-[#FEF9F6] rounded-4xl border-5 border-[#FFD771] mx-auto mb-10 flex items-center justify-evenly">
+        <div className="max-w-full md:max-w-[600px]">
+          <h2 className="p-4 text-right text-[#1b3c79] font-light">{date.toLocaleDateString("fr-FR", {weekday:"long", day:"2-digit",  month: "long", year:"numeric"})}</h2>
+          <div className="w-[85%] py-8 bg-[#FEF9F6] rounded-4xl border-5 border-[#FFD771] mx-auto mb-10 flex items-center justify-evenly">
             <div className="w-20 h-20 rounded-full flex items-center justify-center text-sm font-bold overflow-hidden border-4 border-[#FFD771] md:w-24 md:h-24">
               {user.avatar ? (
                 // biome-ignore lint/performance/noImgElement: <explanation>
@@ -46,24 +42,28 @@ export default function StaffDashboard() {
               </p>
             </div>
           </div>
-
-          {(user.group?.children?.length as number) > 0 &&
+          <div className="flex w-full flex-wrap justify-start gap-3">
+              {(user.group?.children?.length as number) > 0 &&
             user?.group?.children?.map((child) => (
               <div
                 key={child.id}
-                className="w-[85%] pt-4 pb-2 bg-[#FEF9F6] rounded-4xl border-5 border-[#FFD771] mx-auto flex flex-col items-center justify-evenly"
+                className="w-[45%] pt-4 pb-2 mx-5 bg-[#FEF9F6] rounded-4xl border-5 border-[#FFD771] flex flex-col items-center justify-evenly"
               >
-                <div className="overflow-hidden">
+                <div className="overflow-hidden h-[100px]">
                   {/** biome-ignore lint/performance/noImgElement: <explanation> */}
                   <img
                     src={child.picture}
                     alt=""
-                    className="w-65 h-[180px] object-cover shadow-gray-300 shadow-xl cursor-pointer  ease-in-out duration-300 hover:scale-110 "
+                    className="h-[100px] object-contain shadow-gray-300 shadow-xl cursor-pointer  ease-in-out duration-300 hover:scale-110 "
                   />
                 </div>
-                <p className="mt-1 text-2xl font-semibold text-[#1b3c79]">{child.firstName}</p>
+                <p className="mt-1  text-[#1b3c79]">{child.firstName}</p>
               </div>
+
+
             ))}
+          </div>
+          
         </div>
       </Layout>
     );

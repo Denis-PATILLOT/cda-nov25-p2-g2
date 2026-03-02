@@ -119,14 +119,14 @@ export default function Home() {
               <img
                 src="/closeeye.png"
                 alt=""
-                className="w-[30px] absolute right-15 top-1 md:right-25 md:top-1 md:w-[48px]"
+                className="w-[30px] absolute right-15 top-1 md:right-25 md:top-1 md:w-[48px] cursor-pointer"
                 onClick={handleClickEye}
               />
             ) : (
               <img
                 src="/openeye.png"
                 alt=""
-                className="w-[30px] absolute right-15 top-1 md:right-25 md:top-1 md:w-[48px]"
+                className="w-[30px] absolute right-15 top-1 md:right-25 md:top-1 md:w-[48px] cursor-pointer"
                 onClick={handleClickEye}
               />
             )}
