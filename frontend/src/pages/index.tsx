@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Layout from "@/components/Layout";
-import { useAuth } from "@/hooks/CurrentProfile";
 import { type LoginInput, useLoginMutation } from "@/graphql/generated/schema";
+import { useAuth } from "@/hooks/CurrentProfile";
 
 export default function Home() {
   const router = useRouter();

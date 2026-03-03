@@ -19,9 +19,9 @@ interface LayoutProps {
 export default function Layout({ children, pageTitle }: LayoutProps) {
   const router = useRouter();
 
-  const { user, refetch } = useAuth(); 
+  const { user, refetch } = useAuth();
 
-/*
+  /*
   if (router.pathname === "/") {
     body.classList.remove("group1", "group2", "group3", "md:staff-large");
     body.classList.add("home", "md:home-large");
@@ -53,7 +53,9 @@ export default function Layout({ children, pageTitle }: LayoutProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={`body ${router.pathname === "/" ? "home md:home-large" : router.pathname.startsWith("/admin") ? "home md:home-large" : router.pathname.startsWith("/parent") ? "home md:home-page" : router.pathname.startsWith("/staff") ?  `group${user?.group?.id} md:staff-large` : router.pathname.startsWith("/profil") ? "home md:home-large": ""} `} >
+      <div
+        className={`body ${router.pathname === "/" ? "home md:home-large" : router.pathname.startsWith("/admin") ? "home md:home-large" : router.pathname.startsWith("/parent") ? "home md:home-page" : router.pathname.startsWith("/staff") ? `group${user?.group?.id} md:staff-large` : router.pathname.startsWith("/profil") ? "home md:home-large" : ""} `}
+      >
         {user && <Header user={user} refetch={refetch} />}
         <main className={` ${poppins.className} `}>{children}</main>
         {user && <Footer />}

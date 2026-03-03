@@ -1,5 +1,5 @@
-import { useRouter } from "next/router";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 export default function Footer() {
   const router = useRouter();

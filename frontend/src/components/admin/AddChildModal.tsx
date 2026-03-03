@@ -82,7 +82,14 @@ export default function AddChildModal({ open, onClose }: Props) {
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <button
         className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"
-        onClick={() => { reset(); setServerError(""); setSelectedGroupId(null); setGroupDropdownOpen(false); setGroupError(false); onClose(); }}
+        onClick={() => {
+          reset();
+          setServerError("");
+          setSelectedGroupId(null);
+          setGroupDropdownOpen(false);
+          setGroupError(false);
+          onClose();
+        }}
         aria-label="Fermer la modal"
       />
 
@@ -230,9 +237,7 @@ export default function AddChildModal({ open, onClose }: Props) {
             </p>
           )}
           {serverError && (
-            <p className="text-center text-[12px] text-red-500 font-medium py-1">
-              {serverError}
-            </p>
+            <p className="text-center text-[12px] text-red-500 font-medium py-1">{serverError}</p>
           )}
 
           {/* Buttons */}

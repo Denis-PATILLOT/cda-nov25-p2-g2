@@ -1,7 +1,7 @@
+import type { ApolloClient } from "@apollo/client";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Exact, ProfileQuery, useLogoutMutation } from "@/graphql/generated/schema";
-import { ApolloClient } from "@apollo/client";
+import { type Exact, type ProfileQuery, useLogoutMutation } from "@/graphql/generated/schema";
 
 type HeaderProps = {
   user: {
@@ -16,23 +16,25 @@ type HeaderProps = {
     role: string;
     children?:
       | {
-        __typename?: "Child" | undefined;
-        id: number;
-      }[]
+          __typename?: "Child" | undefined;
+          id: number;
+        }[]
       | null
       | undefined;
     group?:
       | {
-        __typename?: "Group" | undefined;
-        id: string;
-      }
+          __typename?: "Group" | undefined;
+          id: string;
+        }
       | null
       | undefined;
-  } | null,
-  refetch: (variables?: Partial<Exact<{[key: string]: never}>> | undefined) => Promise<ApolloClient.QueryResult<ProfileQuery> | null>
-}
+  } | null;
+  refetch: (
+    variables?: Partial<Exact<{ [key: string]: never }>> | undefined,
+  ) => Promise<ApolloClient.QueryResult<ProfileQuery> | null>;
+};
 
-export default function Header({ user, refetch }: HeaderProps)  {
+export default function Header({ user, refetch }: HeaderProps) {
   // typage des props obligatoire sinon erreur
 
   const [logout] = useLogoutMutation();
@@ -87,4 +89,3 @@ export default function Header({ user, refetch }: HeaderProps)  {
     </header>
   );
 }
-
