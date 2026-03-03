@@ -39,7 +39,7 @@ export default function AddStaffModal({ open, onClose }: Props) {
     setGroupError(false);
     setServerError("");
     // a faire : supprimer, quand le stysteme de mail sera en place
-    const tempPassword = crypto.randomUUID().replace(/-/g, "").slice(0, 12) + "A1!";
+    const tempPassword = `${crypto.randomUUID().replace(/-/g, "").slice(0, 12)}A1!`;
     //.replace(/-/g, "")="a3f8c2d19b4e4f7a8c2d1b3e5f7a9c2d"
     //.slice(0, 12)="a3f8c2d19b4e"(12 chars minuscules + chiffres)
     //+ "A1!"="a3f8c2d19b4eA1!" valide
@@ -72,8 +72,16 @@ export default function AddStaffModal({ open, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <button
+        type="button"
         className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"
-        onClick={() => { reset(); setServerError(""); setSelectedGroupId(null); setGroupDropdownOpen(false); setGroupError(false); onClose(); }}
+        onClick={() => {
+          reset();
+          setServerError("");
+          setSelectedGroupId(null);
+          setGroupDropdownOpen(false);
+          setGroupError(false);
+          onClose();
+        }}
         aria-label="Fermer la modal"
       />
 
@@ -221,9 +229,7 @@ export default function AddStaffModal({ open, onClose }: Props) {
             </p>
           )}
           {serverError && (
-            <p className="text-center text-[12px] text-red-500 font-medium py-1">
-              {serverError}
-            </p>
+            <p className="text-center text-[12px] text-red-500 font-medium py-1">{serverError}</p>
           )}
 
           {/* Buttons */}

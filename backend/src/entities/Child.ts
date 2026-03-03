@@ -38,9 +38,9 @@ export class Child extends BaseEntity {
   @Column({ type: "text" })
   picture: string;
 
-  @Field(() => String, {nullable: true}) 
-  @Column({type: "text", nullable: true}) 
-  healthRecord: string|null
+  @Field(() => String, { nullable: true })
+  @Column({ type: "text", nullable: true })
+  healthRecord: string | null;
 
   // Child relations
   @Field(() => Group)
@@ -51,7 +51,10 @@ export class Child extends BaseEntity {
   group: Group; // FK
 
   @Field(() => [Report])
-  @OneToMany(() => Report, report => report.child)
+  @OneToMany(
+    () => Report,
+    (report) => report.child,
+  )
   reports: Report[];
 
   @Field(() => [User])

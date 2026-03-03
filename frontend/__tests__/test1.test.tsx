@@ -26,7 +26,7 @@ describe("Header test", () => {
   it("contains a img element in Header", async () => {
     render(
       <MockedProvider mocks={[profileMock]}>
-        <Header user={null} refetch={async() => null} />
+        <Header user={null} refetch={async () => null} />
       </MockedProvider>,
     );
 

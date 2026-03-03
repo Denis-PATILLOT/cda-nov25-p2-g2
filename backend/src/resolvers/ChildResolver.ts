@@ -7,7 +7,7 @@ export default class ChildResolver {
   @Query(() => [Child])
   async children() {
     return await Child.find({
-      relations: ["group", "reports", "parents"]
+      relations: ["group", "reports", "parents"],
     });
   }
 
