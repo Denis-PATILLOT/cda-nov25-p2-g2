@@ -18,11 +18,16 @@ export default function StaffPlanning() {
                 <Layout pageTitle="Staff - plannings">
                     <div className="max-w-full mx-auto md:max-w-[600px]">
                         <div className="w-[90%] p-4 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold text-center border-3 border-[#FFD771] mx-auto">
-                            <h1 className="m-2 mb-5">Plannings - {group.name}</h1>
-                                <div className="flex w-full flex-wrap justify-start gap-0">
+                            <h1 className="m-2 mb-2">
+                                <img src={"/calendrier.png"} width={50} className="inline-block" /> Plannings - {group.name}
+                            </h1>
+                            <Link href={"/staff/planning/create"}>
+                                <button className="bg-[#ffdd23] p-2 rounded-xl text-xs text-white hover:bg-[#ffbb25] cursor-pointer mb-7 text-right">Créer planning</button>
+                            </Link>
+                            <div className="flex w-full flex-wrap justify-start gap-0">
                                     { groupPlannings && groupPlannings?.length > 0 ? 
                                     groupPlannings.map((planning) => (
-                                            <div key={planning.id} className="w-[35%] mx-2 px-4 bg-[#FEF9F6]  text-xs rounded-2xl border-2 border-[#FFD771] hover:bg-[#FEE8B6]">
+                                            <div key={planning.id} className="w-[30%] mx-2 px-4 bg-[#FEF9F6]  text-xs rounded-2xl border-2 border-[#FFD771] hover:bg-[#FEE8B6]">
                                                 <Link href={`/staff/planning/${planning.id}`} className="flex flex-col items-center">
                                                 <p>{new Date(planning.date).toLocaleDateString("FR-fr", {weekday: "long"})}</p>
                                                 <p>{new Date(planning.date).toLocaleDateString("FR-fr", {day: "numeric", month:"long"})}</p>
@@ -34,7 +39,7 @@ export default function StaffPlanning() {
                                  :
                                     <p>Aucun planning pour ce groupe</p>
                             }
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </Layout>
