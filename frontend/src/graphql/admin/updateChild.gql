@@ -1,0 +1,14 @@
+mutation UpdateChild($id: Int!, $data: UpdateChildInput!) {
+  updateAd(id: $id, data: $data) {
+    id
+    firstName
+    lastName
+    birthDate
+    picture
+    healthRecord
+    group {
+      id
+      name
+    }
+  }
+}

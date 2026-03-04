@@ -9,6 +9,9 @@
   --color-primary: #f6dde4;
   --color-secondary: #d4efff;
   --color-tertiary: #ddeedd;
+  --color-group1: #ffbe1a;
+  --color-group2: #ddeedd;
+  --color-group3: #efd4ff;
 }
 
 body {
