@@ -43,7 +43,7 @@ const EditPlanningPage = () => {
                       <h1 className="m-2 mb-3">
                           <Image src="/boutons/calendrier.png" alt="" width={35} height={25} className="inline-block m-2"/>
                           {new Date(planning.date).toLocaleDateString("FR-fr", {weekday:"long", day:"2-digit", month:"long", year:"numeric"}) }
-                          <span className="text-xs underline"> modification planning </span>
+                          <span className="text-xs underline block text-center"> modification planning </span>
                       </h1>
                       
                       <div className="w-[90%] mx-auto">

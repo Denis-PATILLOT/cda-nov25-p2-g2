@@ -33,7 +33,7 @@ const CreatePlanningPage = () => {
 
                 if(result) { 
                     const id = result.data!.createPlanning.id 
-                    router.push(`/staff/planning/${id}?created=true`, );    
+                    router.push(`/staff/planning/${id}?created=true`, `/staff/planning/${id}`);    
                 }
             } catch(err) {
                 setErrorSubmit(true); // permet affichage erreur et sa disparition
@@ -75,9 +75,12 @@ const CreatePlanningPage = () => {
                           <input 
                           {...register("date", {
                             required: "date à indiquer",
+                            validate: (val) => [1,2,3,4,5].includes(new Date(val).getDay())
+                            
                           })}                         
                           type="date" id="date" name="date" className={`border-2 border-amber-300 bg-[#FEE8B6] p-2 rounded-lg w-full inline-block mt-1 mb-3 ${errors.date ? "focus-visible:outline-2 focus-visible:outline-red-500" : ""}`} />
                           <p className="text-red-500 mb-1 text-xs">{errors.date?.message as string}</p>
+                          <p className="text-red-500 mb-1 text-xs">{errors.date?.type === "validate" && "choisir un jour de semaine valide"}</p>
                       </h1>
                       
                       

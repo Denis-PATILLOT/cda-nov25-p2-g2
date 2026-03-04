@@ -2,19 +2,22 @@ import Layout from "@/components/Layout";
 import { useGetPlanningByIdQuery } from "@/graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const planningDetails = () => {
   const router = useRouter();
-  const {id} = router.query;
+  const {id, created } = router.query; // on récupère les données voulues de l'url : valeur id et valeur toto dans planningCreated
 
-  const searchParams = useSearchParams();
+  const [createdPlanning, setCreatedPlanning] = useState(false); 
+  // pour gérer le message de création de planning
+  useEffect(() => {
+    created === "true" ? setCreatedPlanning(true) : null
+  }, [created]);
   
-  const planningCreated = (searchParams.get('created'));
-
+  
   const { data, error} = useGetPlanningByIdQuery({variables: {getPlanningById: Number(id)}})
-
+  
   const planning = data?.getPlanningById || null;
 
   if(error) {
@@ -26,7 +29,26 @@ const planningDetails = () => {
         <Layout pageTitle={`Staff - planning ${id}`}>
             <div className="max-w-full mx-auto md:max-w-[600px]">
                 <div className="w-[90%] px-4 py-1 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold mx-auto border-3 border-[#FFD771]">
-                    {planningCreated === "true" && <p className="bg-green-300 p-2 border mt-2 border-green-500 rounded-2xl text-center">planning créé avec succès</p>}
+
+                    {createdPlanning && 
+
+                    <p className="text-green-500 text-center px-3 mx-2 mt-3 alert bg-green-200 border border-green-500 relative md:text-xl md:w-full">
+                        Planning créé avec succès
+                        <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+                            <svg
+                                className="fill-current h-6 w-6 text-green-500 cursor-pointer"
+                                role="button"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                onClick={() => setCreatedPlanning(false)}
+                            >
+                                <title>Close</title>
+                                <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                            </svg>
+                        </span>
+                    </p>
+                    }
+                    
                     <div className="flex justify-between items-center">
                         <Link href={`/staff/planning/${id}/edit`} title="Modifier planning" >
                             <Image src="/boutons/modifier.png" alt="" width={50} height={20} className="inline-block"/>

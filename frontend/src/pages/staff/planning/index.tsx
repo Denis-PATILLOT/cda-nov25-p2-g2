@@ -3,16 +3,23 @@ import { useRouter } from "next/router";
 import { useAuth } from "@/hooks/CurrentProfile";
 import { useGetAllPlanningsByGroupQuery } from "@/graphql/generated/schema";
 import Link from "next/link";
+import { ChangeEventHandler, useState } from "react";
 
 export default function StaffPlanning() {
     
     const router = useRouter();
     const { user, group, isAuthenticated, isStaff } = useAuth();
-    const {data, loading, error } = useGetAllPlanningsByGroupQuery({variables: {groupId: Number(group?.id)}})
+    
+    const {data, loading, refetch } = useGetAllPlanningsByGroupQuery({variables: {groupId: Number(group?.id)}})
 
+    // state pour mois sélectionnable afin d'avoir les plannings du mois choisi (par défaut, mois en cours)
+    const [planningMonth, setPlanningMonth] = useState(new Date().getMonth());
+    console.log(planningMonth)
+    
     if(user && isAuthenticated && isStaff && group) {
 
         const groupPlannings = data?.getAllPlanningsByGroup || null; // tableau de planning
+
 
         return(
                 <Layout pageTitle="Staff - plannings">
@@ -22,11 +29,27 @@ export default function StaffPlanning() {
                                 <img src={"/calendrier.png"} width={50} className="inline-block" /> Plannings - {group.name}
                             </h1>
                             <Link href={"/staff/planning/create"}>
-                                <button className="bg-[#ffdd23] p-2 rounded-xl text-xs text-white hover:bg-[#ffbb25] cursor-pointer mb-7 text-right">Créer planning</button>
+                                <button className="bg-[#ffdd23] p-2 rounded-xl text-xs text-white hover:bg-[#ffbb25] cursor-pointer mb-2 text-right">Créer planning</button>
                             </Link>
+                            <div className="my-3">
+                                <select name="month" id="month" className="border-2 border-[#FFD771] py-1 px-2" value={planningMonth} onChange={(e: any) => setPlanningMonth(e.target.value)} >
+                                    <option value="0">Janvier</option>
+                                    <option value="1">Février</option>
+                                    <option value="2">Mars</option>
+                                    <option value="3">Avril</option>
+                                    <option value="4">Mai</option>
+                                    <option value="5">Juin</option>
+                                    <option value="6">Juillet</option>
+                                    <option value="7">Août</option>
+                                    <option value="8">Septembre</option>
+                                    <option value="9">Octobre</option>
+                                    <option value="10">Novembre</option>
+                                    <option value="11">Décembre</option>
+                                </select>
+                            </div>
                             <div className="flex w-full flex-wrap justify-start gap-3">
                                     { groupPlannings && groupPlannings?.length > 0 ? 
-                                    groupPlannings.map((planning) => (
+                                    groupPlannings.filter(planning => new Date(planning.date).getMonth() === planningMonth).map((planning) => (
                                             <div key={planning.id} className="w-[30%] px-4 bg-[#FEF9F6]  text-xs rounded-2xl border-2 border-[#FFD771] hover:bg-[#FEE8B6]">
                                                 <Link href={`/staff/planning/${planning.id}`} className="flex flex-col items-center">
                                                 <p>{new Date(planning.date).toLocaleDateString("FR-fr", {weekday: "long"})}</p>
@@ -46,3 +69,4 @@ export default function StaffPlanning() {
             ); 
     }
 }
+
