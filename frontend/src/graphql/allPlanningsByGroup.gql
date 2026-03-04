@@ -1,0 +1,12 @@
+query getAllPlanningsByGroup($groupId: Int!) {
+  getAllPlanningsByGroup(groupId: $groupId) {
+    id
+    date
+    morning_activities
+    morning_nap
+    meal
+    afternoon_activities
+    afternoon_nap
+    snack
+  }
+}

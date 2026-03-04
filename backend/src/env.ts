@@ -15,4 +15,4 @@ export default load({
     type: Number,
     optional: true,
   },
-}); 
+});

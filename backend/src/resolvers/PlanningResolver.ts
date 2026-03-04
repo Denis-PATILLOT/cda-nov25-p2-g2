@@ -23,10 +23,19 @@ class PlanningInput {
   afternoon_nap: string;
 
   @Field()
+  snack: string;
+
+  @Field()
   date: Date;
 
   @Field(() => Int)
   groupId: number;
+
+  @Field({ nullable: true })
+  morning_activities: string;
+
+  @Field({ nullable: true })
+  afternoon_activities: string;
 }
 
 @InputType()
@@ -41,7 +50,13 @@ class UpdatePlanningInput {
   afternoon_nap?: string;
 
   @Field({ nullable: true })
-  date?: Date;
+  snack?: string;
+
+  @Field({ nullable: true })
+  morning_activities: string;
+
+  @Field({ nullable: true })
+  afternoon_activities: string;
 }
 
 @Resolver()
@@ -50,6 +65,16 @@ export class PlanningResolver {
   @Query(() => [Planning])
   async getAllPlannings(): Promise<Planning[]> {
     return await Planning.find({ relations: ["group"] });
+  }
+
+  @Query(() => [Planning])
+  async getAllPlanningsByGroup(
+    @Arg("groupId", () => Int) groupId: number,
+  ): Promise<Planning[]> {
+    return await Planning.find({
+      relations: ["group"],
+      where: { group: { id: groupId } },
+    });
   }
 
   @Query(() => Planning)

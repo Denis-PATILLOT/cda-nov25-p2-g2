@@ -23,7 +23,11 @@ afterAll(async () => {
   await db.destroy();
 });
 
-export async function execute(operation: ASTNode, variables?: any, contextValue: any = {}) {
+export async function execute(
+  operation: ASTNode,
+  variables?: any,
+  contextValue: any = {},
+) {
   return await testServer.executeOperation(
     { query: print(operation), variables },
     { contextValue },

@@ -1,5 +1,6 @@
 import { buildSchema } from "type-graphql";
 import { authChecker } from "./auth";
+import { AdminResolver } from "./resolvers/AdminResolver";
 import ChildResolver from "./resolvers/ChildResolver";
 import ConversationResolver from "./resolvers/ConversationResolver";
 import { GroupResolver } from "./resolvers/GroupResolver";
@@ -7,7 +8,6 @@ import MessageResolver from "./resolvers/MessageResolver";
 import { PlanningResolver } from "./resolvers/PlanningResolver";
 import ReportResolver from "./resolvers/ReportResolver";
 import UserResolver from "./resolvers/UserResolver";
-import { AdminResolver } from "./resolvers/AdminResolver";
 
 export async function getSchema() {
   return buildSchema({

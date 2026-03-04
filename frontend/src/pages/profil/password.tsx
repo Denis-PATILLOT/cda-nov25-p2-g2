@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/a11y/noLabelWithoutControl: <explanation> */
 import { useRouter } from "next/router";
 import type React from "react";
 import { useState } from "react";
