@@ -109,7 +109,7 @@ export type Mutation = {
   deleteUser: Scalars['Boolean']['output'];
   login: Scalars['String']['output'];
   logout: Scalars['Boolean']['output'];
-  updateAd: Child;
+  updateChild: Child;
   updateGroup: Group;
   updatePlanning: Planning;
   updateReport: Report;
@@ -184,7 +184,7 @@ export type MutationLoginArgs = {
 };
 
 
-export type MutationUpdateAdArgs = {
+export type MutationUpdateChildArgs = {
   data: UpdateChildInput;
   id: Scalars['Int']['input'];
 };
@@ -452,7 +452,7 @@ export type LinkParentToChildMutationVariables = Exact<{
 }>;
 
 
-export type LinkParentToChildMutation = { __typename?: 'Mutation', updateAd: { __typename?: 'Child', id: number, parents: Array<{ __typename?: 'User', id: number }> } };
+export type LinkParentToChildMutation = { __typename?: 'Mutation', updateChild: { __typename?: 'Child', id: number, parents: Array<{ __typename?: 'User', id: number }> } };
 
 export type UpdateChildMutationVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -460,7 +460,7 @@ export type UpdateChildMutationVariables = Exact<{
 }>;
 
 
-export type UpdateChildMutation = { __typename?: 'Mutation', updateAd: { __typename?: 'Child', id: number, firstName: string, lastName: string, birthDate: any, picture: string, healthRecord?: string | null, group: { __typename?: 'Group', id: string, name: string } } };
+export type UpdateChildMutation = { __typename?: 'Mutation', updateChild: { __typename?: 'Child', id: number, firstName: string, lastName: string, birthDate: any, picture: string, healthRecord?: string | null, group: { __typename?: 'Group', id: string, name: string } } };
 
 export type GetAllPlanningsByGroupQueryVariables = Exact<{
   groupId: Scalars['Int']['input'];
@@ -953,7 +953,7 @@ export type DeleteUserMutationResult = ApolloReactCommon.MutationResult<DeleteUs
 export type DeleteUserMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
 export const LinkParentToChildDocument = gql`
     mutation LinkParentToChild($id: Int!, $data: UpdateChildInput!) {
-  updateAd(id: $id, data: $data) {
+  updateChild(id: $id, data: $data) {
     id
     parents {
       id
@@ -990,7 +990,7 @@ export type LinkParentToChildMutationResult = ApolloReactCommon.MutationResult<L
 export type LinkParentToChildMutationOptions = ApolloReactCommon.BaseMutationOptions<LinkParentToChildMutation, LinkParentToChildMutationVariables>;
 export const UpdateChildDocument = gql`
     mutation UpdateChild($id: Int!, $data: UpdateChildInput!) {
-  updateAd(id: $id, data: $data) {
+  updateChild(id: $id, data: $data) {
     id
     firstName
     lastName

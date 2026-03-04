@@ -39,7 +39,7 @@ export default class ChildResolver {
   }
 
   @Mutation(() => Child)
-  async updateAd(
+  async updateChild(
     @Arg("id", () => Int) id: number,
     @Arg("data", () => UpdateChildInput, { validate: true })
     data: UpdateChildInput,

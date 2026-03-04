@@ -1,5 +1,5 @@
 mutation UpdateChild($id: Int!, $data: UpdateChildInput!) {
-  updateAd(id: $id, data: $data) {
+  updateChild(id: $id, data: $data) {
     id
     firstName
     lastName

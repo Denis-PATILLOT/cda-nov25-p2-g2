@@ -4,32 +4,8 @@ import AddChildModal from "@/components/admin/AddChildModal";
 import Layout from "@/components/Layout";
 import { useAdminChildrenQuery, useDeleteChildMutation } from "@/graphql/generated/schema";
 import { useAuth } from "@/hooks/CurrentProfile";
-
-// Retourne la couleur de fond CSS d'un groupe à partir de son id.
-// Les couleurs sont définies dans globals.css :
-// --color-group1 (orange), --color-group2 (vert), --color-group3 (violet)
-function getGroupBg(groupId: string) {
-  return `var(--color-group${groupId})`;
-}
-
-// Calcule et retourne l'âge d'un enfant à partir de sa date de naissance.
-// Retourne "X mois" si moins d'un an, sinon "X ans".
-function getAge(birthDate: string) {
-  const d = new Date(birthDate);
-  const now = new Date();
-  let years = now.getFullYear() - d.getFullYear();
-  const m = now.getMonth() - d.getMonth();
-  if (m < 0 || (m === 0 && now.getDate() < d.getDate())) years--;
-  if (years < 1) {
-    const months =
-      (now.getFullYear() - d.getFullYear()) * 12 +
-      now.getMonth() -
-      d.getMonth() -
-      (now.getDate() < d.getDate() ? 1 : 0);
-    return `${months} mois`;
-  }
-  return `${years} ans`;
-}
+import { getAge } from "@/utils/getAge";
+import { getGroupBg } from "@/utils/getGroupBg";
 
 export default function AdminChildrenPage() {
   const router = useRouter();

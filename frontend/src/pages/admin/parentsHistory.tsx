@@ -4,10 +4,7 @@ import AddParentModal from "@/components/admin/AddParentModal";
 import Layout from "@/components/Layout";
 import { useAdminChildrenQuery, useDeleteUserMutation } from "@/graphql/generated/schema";
 import { useAuth } from "@/hooks/CurrentProfile";
-
-function getGroupBg(groupId: string) {
-  return `var(--color-group${groupId})`;
-}
+import { getGroupBg } from "@/utils/getGroupBg";
 
 export default function AdminParentsPage() {
   const router = useRouter();
@@ -298,7 +295,7 @@ export default function AdminParentsPage() {
                         type="button"
                         onClick={() => {
                           setOpenMenuId(null);
-                          router.push(`/admin/children/${child.id}/edit`);
+                          router.push(`/admin/parents/${parent.id}/edit?childId=${child.id}`);
                         }}
                         className="flex items-center gap-3 px-4 py-2.5 text-left hover:bg-gray-50 border-b border-gray-100"
                       >
