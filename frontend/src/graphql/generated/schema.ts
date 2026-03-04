@@ -389,6 +389,18 @@ export type AdminCountsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AdminCountsQuery = { __typename?: 'Query', adminCounts: { __typename?: 'AdminCounts', childrenCount: number, staffCount: number, parentCount: number } };
 
+export type AdminChildrenQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AdminChildrenQuery = { __typename?: 'Query', children: Array<{ __typename?: 'Child', id: number, firstName: string, lastName: string, birthDate: any, picture: string, healthRecord?: string | null, group: { __typename?: 'Group', id: string, name: string }, parents: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string, email: string, phone: string }> }> };
+
+export type DeleteChildMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteChildMutation = { __typename?: 'Mutation', deleteChild: string };
+
 export type AllChildrenQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -533,6 +545,92 @@ export type AdminCountsQueryHookResult = ReturnType<typeof useAdminCountsQuery>;
 export type AdminCountsLazyQueryHookResult = ReturnType<typeof useAdminCountsLazyQuery>;
 export type AdminCountsSuspenseQueryHookResult = ReturnType<typeof useAdminCountsSuspenseQuery>;
 export type AdminCountsQueryResult = ApolloReactCommon.QueryResult<AdminCountsQuery, AdminCountsQueryVariables>;
+export const AdminChildrenDocument = gql`
+    query AdminChildren {
+  children {
+    id
+    firstName
+    lastName
+    birthDate
+    picture
+    healthRecord
+    group {
+      id
+      name
+    }
+    parents {
+      id
+      first_name
+      last_name
+      email
+      phone
+    }
+  }
+}
+    `;
+
+/**
+ * __useAdminChildrenQuery__
+ *
+ * To run a query within a React component, call `useAdminChildrenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminChildrenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAdminChildrenQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAdminChildrenQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AdminChildrenQuery, AdminChildrenQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<AdminChildrenQuery, AdminChildrenQueryVariables>(AdminChildrenDocument, options);
+      }
+export function useAdminChildrenLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AdminChildrenQuery, AdminChildrenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<AdminChildrenQuery, AdminChildrenQueryVariables>(AdminChildrenDocument, options);
+        }
+export function useAdminChildrenSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminChildrenQuery, AdminChildrenQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<AdminChildrenQuery, AdminChildrenQueryVariables>(AdminChildrenDocument, options);
+        }
+export type AdminChildrenQueryHookResult = ReturnType<typeof useAdminChildrenQuery>;
+export type AdminChildrenLazyQueryHookResult = ReturnType<typeof useAdminChildrenLazyQuery>;
+export type AdminChildrenSuspenseQueryHookResult = ReturnType<typeof useAdminChildrenSuspenseQuery>;
+export type AdminChildrenQueryResult = ApolloReactCommon.QueryResult<AdminChildrenQuery, AdminChildrenQueryVariables>;
+export const DeleteChildDocument = gql`
+    mutation DeleteChild($id: Int!) {
+  deleteChild(id: $id)
+}
+    `;
+export type DeleteChildMutationFn = ApolloReactCommon.MutationFunction<DeleteChildMutation, DeleteChildMutationVariables>;
+
+/**
+ * __useDeleteChildMutation__
+ *
+ * To run a mutation, you first call `useDeleteChildMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteChildMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteChildMutation, { data, loading, error }] = useDeleteChildMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteChildMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteChildMutation, DeleteChildMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<DeleteChildMutation, DeleteChildMutationVariables>(DeleteChildDocument, options);
+      }
+export type DeleteChildMutationHookResult = ReturnType<typeof useDeleteChildMutation>;
+export type DeleteChildMutationResult = ApolloReactCommon.MutationResult<DeleteChildMutation>;
+export type DeleteChildMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteChildMutation, DeleteChildMutationVariables>;
 export const AllChildrenDocument = gql`
     query AllChildren {
   children {
