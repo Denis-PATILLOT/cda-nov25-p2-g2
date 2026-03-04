@@ -389,7 +389,7 @@ export type AdminChildDetailQueryVariables = Exact<{
 }>;
 
 
-export type AdminChildDetailQuery = { __typename?: 'Query', child: { __typename?: 'Child', id: number, firstName: string, lastName: string, birthDate: any, picture: string, healthRecord?: string | null, group: { __typename?: 'Group', id: string, name: string }, parents: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string, avatar?: string | null }> } };
+export type AdminChildDetailQuery = { __typename?: 'Query', child: { __typename?: 'Child', id: number, firstName: string, lastName: string, birthDate: any, picture: string, healthRecord?: string | null, group: { __typename?: 'Group', id: string, name: string }, parents: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string, email: string, phone: string, avatar?: string | null }> } };
 
 export type AdminCountsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -407,6 +407,13 @@ export type DeleteChildMutationVariables = Exact<{
 
 
 export type DeleteChildMutation = { __typename?: 'Mutation', deleteChild: string };
+
+export type AdminUpdateUserMutationVariables = Exact<{
+  data: UpdateUserInput;
+}>;
+
+
+export type AdminUpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', id: number, first_name: string, last_name: string, email: string, phone: string, avatar?: string | null } };
 
 export type AllChildrenQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -543,6 +550,8 @@ export const AdminChildDetailDocument = gql`
       id
       first_name
       last_name
+      email
+      phone
       avatar
     }
   }
@@ -709,6 +718,44 @@ export function useDeleteChildMutation(baseOptions?: ApolloReactHooks.MutationHo
 export type DeleteChildMutationHookResult = ReturnType<typeof useDeleteChildMutation>;
 export type DeleteChildMutationResult = ApolloReactCommon.MutationResult<DeleteChildMutation>;
 export type DeleteChildMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteChildMutation, DeleteChildMutationVariables>;
+export const AdminUpdateUserDocument = gql`
+    mutation AdminUpdateUser($data: UpdateUserInput!) {
+  updateUser(data: $data) {
+    id
+    first_name
+    last_name
+    email
+    phone
+    avatar
+  }
+}
+    `;
+export type AdminUpdateUserMutationFn = ApolloReactCommon.MutationFunction<AdminUpdateUserMutation, AdminUpdateUserMutationVariables>;
+
+/**
+ * __useAdminUpdateUserMutation__
+ *
+ * To run a mutation, you first call `useAdminUpdateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminUpdateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminUpdateUserMutation, { data, loading, error }] = useAdminUpdateUserMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useAdminUpdateUserMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AdminUpdateUserMutation, AdminUpdateUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<AdminUpdateUserMutation, AdminUpdateUserMutationVariables>(AdminUpdateUserDocument, options);
+      }
+export type AdminUpdateUserMutationHookResult = ReturnType<typeof useAdminUpdateUserMutation>;
+export type AdminUpdateUserMutationResult = ApolloReactCommon.MutationResult<AdminUpdateUserMutation>;
+export type AdminUpdateUserMutationOptions = ApolloReactCommon.BaseMutationOptions<AdminUpdateUserMutation, AdminUpdateUserMutationVariables>;
 export const AllChildrenDocument = gql`
     query AllChildren {
   children {
