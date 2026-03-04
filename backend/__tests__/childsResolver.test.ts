@@ -1,4 +1,4 @@
-import assert from "assert";
+import assert from "node:assert";
 import gql from "graphql-tag";
 import { execute } from "../jest.setup";
 import { Child } from "../src/entities/Child";

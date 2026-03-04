@@ -81,6 +81,7 @@ export default function AddChildModal({ open, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <button
+        type="button"
         className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"
         onClick={() => {
           reset();

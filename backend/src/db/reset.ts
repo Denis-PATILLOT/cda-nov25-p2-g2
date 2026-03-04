@@ -58,7 +58,7 @@ async function main() {
     role: UserRole.Parent,
   }).save();
 
-  const user3 = await User.create({
+  const _user3 = await User.create({
     email: "veronique@app.com",
     hashedPassword: await hash("Password123!"),
     first_name: "Véronique",
@@ -94,7 +94,7 @@ async function main() {
     group: null,
   }).save();
 
-  const user6 = await User.create({
+  const _user6 = await User.create({
     email: "capucine@app.com",
     hashedPassword: await hash("Password123!"),
     first_name: "Capucine",
@@ -106,7 +106,7 @@ async function main() {
     group: { id: group2.id },
   }).save();
 
-  const user7 = await User.create({
+  const _user7 = await User.create({
     email: "lucie.magret@app.com",
     hashedPassword: await hash("Password123!"),
     first_name: "Lucie",
@@ -118,7 +118,7 @@ async function main() {
     group: { id: group3.id },
   }).save();
 
-  const userAdmin = await User.create({
+  const _userAdmin = await User.create({
     email: "admin@app.com",
     hashedPassword: await hash("Password123!"),
     first_name: "Admin",

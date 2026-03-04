@@ -1,0 +1,5 @@
+mutation UpdatePlanning($data: UpdatePlanningInput!, $updatePlanningId: Int!) {
+  updatePlanning(data: $data, id: $updatePlanningId) {
+    id
+  }
+}
