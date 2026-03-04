@@ -12,7 +12,7 @@ export interface JWTPayload {
 // fn creation token (prend en param un User)
 export async function createJWT(user: User): Promise<string> {
   const payload: JWTPayload = {
-    userId: user.id,    // on aura userId dans le payload
+    userId: user.id, // on aura userId dans le payload
   };
 
   return jwt.sign(payload, env.JWT_SECRET, { expiresIn: "7d" });
@@ -33,14 +33,15 @@ const cookieName = "authToken";
 export async function startSession(context: GraphQLContext, user: User) {
   const token = await createJWT(user);
 
-  context.res.cookie(cookieName, token, {  // création du cookie dans le context (response) : on y met le token avec les options indiquées
+  context.res.cookie(cookieName, token, {
+    // création du cookie dans le context (response) : on y met le token avec les options indiquées
     httpOnly: true,
     secure: env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60, // 7 days
   });
 
-  return token;  // renvoie le token (string)
+  return token; // renvoie le token (string)
 }
 
 export async function endSession(context: GraphQLContext) {
@@ -48,7 +49,9 @@ export async function endSession(context: GraphQLContext) {
 }
 
 // fn getJWT : prend le payload depuis le cookie (dans le context)
-export async function getJWT( context: GraphQLContext): Promise<JWTPayload | null> {
+export async function getJWT(
+  context: GraphQLContext,
+): Promise<JWTPayload | null> {
   const token = context.req.cookies?.[cookieName];
 
   if (!token) return null; // si token invalide ou non existant
@@ -63,12 +66,18 @@ export async function getCurrentUser(context: GraphQLContext): Promise<User> {
   const jwt = await getJWT(context); // on récupère le payload
   if (jwt === null) throw new UnauthenticatedError(); // si pas de payload, on renvoie une erreur UnauthenticatedError qui sera catch dans le userResolver
   // si on a un payload, on l'utilise pour récupérer l'utilisateur concerné
-  const currentUser = await User.findOne({ where: { id: jwt.userId }, relations: ["children", "children.group", "group", "group.children"] });  // ajout des données enfants et group pour la fn me() qui utilise le retour de getCurrentUser
+  const currentUser = await User.findOne({
+    where: { id: jwt.userId },
+    relations: ["children", "children.group", "group", "group.children"],
+  }); // ajout des données enfants et group pour la fn me() qui utilise le retour de getCurrentUser
   if (currentUser === null) throw new UnauthenticatedError(); // idem
   return currentUser; // on renvoie les infos de l'utilisateur si bien authentifié correctement
 }
 
-export const authChecker: AuthChecker<GraphQLContext> = async ( { context }, roles) => {
+export const authChecker: AuthChecker<GraphQLContext> = async (
+  { context },
+  roles,
+) => {
   const currentUser = await getCurrentUser(context);
   if (roles.length !== 0 && !roles.includes(currentUser.role.toString()))
     throw new ForbiddenError();

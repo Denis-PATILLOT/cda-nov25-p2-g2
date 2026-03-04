@@ -95,7 +95,6 @@ const ProfilPage = () => {
                     className="bb-info-field"
                     style={{ borderBottom: "2px solid #e0e0e0", paddingBottom: "10px" }}
                   >
-                    {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
                     <label className="bb-label">Lien de la photo</label>
                     <input
                       className="bb-edit-input"
@@ -103,7 +102,6 @@ const ProfilPage = () => {
                       value={formData.avatar}
                       onChange={(e) => setFormData({ ...formData, avatar: e.target.value })}
                       placeholder="URL de l'image"
-                      // biome-ignore lint/a11y/noAutofocus: <explanation>
                       autoFocus
                     />
                   </div>

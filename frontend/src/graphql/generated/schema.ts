@@ -250,11 +250,14 @@ export type Planning = {
 };
 
 export type PlanningInput = {
+  afternoon_activities?: InputMaybe<Scalars['String']['input']>;
   afternoon_nap: Scalars['String']['input'];
   date: Scalars['DateTimeISO']['input'];
   groupId: Scalars['Int']['input'];
   meal: Scalars['String']['input'];
+  morning_activities?: InputMaybe<Scalars['String']['input']>;
   morning_nap: Scalars['String']['input'];
+  snack: Scalars['String']['input'];
 };
 
 export type Query = {
@@ -265,6 +268,7 @@ export type Query = {
   conversation?: Maybe<Conversation>;
   getAllGroups: Array<Group>;
   getAllPlannings: Array<Planning>;
+  getAllPlanningsByGroup: Array<Planning>;
   getGroupById?: Maybe<Group>;
   getPlanningById: Planning;
   me?: Maybe<User>;
@@ -289,6 +293,11 @@ export type QueryConversationArgs = {
 export type QueryGetAllGroupsArgs = {
   skip?: Scalars['Int']['input'];
   take?: Scalars['Int']['input'];
+};
+
+
+export type QueryGetAllPlanningsByGroupArgs = {
+  groupId: Scalars['Int']['input'];
 };
 
 
@@ -333,10 +342,12 @@ export type UpdateChildInput = {
 };
 
 export type UpdatePlanningInput = {
+  afternoon_activities?: InputMaybe<Scalars['String']['input']>;
   afternoon_nap?: InputMaybe<Scalars['String']['input']>;
-  date?: InputMaybe<Scalars['DateTimeISO']['input']>;
   meal?: InputMaybe<Scalars['String']['input']>;
+  morning_activities?: InputMaybe<Scalars['String']['input']>;
   morning_nap?: InputMaybe<Scalars['String']['input']>;
+  snack?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateReportInput = {
@@ -410,6 +421,13 @@ export type LinkParentToChildMutationVariables = Exact<{
 
 export type LinkParentToChildMutation = { __typename?: 'Mutation', updateAd: { __typename?: 'Child', id: number, parents: Array<{ __typename?: 'User', id: number }> } };
 
+export type GetAllPlanningsByGroupQueryVariables = Exact<{
+  groupId: Scalars['Int']['input'];
+}>;
+
+
+export type GetAllPlanningsByGroupQuery = { __typename?: 'Query', getAllPlanningsByGroup: Array<{ __typename?: 'Planning', id: string, date: any, morning_activities?: string | null, morning_nap?: string | null, meal?: string | null, afternoon_activities?: string | null, afternoon_nap?: string | null, snack?: string | null }> };
+
 export type ChangePasswordMutationVariables = Exact<{
   data: ChangePasswordInput;
 }>;
@@ -441,10 +459,25 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
+export type GetPlanningByIdQueryVariables = Exact<{
+  getPlanningById: Scalars['Int']['input'];
+}>;
+
+
+export type GetPlanningByIdQuery = { __typename?: 'Query', getPlanningById: { __typename?: 'Planning', id: string, date: any, morning_activities?: string | null, morning_nap?: string | null, meal?: string | null, afternoon_activities?: string | null, afternoon_nap?: string | null, snack?: string | null, group: { __typename?: 'Group', name: string } } };
+
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ProfileQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, first_name: string, last_name: string, avatar?: string | null, creation_date: any, email: string, phone: string, role: string, children?: Array<{ __typename?: 'Child', id: number, firstName: string, lastName: string, birthDate: any, picture: string, group: { __typename?: 'Group', id: string, name: string } }> | null, group?: { __typename?: 'Group', id: string, name: string, children?: Array<{ __typename?: 'Child', id: number, firstName: string, lastName: string, picture: string }> | null } | null } | null };
+
+export type UpdatePlanningMutationVariables = Exact<{
+  data: UpdatePlanningInput;
+  updatePlanningId: Scalars['Int']['input'];
+}>;
+
+
+export type UpdatePlanningMutation = { __typename?: 'Mutation', updatePlanning: { __typename?: 'Planning', id: string } };
 
 export type UpdateProfileMutationVariables = Exact<{
   data: UpdateUserInput;
@@ -701,6 +734,53 @@ export function useLinkParentToChildMutation(baseOptions?: ApolloReactHooks.Muta
 export type LinkParentToChildMutationHookResult = ReturnType<typeof useLinkParentToChildMutation>;
 export type LinkParentToChildMutationResult = ApolloReactCommon.MutationResult<LinkParentToChildMutation>;
 export type LinkParentToChildMutationOptions = ApolloReactCommon.BaseMutationOptions<LinkParentToChildMutation, LinkParentToChildMutationVariables>;
+export const GetAllPlanningsByGroupDocument = gql`
+    query getAllPlanningsByGroup($groupId: Int!) {
+  getAllPlanningsByGroup(groupId: $groupId) {
+    id
+    date
+    morning_activities
+    morning_nap
+    meal
+    afternoon_activities
+    afternoon_nap
+    snack
+  }
+}
+    `;
+
+/**
+ * __useGetAllPlanningsByGroupQuery__
+ *
+ * To run a query within a React component, call `useGetAllPlanningsByGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllPlanningsByGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllPlanningsByGroupQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export function useGetAllPlanningsByGroupQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetAllPlanningsByGroupQuery, GetAllPlanningsByGroupQueryVariables> & ({ variables: GetAllPlanningsByGroupQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetAllPlanningsByGroupQuery, GetAllPlanningsByGroupQueryVariables>(GetAllPlanningsByGroupDocument, options);
+      }
+export function useGetAllPlanningsByGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllPlanningsByGroupQuery, GetAllPlanningsByGroupQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetAllPlanningsByGroupQuery, GetAllPlanningsByGroupQueryVariables>(GetAllPlanningsByGroupDocument, options);
+        }
+export function useGetAllPlanningsByGroupSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetAllPlanningsByGroupQuery, GetAllPlanningsByGroupQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<GetAllPlanningsByGroupQuery, GetAllPlanningsByGroupQueryVariables>(GetAllPlanningsByGroupDocument, options);
+        }
+export type GetAllPlanningsByGroupQueryHookResult = ReturnType<typeof useGetAllPlanningsByGroupQuery>;
+export type GetAllPlanningsByGroupLazyQueryHookResult = ReturnType<typeof useGetAllPlanningsByGroupLazyQuery>;
+export type GetAllPlanningsByGroupSuspenseQueryHookResult = ReturnType<typeof useGetAllPlanningsByGroupSuspenseQuery>;
+export type GetAllPlanningsByGroupQueryResult = ApolloReactCommon.QueryResult<GetAllPlanningsByGroupQuery, GetAllPlanningsByGroupQueryVariables>;
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($data: ChangePasswordInput!) {
   changePassword(data: $data)
@@ -890,6 +970,56 @@ export function useLogoutMutation(baseOptions?: ApolloReactHooks.MutationHookOpt
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = ApolloReactCommon.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const GetPlanningByIdDocument = gql`
+    query GetPlanningById($getPlanningById: Int!) {
+  getPlanningById(id: $getPlanningById) {
+    id
+    date
+    morning_activities
+    morning_nap
+    meal
+    afternoon_activities
+    afternoon_nap
+    snack
+    group {
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPlanningByIdQuery__
+ *
+ * To run a query within a React component, call `useGetPlanningByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPlanningByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPlanningByIdQuery({
+ *   variables: {
+ *      getPlanningById: // value for 'getPlanningById'
+ *   },
+ * });
+ */
+export function useGetPlanningByIdQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetPlanningByIdQuery, GetPlanningByIdQueryVariables> & ({ variables: GetPlanningByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetPlanningByIdQuery, GetPlanningByIdQueryVariables>(GetPlanningByIdDocument, options);
+      }
+export function useGetPlanningByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPlanningByIdQuery, GetPlanningByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetPlanningByIdQuery, GetPlanningByIdQueryVariables>(GetPlanningByIdDocument, options);
+        }
+export function useGetPlanningByIdSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetPlanningByIdQuery, GetPlanningByIdQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<GetPlanningByIdQuery, GetPlanningByIdQueryVariables>(GetPlanningByIdDocument, options);
+        }
+export type GetPlanningByIdQueryHookResult = ReturnType<typeof useGetPlanningByIdQuery>;
+export type GetPlanningByIdLazyQueryHookResult = ReturnType<typeof useGetPlanningByIdLazyQuery>;
+export type GetPlanningByIdSuspenseQueryHookResult = ReturnType<typeof useGetPlanningByIdSuspenseQuery>;
+export type GetPlanningByIdQueryResult = ApolloReactCommon.QueryResult<GetPlanningByIdQuery, GetPlanningByIdQueryVariables>;
 export const ProfileDocument = gql`
     query Profile {
   me {
@@ -957,6 +1087,40 @@ export type ProfileQueryHookResult = ReturnType<typeof useProfileQuery>;
 export type ProfileLazyQueryHookResult = ReturnType<typeof useProfileLazyQuery>;
 export type ProfileSuspenseQueryHookResult = ReturnType<typeof useProfileSuspenseQuery>;
 export type ProfileQueryResult = ApolloReactCommon.QueryResult<ProfileQuery, ProfileQueryVariables>;
+export const UpdatePlanningDocument = gql`
+    mutation UpdatePlanning($data: UpdatePlanningInput!, $updatePlanningId: Int!) {
+  updatePlanning(data: $data, id: $updatePlanningId) {
+    id
+  }
+}
+    `;
+export type UpdatePlanningMutationFn = ApolloReactCommon.MutationFunction<UpdatePlanningMutation, UpdatePlanningMutationVariables>;
+
+/**
+ * __useUpdatePlanningMutation__
+ *
+ * To run a mutation, you first call `useUpdatePlanningMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePlanningMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePlanningMutation, { data, loading, error }] = useUpdatePlanningMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *      updatePlanningId: // value for 'updatePlanningId'
+ *   },
+ * });
+ */
+export function useUpdatePlanningMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdatePlanningMutation, UpdatePlanningMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<UpdatePlanningMutation, UpdatePlanningMutationVariables>(UpdatePlanningDocument, options);
+      }
+export type UpdatePlanningMutationHookResult = ReturnType<typeof useUpdatePlanningMutation>;
+export type UpdatePlanningMutationResult = ApolloReactCommon.MutationResult<UpdatePlanningMutation>;
+export type UpdatePlanningMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdatePlanningMutation, UpdatePlanningMutationVariables>;
 export const UpdateProfileDocument = gql`
     mutation UpdateProfile($data: UpdateUserInput!) {
   updateUser(data: $data) {

@@ -1,0 +1,15 @@
+query GetPlanningById($getPlanningById: Int!) {
+  getPlanningById(id: $getPlanningById) {
+    id
+    date
+    morning_activities
+    morning_nap
+    meal
+    afternoon_activities
+    afternoon_nap
+    snack
+    group {
+      name
+    }
+  }
+}
