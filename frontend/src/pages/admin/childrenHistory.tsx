@@ -360,6 +360,7 @@ export default function AdminChildrenPage() {
                           stroke="currentColor"
                           strokeWidth={1.5}
                         >
+                          <title>Modifier</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -383,6 +384,7 @@ export default function AdminChildrenPage() {
                           stroke="currentColor"
                           strokeWidth={1.5}
                         >
+                          <title>Supprimer</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
