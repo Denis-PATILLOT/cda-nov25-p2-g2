@@ -113,7 +113,7 @@ export default function AdminDashboard() {
     active:scale-95
     focus:outline-none
   "
-            onClick={() => router.push("/admin/parents")}
+            onClick={() => router.push("/admin/parentsHistory")}
           >
             <Image
               src="/admin/parentavatar.png"
