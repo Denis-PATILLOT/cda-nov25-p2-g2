@@ -2,7 +2,6 @@ import { Poppins } from "next/font/google";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import type { ReactNode } from "react";
-// import { useProfileQuery } from "@/graphql/generated/schema";
 import { useAuth } from "@/hooks/CurrentProfile";
 import Footer from "./Footer";
 import Header from "./Header";
@@ -20,32 +19,7 @@ interface LayoutProps {
 export default function Layout({ children, pageTitle }: LayoutProps) {
   const router = useRouter();
 
-  const { user, refetch } = useAuth(); // refetch ?
-
-  const body = document.body;
-
-  if (router.pathname === "/") {
-    body.classList.remove("group1", "group2", "group3", "md:staff-large");
-    body.classList.add("home", "md:home-large");
-  }
-
-  if (router.pathname === "/admin") {
-    body.classList.remove("group1", "group2", "group3", "md:staff-large");
-    body.classList.add("home", "md:home-large");
-  }
-
-  if (router.pathname === "/staff") {
-    body.classList.remove("home", "md:home-large");
-    body.classList.add(`group${user?.group?.id}`, "md:staff-large");
-  }
-
-  if (router.pathname === "/parent") {
-    body.classList.add("home", "md:home-large");
-  }
-
-  if (router.pathname.startsWith("/profil")) {
-    body.classList.add("home", "md:home-large");
-  }
+  const { user, refetch } = useAuth();
 
   return (
     <>
@@ -55,9 +29,13 @@ export default function Layout({ children, pageTitle }: LayoutProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {user && <Header user={user} />}
-      <main className={` ${poppins.className} `}>{children}</main>
-      {user && <Footer />}
+      <div
+        className={`body ${router.pathname === "/" ? "home md:home-large" : router.pathname.startsWith("/admin") ? "home md:home-large" : router.pathname.startsWith("/parent") ? "home md:home-page" : router.pathname.startsWith("/staff") ? `group${user?.group?.id} md:staff-large` : router.pathname.startsWith("/profil") ? "home md:home-large" : ""} `}
+      >
+        {user && <Header user={user} refetch={refetch} />}
+        <main className={` ${poppins.className} `}>{children}</main>
+        {user && <Footer />}
+      </div>
     </>
   );
 }

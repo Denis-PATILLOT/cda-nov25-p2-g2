@@ -1,0 +1,12 @@
+# Récupère la liste de tous les enfants avec leurs parents liés
+# Utilisé dans : AddParentModal.tsx (dropdown de sélection d'enfants à lier au parent)
+query AllChildren {
+  children {
+    id
+    firstName
+    lastName
+    parents {
+      id
+    }
+  }
+}

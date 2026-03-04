@@ -1,0 +1,20 @@
+query AdminChildDetail($id: Int!) {
+  child(id: $id) {
+    id
+    firstName
+    lastName
+    birthDate
+    picture
+    healthRecord
+    group {
+      id
+      name
+    }
+    parents {
+      id
+      first_name
+      last_name
+      avatar
+    }
+  }
+}

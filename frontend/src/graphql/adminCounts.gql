@@ -1,7 +1,0 @@
-query AdminCounts {
-  adminCounts {
-    childrenCount
-    staffCount
-    parentCount
-  }
-}

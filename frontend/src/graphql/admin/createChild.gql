@@ -1,0 +1,17 @@
+# Crée un nouvel enfant en base avec toutes ses informations d'inscription
+# Utilisé dans : AddChildModal.tsx
+# Retourne l'id et les infos de base de l'enfant créé
+mutation CreateChild($data: NewChildInput!) {
+  createChild(data: $data) {
+    id
+    firstName
+    lastName
+    birthDate
+    picture
+    healthRecord
+    group {
+      id
+      name
+    }
+  }
+}

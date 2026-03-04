@@ -1,0 +1,13 @@
+# Crée un nouvel utilisateur (parent, staff...)
+# Utilisé dans : AddParentModal.tsx, AddStaffModal.tsx
+# Retourne les infos de base de l'utilisateur créé (id, email, nom, prénom, téléphone, rôle)
+mutation CreateUser($data: CreateUserInput!) {
+  createUser(data: $data) {
+    id
+    email
+    first_name
+    last_name
+    phone
+    role
+  }
+}

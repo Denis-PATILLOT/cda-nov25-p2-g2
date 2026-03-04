@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/a11y/noLabelWithoutControl: <explanation> */
+import Image from "next/image";
 import { useRouter } from "next/router";
 import type React from "react";
 import { useState } from "react";
@@ -56,10 +56,12 @@ const ChangePasswordPage = () => {
             <div className="bb-profile-card" style={{ paddingTop: "35px" }}>
               <form onSubmit={handleSubmit} className="bb-info-list">
                 <div className="bb-input-group">
-                  <label className="bb-label">Adresse mail*</label>
+                  <label className="bb-label" htmlFor="email">
+                    Adresse mail*
+                  </label>
                   <div className="bb-info-field">
                     <input
-                      type="email"
+                      id="email"
                       className="bb-edit-input"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -69,9 +71,12 @@ const ChangePasswordPage = () => {
                 </div>
 
                 <div className="bb-input-group">
-                  <label className="bb-label">Ancien mot de passe *</label>
+                  <label className="bb-label" htmlFor="oldPassword">
+                    Ancien mot de passe *
+                  </label>
                   <div className="bb-info-field bb-password-container">
                     <input
+                      id="oldPassword"
                       type={showOld ? "text" : "password"}
                       className="bb-edit-input"
                       value={formData.oldPassword}
@@ -83,15 +88,23 @@ const ChangePasswordPage = () => {
                       className="bb-eye-btn"
                       onClick={() => setShowOld(!showOld)}
                     >
-                      <img src={showOld ? "/eye-off.png" : "/eye.png"} alt="Toggle" />
+                      <Image
+                        src={showOld ? "/closeeye.png" : "/openeye.png"}
+                        alt="Toggle"
+                        width={24}
+                        height={24}
+                      />
                     </button>
                   </div>
                 </div>
 
                 <div className="bb-input-group">
-                  <label className="bb-label">Nouveau mot de passe *</label>
+                  <label className="bb-label" htmlFor="newPassword">
+                    Nouveau mot de passe *
+                  </label>
                   <div className="bb-info-field bb-password-container">
                     <input
+                      id="newPassword"
                       type={showNew ? "text" : "password"}
                       className="bb-edit-input"
                       value={formData.newPassword}
@@ -103,7 +116,12 @@ const ChangePasswordPage = () => {
                       className="bb-eye-btn"
                       onClick={() => setShowNew(!showNew)}
                     >
-                      <img src={showNew ? "/eye-off.png" : "/eye.png"} alt="Toggle" />
+                      <Image
+                        src={showNew ? "/closeeye.png" : "/openeye.png"}
+                        alt="Toggle"
+                        width={24}
+                        height={24}
+                      />
                     </button>
                   </div>
                 </div>

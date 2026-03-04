@@ -3,19 +3,19 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Layout from "@/components/Layout";
-import { type LoginInput, useLoginMutation, useProfileQuery } from "@/graphql/generated/schema";
+import { type LoginInput, useLoginMutation } from "@/graphql/generated/schema";
+import { useAuth } from "@/hooks/CurrentProfile";
 
 export default function Home() {
   const router = useRouter();
-  // hook pour récupération infos user connecté
-  const { data: dataProfile, refetch } = useProfileQuery({ fetchPolicy: "no-cache" });
-  const user = dataProfile?.me || null;
+  // hook 'useAuth' pour récupération infos user connecté
+  const { user, isAuthenticated, isAdmin, isStaff, isParent, refetch } = useAuth();
 
   // redirection en fn du role si logué
-  if (user) {
-    user.role == "admin" && router.push("/admin");
-    user.role == "staff" && router.push("/staff");
-    user.role == "parent" && router.push("/parent");
+  if (user && isAuthenticated) {
+    isAdmin && router.push("/admin");
+    isStaff && router.push("/staff");
+    isParent && router.push("/parent");
   }
 
   // hook pour login
@@ -38,7 +38,7 @@ export default function Home() {
     try {
       console.log("loginform is submitting");
       await login({ variables: { data } });
-      await refetch(); // récupération des données user MAJ pour avoir ensuite la redirection
+      await refetch(); // récupération des données user après connection, pour avoir ensuite la redirection
     } catch (err) {
       setErrorSubmit(true); // permet affichage erreur et sa disparition
       console.error(err);
@@ -51,14 +51,13 @@ export default function Home() {
 
   return (
     <Layout pageTitle="Accueil">
-      <img src="/babyboardlogo.png" className="md:w-[40%] md:m-auto md:max-w-[600px]" />
+      <img src="/babyboardlogo.png" alt="logo" className="md:w-[40%] md:m-auto md:max-w-[600px]" />
       {errorSubmit && error && (
         <p className="text-red-500 text-center px-5 mx-5 alert bg-red-100 border border-red-500 absolute top-5 left-0 right-0 md:top-5 md:text-xl md:mx-52">
           {error.message || "Une erreur est survenue lors de la connexion"}
           <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
             <svg
               className="fill-current h-6 w-6 text-red-500 cursor-pointer"
-              role="button"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               onClick={() => setErrorSubmit(false)}
@@ -119,14 +118,14 @@ export default function Home() {
               <img
                 src="/closeeye.png"
                 alt=""
-                className="w-[30px] absolute right-15 top-1 md:right-25 md:top-1 md:w-[48px]"
+                className="w-[30px] absolute right-15 top-1 md:right-25 md:top-1 md:w-[48px] cursor-pointer"
                 onClick={handleClickEye}
               />
             ) : (
               <img
                 src="/openeye.png"
                 alt=""
-                className="w-[30px] absolute right-15 top-1 md:right-25 md:top-1 md:w-[48px]"
+                className="w-[30px] absolute right-15 top-1 md:right-25 md:top-1 md:w-[48px] cursor-pointer"
                 onClick={handleClickEye}
               />
             )}

@@ -1,0 +1,10 @@
+# Lie un parent existant à un enfant via la relation ManyToMany (table representatives)
+# Utilisé dans : AddParentModal.tsx (après création du parent, pour associer les enfants sélectionnés)
+mutation LinkParentToChild($id: Int!, $data: UpdateChildInput!) {
+  updateAd(id: $id, data: $data) {
+    id
+    parents {
+      id
+    }
+  }
+}

@@ -1,0 +1,9 @@
+# Récupère les compteurs du dashboard admin (nombre d'enfants, de staff et de parents)
+# Utilisé dans : pages/admin/index.tsx (affichage des 3 de stats en haut du dashboard)
+query AdminCounts {
+  adminCounts {
+    childrenCount
+    staffCount
+    parentCount
+  }
+}

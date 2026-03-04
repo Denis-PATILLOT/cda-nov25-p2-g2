@@ -1,0 +1,8 @@
+# Récupère la liste de tous les groupes (classes)
+# Utilisé dans : AddChildModal.tsx (dropdown de sélection du groupe de l'enfant)
+query AllGroups {
+  getAllGroups(take: 100) {
+    id
+    name
+  }
+}
