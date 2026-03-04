@@ -1,4 +1,11 @@
-import { Authorized, Field, Int, ObjectType, Query, Resolver } from "type-graphql";
+import {
+  Authorized,
+  Field,
+  Int,
+  ObjectType,
+  Query,
+  Resolver,
+} from "type-graphql";
 import db from "../db";
 import { Child } from "../entities/Child";
 import { User, UserRole } from "../entities/User";
@@ -23,8 +30,12 @@ export class AdminResolver {
     const childRepo = db.getRepository(Child);
     const userRepo = db.getRepository(User);
     const childrenCount = await childRepo.count();
-    const staffCount = await userRepo.count({ where: { role: UserRole.Staff } });
-    const parentCount = await userRepo.count({ where: { role: UserRole.Parent } });
+    const staffCount = await userRepo.count({
+      where: { role: UserRole.Staff },
+    });
+    const parentCount = await userRepo.count({
+      where: { role: UserRole.Parent },
+    });
     return { childrenCount, staffCount, parentCount };
   }
 }

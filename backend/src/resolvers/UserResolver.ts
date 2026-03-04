@@ -1,9 +1,23 @@
 import { hash, verify } from "argon2";
 import { GraphQLError } from "graphql";
-import { Arg, Authorized, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+} from "type-graphql";
 import { endSession, getCurrentUser, startSession } from "../auth";
 import { Group } from "../entities/Group";
-import { ChangePasswordInput, CreateUserInput, LoginInput, UpdateUserInput, User } from "../entities/User";
+import {
+  ChangePasswordInput,
+  CreateUserInput,
+  LoginInput,
+  UpdateUserInput,
+  User,
+} from "../entities/User";
 import { NotFoundError, UnauthenticatedError } from "../errors";
 import type { GraphQLContext } from "../types";
 
@@ -172,7 +186,7 @@ export default class UserResolver {
     if (!isPasswordValid) {
       throw new UnauthenticatedError({ message: "Invalid email or password" });
     }
-    // 
+    //
     return startSession(context, user); // on utilise le context et le user logué : va créer le jwt dans le cookie "authToken" de la response (elle renverra le token)
   }
 
