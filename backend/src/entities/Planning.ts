@@ -44,10 +44,10 @@ export class Planning extends BaseEntity {
   @Column()
   date: Date;
 
-  @Field(() => Group)
+  @Field(() => Group, {nullable: false})
   @ManyToOne(
     () => Group,
-    (group) => group.planning,
+    (group) => group.plannings,
     { onDelete: "CASCADE" },
   )
   group: Group;

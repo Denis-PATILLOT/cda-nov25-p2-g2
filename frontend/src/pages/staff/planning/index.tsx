@@ -8,7 +8,7 @@ export default function StaffPlanning() {
     
     const router = useRouter();
     const { user, group, isAuthenticated, isStaff } = useAuth();
-    const {data, loading, error} = useGetAllPlanningsByGroupQuery({variables: {groupId: Number(group?.id)}})
+    const {data, loading, error } = useGetAllPlanningsByGroupQuery({variables: {groupId: Number(group?.id)}})
 
     if(user && isAuthenticated && isStaff && group) {
 
@@ -24,13 +24,13 @@ export default function StaffPlanning() {
                             <Link href={"/staff/planning/create"}>
                                 <button className="bg-[#ffdd23] p-2 rounded-xl text-xs text-white hover:bg-[#ffbb25] cursor-pointer mb-7 text-right">Créer planning</button>
                             </Link>
-                            <div className="flex w-full flex-wrap justify-start gap-0">
+                            <div className="flex w-full flex-wrap justify-start gap-3">
                                     { groupPlannings && groupPlannings?.length > 0 ? 
                                     groupPlannings.map((planning) => (
-                                            <div key={planning.id} className="w-[30%] mx-2 px-4 bg-[#FEF9F6]  text-xs rounded-2xl border-2 border-[#FFD771] hover:bg-[#FEE8B6]">
+                                            <div key={planning.id} className="w-[30%] px-4 bg-[#FEF9F6]  text-xs rounded-2xl border-2 border-[#FFD771] hover:bg-[#FEE8B6]">
                                                 <Link href={`/staff/planning/${planning.id}`} className="flex flex-col items-center">
                                                 <p>{new Date(planning.date).toLocaleDateString("FR-fr", {weekday: "long"})}</p>
-                                                <p>{new Date(planning.date).toLocaleDateString("FR-fr", {day: "numeric", month:"long"})}</p>
+                                                <p className="text-nowrap">{new Date(planning.date).toLocaleDateString("FR-fr", {day: "numeric", month:"long"})}</p>
                                                 <p>{new Date(planning.date).toLocaleDateString("FR-fr", {year:"numeric"})}</p>
                                                 </Link>
                                             </div>

@@ -54,7 +54,7 @@ export default function Home() {
       <img src="/babyboardlogo.png" className="md:w-[40%] md:m-auto md:max-w-[600px]" />
       {errorSubmit && error && (
         <p className="text-red-500 text-center px-5 mx-5 alert bg-red-100 border border-red-500 absolute top-5 left-0 right-0 md:top-5 md:text-xl md:mx-52">
-          {error.message || "Une erreur est survenue lors de la connexion"}
+          {error.message || "Une erreur est survenue..."}
           <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
             <svg
               className="fill-current h-6 w-6 text-red-500 cursor-pointer"
@@ -89,7 +89,7 @@ export default function Home() {
             title="Email"
             className={`text-xl text-center bg-[#d4efff] rounded-4xl px-2 py-3 w-[75%] mb-2 md:text-4xl ${errors.email ? "focus-visible:outline-2 focus-visible:outline-red-500" : ""} md:rounded-[50] md:py-6 md:mb-6`}
           />
-          <p className="text-red-500 mb-1">{errors.email?.message}</p>
+          <p className="text-red-500 mb-1 ml-5">{errors.email?.message}</p>
 
           {/* 2eme champ password */}
           <div className="flex flex-col m-auto items-center relative rounded-4xl w-full  mb-0">

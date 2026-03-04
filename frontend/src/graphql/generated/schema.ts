@@ -447,6 +447,13 @@ export type ChildrenQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ChildrenQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, children?: Array<{ __typename?: 'Child', id: number, firstName: string, lastName: string, birthDate: any, picture: string, healthRecord?: string | null, group: { __typename?: 'Group', name: string } }> | null } | null };
 
+export type CreatePlanningMutationVariables = Exact<{
+  data: PlanningInput;
+}>;
+
+
+export type CreatePlanningMutation = { __typename?: 'Mutation', createPlanning: { __typename?: 'Planning', id: string } };
+
 export type LoginMutationVariables = Exact<{
   data: LoginInput;
 }>;
@@ -909,6 +916,39 @@ export type ChildrenQueryHookResult = ReturnType<typeof useChildrenQuery>;
 export type ChildrenLazyQueryHookResult = ReturnType<typeof useChildrenLazyQuery>;
 export type ChildrenSuspenseQueryHookResult = ReturnType<typeof useChildrenSuspenseQuery>;
 export type ChildrenQueryResult = ApolloReactCommon.QueryResult<ChildrenQuery, ChildrenQueryVariables>;
+export const CreatePlanningDocument = gql`
+    mutation CreatePlanning($data: PlanningInput!) {
+  createPlanning(data: $data) {
+    id
+  }
+}
+    `;
+export type CreatePlanningMutationFn = ApolloReactCommon.MutationFunction<CreatePlanningMutation, CreatePlanningMutationVariables>;
+
+/**
+ * __useCreatePlanningMutation__
+ *
+ * To run a mutation, you first call `useCreatePlanningMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePlanningMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPlanningMutation, { data, loading, error }] = useCreatePlanningMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreatePlanningMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreatePlanningMutation, CreatePlanningMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<CreatePlanningMutation, CreatePlanningMutationVariables>(CreatePlanningDocument, options);
+      }
+export type CreatePlanningMutationHookResult = ReturnType<typeof useCreatePlanningMutation>;
+export type CreatePlanningMutationResult = ApolloReactCommon.MutationResult<CreatePlanningMutation>;
+export type CreatePlanningMutationOptions = ApolloReactCommon.BaseMutationOptions<CreatePlanningMutation, CreatePlanningMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($data: LoginInput!) {
   login(data: $data)

@@ -2,11 +2,16 @@ import Layout from "@/components/Layout";
 import { useGetPlanningByIdQuery } from "@/graphql/generated/schema";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 
 const planningDetails = () => {
   const router = useRouter();
   const {id} = router.query;
+
+  const searchParams = useSearchParams();
+  
+  const planningCreated = (searchParams.get('created'));
 
   const { data, error} = useGetPlanningByIdQuery({variables: {getPlanningById: Number(id)}})
 
@@ -21,6 +26,7 @@ const planningDetails = () => {
         <Layout pageTitle={`Staff - planning ${id}`}>
             <div className="max-w-full mx-auto md:max-w-[600px]">
                 <div className="w-[90%] px-4 py-1 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold mx-auto border-3 border-[#FFD771]">
+                    {planningCreated === "true" && <p className="bg-green-300 p-2 border mt-2 border-green-500 rounded-2xl text-center">planning créé avec succès</p>}
                     <div className="flex justify-between items-center">
                         <Link href={`/staff/planning/${id}/edit`} title="Modifier planning" >
                             <Image src="/boutons/modifier.png" alt="" width={50} height={20} className="inline-block"/>
