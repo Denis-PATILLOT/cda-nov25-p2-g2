@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import Layout from "@/components/Layout";
 import { useGetPlanningByIdQuery } from "@/graphql/generated/schema";
 
-const planningDetails = () => {
+export default function PlanningDetails() {
   const router = useRouter();
   const { id } = router.query;
 
@@ -13,7 +13,7 @@ const planningDetails = () => {
   const planning = data?.getPlanningById || null;
 
   if (error) {
-    return error;
+    return <p>error</p>
   }
 
   if (planning) {
@@ -174,4 +174,3 @@ const planningDetails = () => {
   }
 };
 
-export default planningDetails;
