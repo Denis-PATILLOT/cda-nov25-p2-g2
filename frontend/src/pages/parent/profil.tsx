@@ -1,11 +1,10 @@
-import { useRouter } from "next/router";
+/** biome-ignore-all lint/a11y/noAutofocus: <explanation> */
 import type React from "react";
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { useProfileQuery, useUpdateProfileMutation } from "@/graphql/generated/schema";
 
 const ProfilPage = () => {
-  const router = useRouter();
   const { data, loading: queryLoading, error } = useProfileQuery();
   const [updateUser, { loading: mutationLoading }] = useUpdateProfileMutation();
 
@@ -75,6 +74,7 @@ const ProfilPage = () => {
                     alt="User"
                     className="bb-avatar-img"
                   />
+                  {/* Le stylo active l'édition de la photo uniquement */}
                   <button
                     type="button"
                     className="bb-edit-circle"
@@ -90,18 +90,20 @@ const ProfilPage = () => {
               </div>
 
               <form onSubmit={handleSubmit} className="bb-info-list">
+                {/* Champ Avatar (affiché seulement si on a cliqué sur le stylo) */}
                 {showAvatarInput && (
                   <div
                     className="bb-info-field"
                     style={{ borderBottom: "2px solid #e0e0e0", paddingBottom: "10px" }}
                   >
-                    <label className="bb-label">Lien de la photo</label>
+                    {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
+                    <label className="bb-label">Lien de la nouvelle photo</label>
                     <input
                       className="bb-edit-input"
                       type="text"
                       value={formData.avatar}
                       onChange={(e) => setFormData({ ...formData, avatar: e.target.value })}
-                      placeholder="URL de l'image"
+                      placeholder="Collez l'URL de l'image ici"
                       autoFocus
                     />
                   </div>
@@ -168,51 +170,40 @@ const ProfilPage = () => {
                 </div>
 
                 {/* ACTIONS */}
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "10px",
-                    marginTop: "20px",
-                  }}
-                >
-                  {isEditing ? (
-                    <>
-                      <button type="submit" className="bb-btn-valider" disabled={mutationLoading}>
-                        {mutationLoading ? "Enregistrement..." : "Valider les changements"}
-                      </button>
-                      <button
-                        type="button"
-                        className="bb-btn-change-password"
-                        onClick={() => {
-                          setIsEditing(false);
-                          setShowAvatarInput(false);
-                        }}
-                        style={{ backgroundColor: "#999" }}
-                      >
-                        Annuler
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        type="button"
-                        className="bb-btn-valider"
-                        onClick={() => setIsEditing(true)}
-                      >
-                        Modifier mes infos
-                      </button>
-                      {/* Bouton redirigeant vers la page password */}
-                      <button
-                        type="button"
-                        className="bb-btn-change-password"
-                        onClick={() => router.push("/profil/password")}
-                      >
-                        Changer de mot de passe
-                      </button>
-                    </>
-                  )}
-                </div>
+                {isEditing ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "10px",
+                      marginTop: "20px",
+                    }}
+                  >
+                    <button type="submit" className="bb-btn-valider" disabled={mutationLoading}>
+                      {mutationLoading ? "Enregistrement..." : "Valider les changements"}
+                    </button>
+                    <button
+                      type="button"
+                      className="bb-btn-change-password"
+                      onClick={() => {
+                        setIsEditing(false);
+                        setShowAvatarInput(false);
+                      }}
+                      style={{ backgroundColor: "#999" }}
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className="bb-btn-change-password"
+                    style={{ marginTop: "20px" }}
+                    onClick={() => setIsEditing(true)}
+                  >
+                    Modifier mes infos
+                  </button>
+                )}
               </form>
             </div>
           </main>

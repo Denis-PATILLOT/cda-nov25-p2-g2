@@ -1,16 +1,16 @@
-import { useQuery } from "@apollo/client/react";
+import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
 import Layout from "@/components/Layout";
 import PlanningCard from "@/components/planningCard";
-import { GetAllPlanningsByGroupQueryetAllPlanningsByGroup } from "@/graphql/generated/schema"; // adapte le chemin si besoin
+// ✅ Import du document généré par codegen
+import { GetAllPlanningsByGroupDocument } from "@/graphql/generated/schema";
 import { useAuth } from "@/hooks/CurrentProfile";
 
 export default function ReportPage() {
   const router = useRouter();
   const { user, loading: authLoading, isParent } = useAuth();
 
-  // childId vient de l'URL /report/[childId]
   const childId = useMemo(() => {
     const raw = router.query.childId;
     return raw ? String(raw) : null;
@@ -27,8 +27,7 @@ export default function ReportPage() {
     return user.children.find((c) => String(c.id) === childId) ?? null;
   }, [user, childId]);
 
-  // ✅ Query plannings (backend: getAllPlannings existe)
-  const { data, loading, error } = useQuery(GetAllPlanningsByGroupDocument, {
+  const { data, loading, error } = useQuery(GetAllPlanningsDocument, {
     skip: !child,
   });
 
@@ -57,8 +56,9 @@ export default function ReportPage() {
 
   const birth = child.birthDate ? new Date(child.birthDate).toLocaleDateString("fr-FR") : "";
 
+  // ✅ planning du groupe de l'enfant (le plus récent)
   const planningForChild = useMemo(() => {
-    const all = data?.getAllPlanningsByGroup ?? [];
+    const all = data?.getAllPlannings ?? [];
     const childGroupId = child.group?.id;
     if (!childGroupId) return null;
 
@@ -104,10 +104,9 @@ export default function ReportPage() {
           </div>
         ) : null}
 
-  
         {!loading && !error ? (
           planningForChild ? (
-            <PlanningCard {planningForChild} />
+            <PlanningCard apiPlanning={planningForChild} />
           ) : (
             <div className="rounded-2xl border-4 border-yellow-200 bg-white/80 p-5 text-blue-900">
               Aucun planning trouvé pour le groupe de cet enfant.
