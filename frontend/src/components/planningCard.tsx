@@ -17,6 +17,19 @@ type PlanningSection = {
   items: PlanningItem[];
 };
 
+type Props = {
+  apiPlanning: {
+    date: string;
+    morning_activities?: string | null;
+    morning_nap?: string | null;
+    meal?: string | null;
+    afternoon_activities?: string | null;
+    afternoon_nap?: string | null;
+    snack?: string | null;
+    group?: { name: string } | null;
+  };
+};
+
 const planning: PlanningSection[] = [
   {
     label: "MATIN",
@@ -111,7 +124,7 @@ function PlanningCardItem({ icon, title, description, menu }: PlanningItem) {
   );
 }
 
-export default function PlanningDuJour() {
+export default function PlanningCard() {
   return (
     <section className="w-full max-w-md rounded-[34px] border-4 border-yellow-200 bg-white/80 p-5 shadow-[0_20px_45px_rgba(20,40,90,0.15)]">
       {/* Header */}
