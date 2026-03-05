@@ -4,7 +4,7 @@ type Props = {
   child: {
     firstName: string;
     lastName: string;
-    birthDate: number;
+    birthDate: string | number;
     picture: string;
     group: { id: string; name: string };
   };
