@@ -1,12 +1,8 @@
-<<<<<<< HEAD
-// pages/parents/index.tsx (ou ton DashboardParents)
-=======
 import Link from "next/link"; // Import pour les redirections
->>>>>>> 6b70eec21f1f71854e14ea3c4ca44c0f66a698eb
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import ChildCard from "@/components/ChildCard";
 import Layout from "@/components/Layout";
+import ChildCard from "@/components/parent/ChildCard";
 import { useAuth } from "@/hooks/CurrentProfile";
 
 export default function DashboardParents() {
@@ -24,12 +20,8 @@ export default function DashboardParents() {
 
   return (
     <Layout pageTitle="Accueil parent">
-<<<<<<< HEAD
-      <div className="mt-10 mb-6 w-full max-w-md rounded-2xl border-4 border-sky-300 bg-white/90 p-4 text-center shadow-[0_12px_30px_rgba(15,40,90,0.12)]">
-=======
       {/* HEADER DE BIENVENUE */}
       <div className="mt-10 p-4 mb-6 w-full max-w-md rounded-2xl border-4 border-sky-300 bg-white/90 px-4 py-4 text-center shadow-[0_12px_30px_rgba(15,40,90,0.12)]">
->>>>>>> 6b70eec21f1f71854e14ea3c4ca44c0f66a698eb
         <h1 className="text-3xl font-extrabold tracking-wide text-blue-900">
           Bienvenue {user.first_name}
         </h1>

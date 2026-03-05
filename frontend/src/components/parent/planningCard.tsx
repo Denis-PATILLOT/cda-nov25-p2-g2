@@ -30,58 +30,6 @@ type Props = {
   };
 };
 
-const planning: PlanningSection[] = [
-  {
-    label: "MATIN",
-    items: [
-      {
-        icon: "/boutons/puzzle_activite.png",
-        title: "Activité",
-        description: "Peinture avec les mains",
-      },
-      {
-        icon: "/boutons/dormir.png",
-        title: "Sieste",
-        description: "9h45 – 10h30",
-      },
-    ],
-  },
-  {
-    label: "MIDI",
-    items: [
-      {
-        icon: "/boutons/repas.png",
-        title: "Menu du jour",
-        menu: [
-          { label: "Entrée", value: "Purée de carottes" },
-          { label: "Plat", value: "Riz + poulet" },
-          { label: "Dessert", value: "Compote de pommes" },
-        ],
-      },
-    ],
-  },
-  {
-    label: "APRÈS-MIDI",
-    items: [
-      {
-        icon: "/boutons/puzzle_activite.png",
-        title: "Activité",
-        description: "Lecture + temps libre",
-      },
-      {
-        icon: "/boutons/dormir.png",
-        title: "Sieste",
-        description: "13h30 – 15h00",
-      },
-      {
-        icon: "/boutons/gouter.png",
-        title: "Goûter",
-        description: "Petit Lu + lait",
-      },
-    ],
-  },
-];
-
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <div className="mt-6 flex items-center gap-3">
@@ -124,13 +72,67 @@ function PlanningCardItem({ icon, title, description, menu }: PlanningItem) {
   );
 }
 
-export default function PlanningCard() {
+export default function PlanningCard({ apiPlanning }: Props) {
+  const planning: PlanningSection[] = [
+    {
+      label: "MATIN",
+      items: [
+        {
+          icon: "/boutons/puzzle_activite.png",
+          title: "Activité",
+          description: apiPlanning.morning_activities ?? "Non renseigné",
+        },
+        {
+          icon: "/boutons/dormir.png",
+          title: "Sieste",
+          description: apiPlanning.morning_nap ?? "Non renseigné",
+        },
+      ],
+    },
+    {
+      label: "MIDI",
+      items: [
+        {
+          icon: "/boutons/repas.png",
+          title: "Menu du jour",
+          description: apiPlanning.meal ?? "Non renseigné",
+        },
+      ],
+    },
+    {
+      label: "APRÈS-MIDI",
+      items: [
+        {
+          icon: "/boutons/puzzle_activite.png",
+          title: "Activité",
+          description: apiPlanning.afternoon_activities ?? "Non renseigné",
+        },
+        {
+          icon: "/boutons/dormir.png",
+          title: "Sieste",
+          description: apiPlanning.afternoon_nap ?? "Non renseigné",
+        },
+        {
+          icon: "/boutons/gouter.png",
+          title: "Goûter",
+          description: apiPlanning.snack ?? "Non renseigné",
+        },
+      ],
+    },
+  ];
+
   return (
     <section className="w-full max-w-md rounded-[34px] border-4 border-yellow-200 bg-white/80 p-5 shadow-[0_20px_45px_rgba(20,40,90,0.15)]">
       {/* Header */}
       <div className="flex items-center justify-center gap-3">
         <img src="/boutons/calendrier.png" alt="" className="h-9 w-9" />
-        <h2 className="text-3xl font-extrabold text-blue-900">Planning du jour</h2>
+        <div className="text-center">
+          <h2 className="text-3xl font-extrabold text-blue-900">Planning du jour</h2>
+          <p className="text-sm font-semibold text-blue-900/70">
+            {apiPlanning.group?.name ? `${apiPlanning.group.name} • ` : ""}
+            {apiPlanning.date}
+          </p>
+        </div>
       </div>
 
       {/* Sections */}

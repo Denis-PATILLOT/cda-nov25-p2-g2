@@ -41,7 +41,7 @@ export default function ChildCard({ child, onClick }: Props) {
 
         <div className="flex-1 rounded-3xl bg-yellow-100/80 px-5 py-4 shadow-[0_10px_16px_rgba(20,40,90,0.06)]">
           <p className="text-lg font-extrabold text-blue-900">
-            {child.firstName} {child.lastName} {child.group.name}
+            {child.firstName} {child.lastName}
           </p>
 
           <p className="text-base font-medium text-blue-900/90">{birth}</p>
