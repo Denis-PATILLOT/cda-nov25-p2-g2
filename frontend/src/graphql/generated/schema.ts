@@ -263,6 +263,7 @@ export type PlanningInput = {
 export type Query = {
   __typename?: 'Query';
   adminCounts: AdminCounts;
+  allParents: Array<User>;
   child: Child;
   children: Array<Child>;
   conversation?: Maybe<Conversation>;
@@ -424,6 +425,11 @@ export type AllGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type AllGroupsQuery = { __typename?: 'Query', getAllGroups: Array<{ __typename?: 'Group', id: string, name: string }> };
+
+export type AllParentsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllParentsQuery = { __typename?: 'Query', allParents: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string, email: string, phone: string, avatar?: string | null, children?: Array<{ __typename?: 'Child', id: number, firstName: string, lastName: string, picture: string, birthDate: any, group: { __typename?: 'Group', id: string, name: string }, parents: Array<{ __typename?: 'User', id: number }> }> | null }> };
 
 export type CreateChildMutationVariables = Exact<{
   data: NewChildInput;
@@ -840,6 +846,64 @@ export type AllGroupsQueryHookResult = ReturnType<typeof useAllGroupsQuery>;
 export type AllGroupsLazyQueryHookResult = ReturnType<typeof useAllGroupsLazyQuery>;
 export type AllGroupsSuspenseQueryHookResult = ReturnType<typeof useAllGroupsSuspenseQuery>;
 export type AllGroupsQueryResult = ApolloReactCommon.QueryResult<AllGroupsQuery, AllGroupsQueryVariables>;
+export const AllParentsDocument = gql`
+    query AllParents {
+  allParents {
+    id
+    first_name
+    last_name
+    email
+    phone
+    avatar
+    children {
+      id
+      firstName
+      lastName
+      picture
+      birthDate
+      group {
+        id
+        name
+      }
+      parents {
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAllParentsQuery__
+ *
+ * To run a query within a React component, call `useAllParentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllParentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllParentsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllParentsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AllParentsQuery, AllParentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<AllParentsQuery, AllParentsQueryVariables>(AllParentsDocument, options);
+      }
+export function useAllParentsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AllParentsQuery, AllParentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<AllParentsQuery, AllParentsQueryVariables>(AllParentsDocument, options);
+        }
+export function useAllParentsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllParentsQuery, AllParentsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<AllParentsQuery, AllParentsQueryVariables>(AllParentsDocument, options);
+        }
+export type AllParentsQueryHookResult = ReturnType<typeof useAllParentsQuery>;
+export type AllParentsLazyQueryHookResult = ReturnType<typeof useAllParentsLazyQuery>;
+export type AllParentsSuspenseQueryHookResult = ReturnType<typeof useAllParentsSuspenseQuery>;
+export type AllParentsQueryResult = ApolloReactCommon.QueryResult<AllParentsQuery, AllParentsQueryVariables>;
 export const CreateChildDocument = gql`
     mutation CreateChild($data: NewChildInput!) {
   createChild(data: $data) {

@@ -1,5 +1,8 @@
 import { Arg, Int, Mutation, Query, Resolver } from "type-graphql";
+import db from "../db";
 import { Child, NewChildInput, UpdateChildInput } from "../entities/Child";
+import { Report } from "../entities/Report";
+import { User } from "../entities/User";
 import { NotFoundError } from "../errors";
 
 @Resolver()
@@ -72,6 +75,19 @@ export default class ChildResolver {
       throw new NotFoundError();
     }
 
+    // Nettoyer la table de jointure representatives (ManyToMany avec User)
+    if (childToDelete.parents?.length) {
+      const parentIds = childToDelete.parents.map((p) => p.id);
+      await db.getRepository(User)
+        .createQueryBuilder()
+        .relation(User, "children")
+        .of(parentIds)
+        .remove(childToDelete.id);
+    }
+    // Supprimer les reports liés avant l'enfant (contrainte FK)
+    if (childToDelete.reports?.length) {
+      await Report.remove(childToDelete.reports);
+    }
     await childToDelete.remove();
     return "Child has been deleted correctly !";
   }

@@ -1,0 +1,24 @@
+query AllParents {
+  allParents {
+    id
+    first_name
+    last_name
+    email
+    phone
+    avatar
+    children {
+      id
+      firstName
+      lastName
+      picture
+      birthDate
+      group {
+        id
+        name
+      }
+      parents {
+        id
+      }
+    }
+  }
+}
