@@ -205,7 +205,7 @@ export default function EditParentPage() {
       <div className="mx-auto w-full max-w-[420px] px-4 pt-2 pb-10">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <button type="button" onClick={() => router.push("/admin/parentsHistory")} className="p-0">
+          <button type="button" onClick={() => router.back()} className="p-0">
             <div className="h-10 w-10 overflow-hidden flex items-center justify-center">
               <img src="/admin/flechegauche.png" alt="Retour" className="h-16 w-16" />
             </div>
