@@ -22,6 +22,7 @@ type Props = {
   onClose: () => void;
   parentIds?: number[];
   onSuccess?: (child: CreatedChild) => void;
+  showLinkTab?: boolean;
 };
 
 type FormValues = {
@@ -33,7 +34,7 @@ type FormValues = {
 
 const DEFAULT_PICTURE = "https://placehold.co/100x100/png";
 
-export default function AddChildModal({ open, onClose, parentIds = [], onSuccess }: Props) {
+export default function AddChildModal({ open, onClose, parentIds = [], onSuccess, showLinkTab = false }: Props) {
   const [tab, setTab] = useState<"create" | "link">("create");
 
   // --- Onglet Créer ---
@@ -172,7 +173,7 @@ export default function AddChildModal({ open, onClose, parentIds = [], onSuccess
         </div>
 
         {/* Onglets */}
-        <div className="mt-3 flex rounded-xl border-2 border-(--color-primary) overflow-hidden">
+        {showLinkTab && <div className="mt-3 flex rounded-xl border-2 border-(--color-primary) overflow-hidden">
           <button
             type="button"
             onClick={() => setTab("create")}
@@ -185,9 +186,9 @@ export default function AddChildModal({ open, onClose, parentIds = [], onSuccess
             onClick={() => setTab("link")}
             className={`flex-1 py-1.5 text-[12px] font-medium transition-colors ${tab === "link" ? "bg-(--color-primary) text-white" : "bg-white text-gray-500 hover:bg-orange-50"}`}
           >
-            Lier existant
+            Enfant existant
           </button>
-        </div>
+        </div>}
 
         {/* Onglet Créer */}
         {tab === "create" && (

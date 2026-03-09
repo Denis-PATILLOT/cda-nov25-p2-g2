@@ -1,3 +1,5 @@
+# Supprime définitivement un utilisateur (parent ou staff) par son id
+# Utilisé dans : parentsHistory.tsx (bouton Supprimer dans le menu •••)
 mutation DeleteUser($id: Int!) {
   deleteUser(id: $id)
 }
