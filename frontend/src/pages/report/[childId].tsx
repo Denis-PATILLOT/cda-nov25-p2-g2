@@ -1,11 +1,10 @@
-import { useQuery } from "@apollo/client/react";
 import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
 import Layout from "@/components/Layout";
 import PictureCard from "@/components/parent/PictureCard";
 import PlanningCard from "@/components/parent/planningCard";
 import StaffCommentCard from "@/components/parent/StaffCommentCard";
-import { GetAllPlanningsByGroupDocument, ReportByChildDocument } from "@/graphql/generated/schema";
+import { useGetAllPlanningsByGroupQuery, useReportByChildQuery } from "@/graphql/generated/schema";
 import { useAuth } from "@/hooks/CurrentProfile";
 
 export default function ReportPage() {
@@ -19,8 +18,12 @@ export default function ReportPage() {
 
   useEffect(() => {
     if (authLoading) return;
-    if (!user) router.replace("/");
-    else if (!isParent) router.replace("/403");
+
+    if (!user) {
+      router.replace("/");
+    } else if (!isParent) {
+      router.replace("/403");
+    }
   }, [authLoading, user, isParent, router]);
 
   const child = useMemo(() => {
@@ -40,25 +43,50 @@ export default function ReportPage() {
     return Number.isFinite(n) ? n : null;
   }, [child]);
 
-  // PLANNING (par groupId)
+  const birth = useMemo(() => {
+    if (!child?.birthDate) return "";
+    return new Date(child.birthDate).toLocaleDateString("fr-FR");
+  }, [child]);
+
   const {
     data: planningData,
     loading: planningLoading,
     error: planningError,
-  } = useQuery(GetAllPlanningsByGroupDocument, {
-    variables: groupId ? { groupId } : undefined,
+  } = useGetAllPlanningsByGroupQuery({
+    variables: { groupId: groupId ?? 0 },
     skip: !groupId,
   });
 
-  // REPORTS (par childId)
   const {
     data: reportData,
     loading: reportLoading,
     error: reportError,
-  } = useQuery(ReportByChildDocument, {
-    variables: numericChildId ? { childId: numericChildId } : undefined,
+  } = useReportByChildQuery({
+    variables: { childId: numericChildId ?? 0 },
     skip: !numericChildId,
   });
+
+  const planningForChild = useMemo(() => {
+    const all = planningData?.getAllPlanningsByGroup ?? [];
+    if (!all.length) return null;
+
+    return (
+      [...all].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0] ?? null
+    );
+  }, [planningData]);
+
+  const report = useMemo(() => {
+    const reports = reportData?.child?.reports ?? [];
+    if (!reports.length) return null;
+
+    return (
+      [...reports].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0] ??
+      null
+    );
+  }, [reportData]);
+
+  const isLoadingAny = planningLoading || reportLoading;
+  const hasErrorAny = planningError || reportError;
 
   if (authLoading) return null;
   if (!user || !isParent) return null;
@@ -93,38 +121,11 @@ export default function ReportPage() {
     );
   }
 
-  const birth = child.birthDate ? new Date(child.birthDate).toLocaleDateString("fr-FR") : "";
-
-  // planning du groupe (plus récent)
-  // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
-  const planningForChild = useMemo(() => {
-    const all = planningData?.getAllPlanningsByGroup ?? [];
-    if (!all.length) return null;
-    return (
-      [...all].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0] ?? null
-    );
-  }, [planningData]);
-
-  // report de l'enfant (plus récent)
-  // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
-  const report = useMemo(() => {
-    const reports = reportData?.child?.reports ?? [];
-    if (!reports.length) return null;
-    return (
-      [...reports].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0] ??
-      null
-    );
-  }, [reportData]);
-
-  const isLoadingAny = planningLoading || reportLoading;
-  const hasErrorAny = planningError || reportError;
-
   return (
     <Layout pageTitle="Report">
       <div className="w-full max-w-md space-y-4">
-        {/* Header enfant */}
         <div className="flex items-center gap-4 rounded-3xl border-4 border-sky-200 bg-white/70 p-3">
-          <div className="h-24 w-24 rounded-full bg-gradient-to-b from-yellow-200 to-yellow-300 p-[6px] shadow-[0_14px_25px_rgba(255,200,60,0.25)]">
+          <div className="h-24 w-24 rounded-full bg-linear-to-b from-yellow-200 to-yellow-300 p-[6px] shadow-[0_14px_25px_rgba(255,200,60,0.25)]">
             {/** biome-ignore lint/performance/noImgElement: <explanation> */}
             <img
               src={child.picture}
@@ -142,21 +143,18 @@ export default function ReportPage() {
           </div>
         </div>
 
-        {/* Loading global */}
         {isLoadingAny ? (
           <div className="rounded-2xl border-4 border-yellow-200 bg-white/80 p-5 text-blue-900">
             Chargement du report…
           </div>
         ) : null}
 
-        {/* Errors */}
         {hasErrorAny ? (
           <div className="rounded-2xl border-4 border-red-200 bg-white/80 p-5 text-red-600">
             Erreur : impossible de charger les données.
           </div>
         ) : null}
 
-        {/* Cards report */}
         {!isLoadingAny && !hasErrorAny ? (
           <>
             {planningForChild ? (
@@ -166,6 +164,7 @@ export default function ReportPage() {
                 Aucun planning trouvé pour ce groupe.
               </div>
             )}
+
             <PictureCard
               imageUrl={report?.picture ?? undefined}
               onGalleryClick={() => router.push(`/gallery/${child.id}`)}
