@@ -2,9 +2,9 @@ import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
+  useAllChildrenQuery,
   useAllGroupsQuery,
   useCreateChildMutation,
-  useAllChildrenQuery,
   useLinkParentToChildMutation,
 } from "@/graphql/generated/schema";
 
@@ -34,10 +34,16 @@ type FormValues = {
 
 const DEFAULT_PICTURE = "https://placehold.co/100x100/png";
 
-export default function AddChildModal({ open, onClose, parentIds = [], onSuccess, showLinkTab = false }: Props) {
+export default function AddChildModal({
+  open,
+  onClose,
+  parentIds = [],
+  onSuccess,
+  showLinkTab = false,
+}: Props) {
   const [tab, setTab] = useState<"create" | "link">("create");
 
-  // --- Onglet Créer ---
+  // onglet créer
   const {
     register,
     handleSubmit,
@@ -101,8 +107,11 @@ export default function AddChildModal({ open, onClose, parentIds = [], onSuccess
     }, 2000);
   };
 
-  // --- Onglet Lier ---
-  const { data: allChildrenData } = useAllChildrenQuery({ fetchPolicy: "network-only", skip: !open });
+  // onglet lier existant
+  const { data: allChildrenData } = useAllChildrenQuery({
+    fetchPolicy: "network-only",
+    skip: !open,
+  });
   const [linkParent] = useLinkParentToChildMutation();
   const [linkSearch, setLinkSearch] = useState("");
   const [linkSuccess, setLinkSuccess] = useState<number | null>(null);
@@ -120,7 +129,10 @@ export default function AddChildModal({ open, onClose, parentIds = [], onSuccess
   async function handleLinkChild(child: { id: number; parents: { id: number }[] }) {
     setLinkError("");
     try {
-      const newParents = [...(child.parents ?? []).map((p) => ({ id: p.id })), { id: currentParentId }];
+      const newParents = [
+        ...(child.parents ?? []).map((p) => ({ id: p.id })),
+        { id: currentParentId },
+      ];
       await linkParent({
         variables: { id: child.id, data: { parents: newParents } },
         refetchQueries: ["AllParents", "AllChildren"],
@@ -173,22 +185,24 @@ export default function AddChildModal({ open, onClose, parentIds = [], onSuccess
         </div>
 
         {/* Onglets */}
-        {showLinkTab && <div className="mt-3 flex rounded-xl border-2 border-(--color-primary) overflow-hidden">
-          <button
-            type="button"
-            onClick={() => setTab("create")}
-            className={`flex-1 py-1.5 text-[12px] font-medium transition-colors ${tab === "create" ? "bg-(--color-primary) text-white" : "bg-white text-gray-500 hover:bg-orange-50"}`}
-          >
-            Créer un enfant
-          </button>
-          <button
-            type="button"
-            onClick={() => setTab("link")}
-            className={`flex-1 py-1.5 text-[12px] font-medium transition-colors ${tab === "link" ? "bg-(--color-primary) text-white" : "bg-white text-gray-500 hover:bg-orange-50"}`}
-          >
-            Enfant existant
-          </button>
-        </div>}
+        {showLinkTab && (
+          <div className="mt-3 flex rounded-xl border-2 border-(--color-primary) overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setTab("create")}
+              className={`flex-1 py-1.5 text-[12px] font-medium transition-colors ${tab === "create" ? "bg-(--color-primary) text-white" : "bg-white text-gray-500 hover:bg-orange-50"}`}
+            >
+              Créer un enfant
+            </button>
+            <button
+              type="button"
+              onClick={() => setTab("link")}
+              className={`flex-1 py-1.5 text-[12px] font-medium transition-colors ${tab === "link" ? "bg-(--color-primary) text-white" : "bg-white text-gray-500 hover:bg-orange-50"}`}
+            >
+              Enfant existant
+            </button>
+          </div>
+        )}
 
         {/* Onglet Créer */}
         {tab === "create" && (
@@ -250,7 +264,9 @@ export default function AddChildModal({ open, onClose, parentIds = [], onSuccess
                 <span className="text-gray-400">
                   {selectedGroupId ? "1 groupe sélectionné" : "Sélectionner un groupe"}
                 </span>
-                <span className={`transition-transform duration-200 text-gray-400 ${groupDropdownOpen ? "rotate-180" : ""}`}>
+                <span
+                  className={`transition-transform duration-200 text-gray-400 ${groupDropdownOpen ? "rotate-180" : ""}`}
+                >
                   ▾
                 </span>
               </button>
@@ -278,7 +294,11 @@ export default function AddChildModal({ open, onClose, parentIds = [], onSuccess
                 <div className="mt-2">
                   <span className="flex items-center gap-1 rounded-full bg-white border border-(--color-secondary) px-2 py-0.5 text-[11px] w-fit">
                     {groupsData?.getAllGroups.find((g) => Number(g.id) === selectedGroupId)?.name}
-                    <button type="button" onClick={() => setSelectedGroupId(null)} className="hover:opacity-60">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedGroupId(null)}
+                      className="hover:opacity-60"
+                    >
                       ×
                     </button>
                   </span>

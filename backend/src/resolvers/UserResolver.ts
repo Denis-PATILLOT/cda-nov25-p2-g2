@@ -159,7 +159,10 @@ export default class UserResolver {
   @Authorized("admin")
   @Mutation(() => Boolean)
   async deleteUser(@Arg("id", () => Int) id: number) {
-    const user = await User.findOne({ where: { id }, relations: { children: true } });
+    const user = await User.findOne({
+      where: { id },
+      relations: { children: true },
+    });
     if (!user) {
       throw new NotFoundError({ message: "User not found" });
     }

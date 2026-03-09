@@ -78,7 +78,8 @@ export default class ChildResolver {
     // Nettoyer la table de jointure representatives (ManyToMany avec User)
     if (childToDelete.parents?.length) {
       const parentIds = childToDelete.parents.map((p) => p.id);
-      await db.getRepository(User)
+      await db
+        .getRepository(User)
         .createQueryBuilder()
         .relation(User, "children")
         .of(parentIds)
