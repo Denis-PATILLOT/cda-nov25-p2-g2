@@ -45,6 +45,7 @@ export default function AdminChildrenPage() {
   // affichage du dropdown filtre groupe
   const [confirmDelete, setConfirmDelete] = useState<{ id: number; name: string } | null>(null);
   // données de la suppression en attente
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
   // useRef : crée une référence directe vers un élément du DOM (sans déclencher de re-render).
   // Ici on "attache" menuRef à la div du menu "···" pour pouvoir détecter si le clic
   // vient de l'intérieur ou de l'extérieur du menu.
@@ -102,11 +103,14 @@ export default function AdminChildrenPage() {
     try {
       await deleteChild({
         variables: { id: confirmDelete.id },
-        refetchQueries: ["AdminChildren"], // recharge automatiquement la liste
+        refetchQueries: ["AdminChildren"],
       });
+      setDeleteSuccess(true);
+      setTimeout(() => {
+        setDeleteSuccess(false);
+        setConfirmDelete(null);
+      }, 2000);
     } catch {
-      // silently ignore
-    } finally {
       setConfirmDelete(null);
     }
   }
@@ -155,11 +159,15 @@ export default function AdminChildrenPage() {
                 />
               </svg>
             </div>
-            <div className="text-center">
-              <p className="text-[15px] font-semibold">Êtes-vous sûr de vouloir supprimer</p>
-              <p className="text-[15px] font-semibold">{confirmDelete.name} ?</p>
-              <p className="mt-1 text-[12px] opacity-60">Cette action est irréversible.</p>
-            </div>
+            {deleteSuccess ? (
+              <p className="text-[14px] font-semibold text-green-600">✓ Enfant supprimé avec succès !</p>
+            ) : (
+              <div className="text-center">
+                <p className="text-[15px] font-semibold">Êtes-vous sûr de vouloir supprimer</p>
+                <p className="text-[15px] font-semibold">{confirmDelete.name} ?</p>
+                <p className="mt-1 text-[12px] opacity-60">Cette action est irréversible.</p>
+              </div>
+            )}
             <div className="flex w-full gap-3">
               <button
                 type="button"

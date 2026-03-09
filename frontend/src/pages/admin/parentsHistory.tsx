@@ -33,6 +33,7 @@ export default function AdminParentsPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [groupDropdownOpen, setGroupDropdownOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<{ id: number; name: string } | null>(null);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -81,9 +82,12 @@ export default function AdminParentsPage() {
         variables: { id: confirmDelete.id },
         refetchQueries: ["AllParents"],
       });
+      setDeleteSuccess(true);
+      setTimeout(() => {
+        setDeleteSuccess(false);
+        setConfirmDelete(null);
+      }, 2000);
     } catch {
-      // silently ignore
-    } finally {
       setConfirmDelete(null);
     }
   }
@@ -127,11 +131,15 @@ export default function AdminParentsPage() {
                 />
               </svg>
             </div>
-            <div className="text-center">
-              <p className="text-[15px] font-semibold">Êtes-vous sûr de vouloir supprimer</p>
-              <p className="text-[15px] font-semibold">{confirmDelete.name} ?</p>
-              <p className="mt-1 text-[12px] opacity-60">Cette action est irréversible.</p>
-            </div>
+            {deleteSuccess ? (
+              <p className="text-[14px] font-semibold text-green-600">✓ Parent supprimé avec succès !</p>
+            ) : (
+              <div className="text-center">
+                <p className="text-[15px] font-semibold">Êtes-vous sûr de vouloir supprimer</p>
+                <p className="text-[15px] font-semibold">{confirmDelete.name} ?</p>
+                <p className="mt-1 text-[12px] opacity-60">Cette action est irréversible.</p>
+              </div>
+            )}
             <div className="flex w-full gap-3">
               <button
                 type="button"

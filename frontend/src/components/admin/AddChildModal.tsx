@@ -113,21 +113,21 @@ export default function AddChildModal({
     skip: !open,
   });
   const [linkParent] = useLinkParentToChildMutation();
-  const [linkSearch, setLinkSearch] = useState("");
   const [linkSuccess, setLinkSuccess] = useState<number | null>(null);
   const [linkError, setLinkError] = useState("");
 
   const currentParentId = parentIds[0];
 
   const availableChildren = (allChildrenData?.children ?? []).filter((c) => {
-    const alreadyLinked = (c.parents ?? []).some((p) => p.id === currentParentId);
-    if (alreadyLinked) return false;
-    if (!linkSearch.trim()) return true;
-    return `${c.firstName} ${c.lastName}`.toLowerCase().includes(linkSearch.trim().toLowerCase());
+    return !(c.parents ?? []).some((p) => p.id === currentParentId);
   });
 
   async function handleLinkChild(child: { id: number; parents: { id: number }[] }) {
     setLinkError("");
+    if (!currentParentId || Number.isNaN(currentParentId)) {
+      setLinkError("Erreur : parent non identifié.");
+      return;
+    }
     try {
       const newParents = [
         ...(child.parents ?? []).map((p) => ({ id: p.id })),
@@ -135,13 +135,12 @@ export default function AddChildModal({
       ];
       await linkParent({
         variables: { id: child.id, data: { parents: newParents } },
-        refetchQueries: ["AllParents", "AllChildren"],
       });
       setLinkSuccess(child.id);
       setTimeout(() => {
         setLinkSuccess(null);
         onClose();
-      }, 1500);
+      }, 2000);
     } catch {
       setLinkError("Erreur lors de la liaison.");
     }
@@ -153,7 +152,6 @@ export default function AddChildModal({
     setSelectedGroupId(null);
     setGroupDropdownOpen(false);
     setGroupError(false);
-    setLinkSearch("");
     setLinkSuccess(null);
     setLinkError("");
     setTab("create");
@@ -352,36 +350,31 @@ export default function AddChildModal({
         {/* Onglet Lier existant */}
         {tab === "link" && (
           <div className="mt-3 flex flex-col gap-3">
-            <input
-              value={linkSearch}
-              onChange={(e) => setLinkSearch(e.target.value)}
-              placeholder="Rechercher un enfant..."
-              className="w-full rounded-xl border-2 border-(--color-primary) bg-white px-3 py-1.5 text-[13px] outline-none"
-            />
+            {linkSuccess !== null && (
+              <p className="text-center text-[12px] text-green-600 font-medium py-1">
+                ✓ Enfant lié avec succès !
+              </p>
+            )}
 
             <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
-              {availableChildren.length === 0 && (
+              {availableChildren.length === 0 && linkSuccess === null && (
                 <p className="text-center text-[12px] opacity-50 py-4">Aucun enfant disponible.</p>
               )}
               {availableChildren.map((child) => (
                 <div
                   key={child.id}
-                  className="flex items-center justify-between rounded-xl border-2 border-(--color-secondary) bg-white px-3 py-2"
+                  className="flex items-center justify-between rounded-xl border-2 border-(--color-primary) bg-white px-3 py-2"
                 >
                   <span className="text-[13px] font-medium">
                     {child.firstName} {child.lastName}
                   </span>
-                  {linkSuccess === child.id ? (
-                    <span className="text-[12px] text-green-600 font-medium">✓ Lié !</span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => handleLinkChild(child)}
-                      className="rounded-lg border-2 border-(--color-primary) bg-white px-2 py-0.5 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-                    >
-                      Lier
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleLinkChild(child)}
+                    className="rounded-lg border-2 border-(--color-secondary) bg-white px-2 py-0.5 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+                  >
+                    Lier
+                  </button>
                 </div>
               ))}
             </div>

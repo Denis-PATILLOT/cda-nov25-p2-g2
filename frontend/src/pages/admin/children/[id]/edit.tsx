@@ -136,7 +136,7 @@ export default function EditChildPage() {
         refetchQueries: ["childById", "AdminChildren"],
       });
       setSuccess(true);
-      setTimeout(() => router.push("/admin/childrenHistory"), 1500);
+      setTimeout(() => router.push("/admin/childrenHistory"), 2000);
     } catch {
       setServerError("Erreur lors de la sauvegarde.");
     }

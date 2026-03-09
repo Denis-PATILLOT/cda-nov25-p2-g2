@@ -92,6 +92,7 @@ export default function EditParentPage() {
   const [draft, setDraft] = useState<ParentDraft | null>(null);
   const [editingField, setEditingField] = useState<EditingField>(null);
   const [success, setSuccess] = useState(false);
+  const [unlinkSuccess, setUnlinkSuccess] = useState(false);
   const [serverError, setServerError] = useState("");
   const [confirmUnlink, setConfirmUnlink] = useState<{
     childId: number;
@@ -185,13 +186,19 @@ export default function EditParentPage() {
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-50 border-2 border-red-200">
               <TrashIcon />
             </div>
-            <div className="text-center">
-              <p className="text-[15px] font-semibold">Délier l'enfant</p>
-              <p className="text-[15px] font-semibold">{confirmUnlink.name} ?</p>
-              <p className="mt-1 text-[12px] opacity-60">
-                L'enfant ne sera plus associé à ce parent.
+            {unlinkSuccess ? (
+              <p className="text-[14px] font-semibold text-green-600">
+                ✓ Enfant délié avec succès !
               </p>
-            </div>
+            ) : (
+              <div className="text-center">
+                <p className="text-[15px] font-semibold">Délier l'enfant</p>
+                <p className="text-[15px] font-semibold">{confirmUnlink.name} ?</p>
+                <p className="mt-1 text-[12px] opacity-60">
+                  L'enfant ne sera plus associé à ce parent.
+                </p>
+              </div>
+            )}
             <div className="flex w-full gap-3">
               <button
                 type="button"
@@ -204,7 +211,11 @@ export default function EditParentPage() {
                 type="button"
                 onClick={async () => {
                   await handleUnlinkChild(confirmUnlink.childId, confirmUnlink.parentIds);
-                  setConfirmUnlink(null);
+                  setUnlinkSuccess(true);
+                  setTimeout(() => {
+                    setUnlinkSuccess(false);
+                    setConfirmUnlink(null);
+                  }, 2000);
                 }}
                 className="flex-1 rounded-xl border-2 border-red-200 bg-white py-2 text-[13px] text-red-500 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
               >
