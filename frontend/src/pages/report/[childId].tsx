@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
 import Layout from "@/components/Layout";
+import ChildCard from "@/components/parent/ChildCard";
 import PictureCard from "@/components/parent/PictureCard";
 import PlanningCard from "@/components/parent/planningCard";
 import StaffCommentCard from "@/components/parent/StaffCommentCard";
@@ -41,11 +42,6 @@ export default function ReportPage() {
     if (!child?.id) return null;
     const n = Number(child.id);
     return Number.isFinite(n) ? n : null;
-  }, [child]);
-
-  const birth = useMemo(() => {
-    if (!child?.birthDate) return "";
-    return new Date(child.birthDate).toLocaleDateString("fr-FR");
   }, [child]);
 
   const {
@@ -94,8 +90,10 @@ export default function ReportPage() {
   if (!childId) {
     return (
       <Layout pageTitle="Report">
-        <div className="w-full max-w-md rounded-2xl border-4 border-sky-300 bg-white/70 p-5 text-blue-900">
-          ID enfant manquant dans l’URL.
+        <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col px-4 pt-8 pb-28">
+          <div className="w-full rounded-2xl border-4 border-sky-300 bg-white/70 p-5 text-blue-900 shadow-sm">
+            ID enfant manquant dans l’URL.
+          </div>
         </div>
       </Layout>
     );
@@ -104,8 +102,10 @@ export default function ReportPage() {
   if (!child) {
     return (
       <Layout pageTitle="Report">
-        <div className="w-full max-w-md rounded-2xl border-4 border-sky-300 bg-white/70 p-5 text-blue-900">
-          Enfant introuvable.
+        <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col px-4 pt-8 pb-28">
+          <div className="w-full rounded-2xl border-4 border-sky-300 bg-white/70 p-5 text-blue-900 shadow-sm">
+            Enfant introuvable.
+          </div>
         </div>
       </Layout>
     );
@@ -114,8 +114,10 @@ export default function ReportPage() {
   if (!groupId) {
     return (
       <Layout pageTitle="Report">
-        <div className="w-full max-w-md rounded-2xl border-4 border-sky-300 bg-white/70 p-5 text-blue-900">
-          Groupe introuvable pour cet enfant.
+        <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col px-4 pt-8 pb-28">
+          <div className="w-full rounded-2xl border-4 border-sky-300 bg-white/70 p-5 text-blue-900 shadow-sm">
+            Groupe introuvable pour cet enfant.
+          </div>
         </div>
       </Layout>
     );
@@ -123,59 +125,44 @@ export default function ReportPage() {
 
   return (
     <Layout pageTitle="Report">
-      <div className="w-full max-w-md space-y-4">
-        <div className="flex items-center gap-4 rounded-3xl border-4 border-sky-200 bg-white/70 p-3">
-          <div className="h-24 w-24 rounded-full bg-linear-to-b from-yellow-200 to-yellow-300 p-[6px] shadow-[0_14px_25px_rgba(255,200,60,0.25)]">
-            {/** biome-ignore lint/performance/noImgElement: <explanation> */}
-            <img
-              src={child.picture}
-              alt={`${child.firstName} ${child.lastName}`}
-              className="h-full w-full rounded-full border-4 border-white/90 object-cover"
-            />
-          </div>
+      <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col px-4 pt-8 pb-28">
+        <div className="space-y-4">
+          <ChildCard child={child} />
 
-          <div className="flex-1 rounded-3xl bg-yellow-100/80 px-5 py-4 shadow-[0_10px_16px_rgba(20,40,90,0.06)]">
-            <p className="text-lg font-extrabold text-blue-900">
-              {child.firstName} {child.lastName}
-            </p>
-            {birth ? <p className="text-base font-medium text-blue-900/90">{birth}</p> : null}
-            <p className="text-base font-medium text-blue-900/90">{child.group?.name ?? ""}</p>
-          </div>
+          {isLoadingAny ? (
+            <div className="w-full rounded-2xl border-4 border-yellow-200 bg-white/80 p-5 text-blue-900 shadow-sm">
+              Chargement du report…
+            </div>
+          ) : null}
+
+          {hasErrorAny ? (
+            <div className="w-full rounded-2xl border-4 border-red-200 bg-white/80 p-5 text-red-600 shadow-sm">
+              Erreur : impossible de charger les données.
+            </div>
+          ) : null}
+
+          {!isLoadingAny && !hasErrorAny ? (
+            <>
+              {planningForChild ? (
+                <PlanningCard apiPlanning={planningForChild} />
+              ) : (
+                <div className="w-full rounded-2xl border-4 border-yellow-200 bg-white/80 p-5 text-blue-900 shadow-sm">
+                  Aucun planning trouvé pour ce groupe.
+                </div>
+              )}
+
+              <PictureCard
+                imageUrl={report?.picture ?? undefined}
+                onGalleryClick={() => router.push(`/gallery/${child.id}`)}
+              />
+
+              <StaffCommentCard
+                text={report?.staff_comment ?? "Aucun commentaire pour aujourd’hui."}
+                mood={report?.baby_mood ?? "na"}
+              />
+            </>
+          ) : null}
         </div>
-
-        {isLoadingAny ? (
-          <div className="rounded-2xl border-4 border-yellow-200 bg-white/80 p-5 text-blue-900">
-            Chargement du report…
-          </div>
-        ) : null}
-
-        {hasErrorAny ? (
-          <div className="rounded-2xl border-4 border-red-200 bg-white/80 p-5 text-red-600">
-            Erreur : impossible de charger les données.
-          </div>
-        ) : null}
-
-        {!isLoadingAny && !hasErrorAny ? (
-          <>
-            {planningForChild ? (
-              <PlanningCard apiPlanning={planningForChild} />
-            ) : (
-              <div className="rounded-2xl border-4 border-yellow-200 bg-white/80 p-5 text-blue-900">
-                Aucun planning trouvé pour ce groupe.
-              </div>
-            )}
-
-            <PictureCard
-              imageUrl={report?.picture ?? undefined}
-              onGalleryClick={() => router.push(`/gallery/${child.id}`)}
-            />
-
-            <StaffCommentCard
-              text={report?.staff_comment ?? "Aucun commentaire pour aujourd’hui."}
-              mood={report?.baby_mood ?? "na"}
-            />
-          </>
-        ) : null}
       </div>
     </Layout>
   );
