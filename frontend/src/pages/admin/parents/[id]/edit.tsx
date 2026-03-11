@@ -377,12 +377,6 @@ export default function EditParentPage() {
             </div>
           )}
 
-          <button
-            type="button"
-            className="mt-4 w-full rounded-xl border-2 border-(--color-primary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-          >
-            Archiver
-          </button>
         </div>
       </div>
     </Layout>
