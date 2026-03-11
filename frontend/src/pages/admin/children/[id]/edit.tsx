@@ -8,25 +8,7 @@ import {
   useUpdateChildMutation,
 } from "@/graphql/generated/schema";
 import { useAuth } from "@/hooks/CurrentProfile";
-
-// Calcule l'âge à partir d'une date de naissance.
-// Retourne "X mois" si moins d'un an, sinon "X ans".
-function getAge(birthDate: string) {
-  const d = new Date(birthDate);
-  const now = new Date();
-  let years = now.getFullYear() - d.getFullYear();
-  const m = now.getMonth() - d.getMonth();
-  if (m < 0 || (m === 0 && now.getDate() < d.getDate())) years--;
-  if (years < 1) {
-    const months =
-      (now.getFullYear() - d.getFullYear()) * 12 +
-      now.getMonth() -
-      d.getMonth() -
-      (now.getDate() < d.getDate() ? 1 : 0);
-    return `${months} mois`;
-  }
-  return `${years} ans`;
-}
+import { getAge } from "@/utils/getAge";
 
 // Formate une date en format lisible français (ex: "3 mars 2022")
 function formatDate(dateStr: string) {
@@ -154,7 +136,7 @@ export default function EditChildPage() {
         refetchQueries: ["childById", "AdminChildren"],
       });
       setSuccess(true);
-      setTimeout(() => router.push("/admin/childrenHistory"), 1500);
+      setTimeout(() => router.push("/admin/childrenHistory"), 2000);
     } catch {
       setServerError("Erreur lors de la sauvegarde.");
     }
@@ -202,22 +184,22 @@ export default function EditChildPage() {
             {/* Nom */}
             <div className="mt-2 flex items-center gap-2">
               {editingField === "name" ? (
-                <div className="flex gap-1">
+                <div
+                  className="flex gap-1"
+                  onBlur={(e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget as Node)) setEditingField(null);
+                  }}
+                >
                   <input
                     {...register("firstName", { required: true })}
+                    onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
                     className="w-24 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[14px] outline-none text-center"
                   />
                   <input
                     {...register("lastName", { required: true })}
+                    onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
                     className="w-24 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[14px] outline-none text-center"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setEditingField(null)}
-                    className="text-[11px] text-green-500 font-medium"
-                  >
-                    ✓
-                  </button>
                 </div>
               ) : (
                 <>
@@ -232,37 +214,13 @@ export default function EditChildPage() {
             </div>
 
             {/* Âge : calculé dynamiquement depuis birthDate */}
-            <div className="flex items-center gap-2">
-              {editingField === "birthDate" ? (
-                <div className="flex items-center gap-1">
-                  <input
-                    type="date"
-                    {...register("birthDate")}
-                    className="rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[12px] outline-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setEditingField(null)}
-                    className="text-[11px] text-green-500 font-medium"
-                  >
-                    ✓
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <span className="text-[13px] opacity-60">
-                    {birthDateVal
-                      ? getAge(birthDateVal)
-                      : child?.birthDate
-                        ? getAge(String(child.birthDate))
-                        : "—"}
-                  </span>
-                  <button type="button" onClick={() => setEditingField("birthDate")}>
-                    <PencilIcon />
-                  </button>
-                </>
-              )}
-            </div>
+            <span className="text-[13px] opacity-60">
+              {birthDateVal
+                ? getAge(birthDateVal)
+                : child?.birthDate
+                  ? getAge(String(child.birthDate))
+                  : "—"}
+            </span>
           </div>
 
           {/* Carte parent(s) — affichée seulement si l'enfant a des parents enregistrés */}
@@ -283,6 +241,9 @@ export default function EditChildPage() {
                       {/* Boutons d'action parent (non implémentés pour l'instant) */}
                       <button
                         type="button"
+                        onClick={() =>
+                          router.push(`/admin/parents/${p.id}/edit?childId=${childId}`)
+                        }
                         className="flex items-center gap-1 rounded-xl border-2 border-(--color-tertiary) bg-white px-2 py-1 text-[11px] shadow-sm transition-all hover:shadow-md hover:scale-[1.03] active:scale-95"
                       >
                         <PencilIcon />
@@ -365,6 +326,8 @@ export default function EditChildPage() {
                         <input
                           type="date"
                           {...register("birthDate")}
+                          onBlur={() => setEditingField(null)}
+                          onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
                           className="flex-1 rounded-lg border-2 px-2 py-0.5 text-[12px] outline-none"
                           style={{ borderColor: "var(--color-primary)" }}
                         />
@@ -445,6 +408,8 @@ export default function EditChildPage() {
                       {editingField === "healthRecord" ? (
                         <input
                           {...register("healthRecord")}
+                          onBlur={() => setEditingField(null)}
+                          onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
                           className="flex-1 rounded-lg border-2 px-2 py-0.5 text-[12px] outline-none"
                           style={{ borderColor: "var(--color-primary)" }}
                           placeholder="Ex: allergie arachides..."

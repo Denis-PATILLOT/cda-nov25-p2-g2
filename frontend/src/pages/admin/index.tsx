@@ -113,7 +113,7 @@ export default function AdminDashboard() {
     active:scale-95
     focus:outline-none
   "
-            onClick={() => router.push("/admin/parents")}
+            onClick={() => router.push("/admin/parentsHistory")}
           >
             <Image
               src="/admin/parentavatar.png"
@@ -258,7 +258,10 @@ export default function AdminDashboard() {
         {/* Suivi */}
         <div className="mt-7">
           <p className="text-[12px] font-semibold">Suivi</p>
-          <button type="button" className="mt-4 w-full rounded-2xl bg-white/80 py-3 text-[13px]  shadow-sm border-2 border-(--color-primary)">
+          <button
+            type="button"
+            className="mt-4 w-full rounded-2xl bg-white/80 py-3 text-[13px]  shadow-sm border-2 border-(--color-primary)"
+          >
             Voir tous les rapport
           </button>
         </div>
