@@ -10,9 +10,10 @@ import { useAdminGuard } from "@/hooks/useAdminGuard";
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const { user, authLoading, isAdmin } = useAdminGuard();
+  const { user, authLoading, isAdmin, shouldSkip } = useAdminGuard();
   const { data, loading: countsLoading } = useAdminCountsQuery({
     fetchPolicy: "network-only",
+    skip: shouldSkip,
   });
   const [openParentModal, setOpenParentModal] = useState(false);
   const [openChildModal, setOpenChildModal] = useState(false);
