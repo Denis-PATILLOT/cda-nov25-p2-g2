@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const planningDetails = () => {
+const PlanningDetails = () => {
   const router = useRouter();
   const {id, created } = router.query; // on récupère les données voulues de l'url : valeur id et valeur toto dans planningCreated
 
@@ -21,7 +21,7 @@ const planningDetails = () => {
   const planning = data?.getPlanningById || null;
 
   if(error) {
-    return error;
+    return <p>error</p>
   }
 
   if(planning) {
@@ -108,4 +108,4 @@ const planningDetails = () => {
   }
 };
 
-export default planningDetails;
+export default PlanningDetails;

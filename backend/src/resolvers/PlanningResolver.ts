@@ -94,6 +94,19 @@ export class PlanningResolver {
     return planning;
   }
 
+
+  @Query(() => Planning)
+  async getPlanningByGroupIdAndDate(@Arg("id", () => Int) id: number, @Arg("date", () => Date) date: Date): Promise<Planning> {
+    const planning = await Planning.findOne({
+      where: { group: {id: id }, date: date},
+      relations: ["group"],
+    });
+
+    if (!planning) throw new NotFoundError();
+    return planning;
+  }
+
+
   // CREATE
   @Mutation(() => Planning)
   async createPlanning(@Arg("data", {validate: true}) data: PlanningInput): Promise<Planning> {

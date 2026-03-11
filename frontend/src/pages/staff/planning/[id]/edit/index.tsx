@@ -15,7 +15,7 @@ const EditPlanningPage = () => {
     const planning = data?.getPlanningById || null;
   
     if(error) {
-      return error;
+      return <p>error</p>;
     }
   
     if(planning) {

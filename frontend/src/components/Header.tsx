@@ -30,26 +30,10 @@ type HeaderProps = {
       | null
       | undefined;
   } | null,
-  refetch: (variables?: Partial<Exact<{[key: string]: never}>> | undefined) => Promise<ApolloClient.QueryResult<ProfileQuery> | null>
 }
 
-export default function Header({ user, refetch }: HeaderProps)  {
-  // typage des props obligatoire sinon erreur
-
-  const [logout] = useLogoutMutation();
-  const router = useRouter();
-
+export default function Header({ user }: HeaderProps)  {
   if (!user) return ""; // pas de contenu renvoyé si pas de user
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      await refetch();
-      router.push("/");
-    } catch (err) {
-      console.error("Logout error:", err);
-    }
-  };
 
   return (
     <header>

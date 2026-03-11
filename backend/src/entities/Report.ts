@@ -1,4 +1,4 @@
-import { IsBoolean, IsISO8601, IsUrl } from "class-validator";
+import { IsBoolean, IsDate, IsISO8601, IsUrl } from "class-validator";
 import {
   Field,
   ID,
@@ -73,21 +73,21 @@ export class NewReportInput {
   isPresent: boolean;
 
   @Field()
-  @IsISO8601({}, { message: "La date est  de format incorrect" })
+  @IsDate({message: "format de date incorrect"})
   date: Date;
 
   @Field(() => String, { nullable: true })
   staff_comment?: string | null;
 
-  @Field()
-  baby_mood?: baby_moodFormat;
+  @Field({defaultValue: baby_moodFormat.NA})
+  baby_mood: baby_moodFormat;
 
   @Field(() => String, { nullable: true })
   @IsUrl({}, { message: "Le format attendu doit être une url" })
   picture?: string | null;
 
   @Field(() => ObjectId, { nullable: true })
-  child?: ObjectId;
+  child: ObjectId;
 }
 
 @InputType()
@@ -97,7 +97,7 @@ export class UpdateReportInput {
   isPresent?: boolean;
 
   @Field()
-  @IsISO8601({}, { message: "La date est  de format incorrect" })
+  @IsDate({message: "format de date incorrect"})
   date?: Date;
 
   @Field(() => String, { nullable: true })

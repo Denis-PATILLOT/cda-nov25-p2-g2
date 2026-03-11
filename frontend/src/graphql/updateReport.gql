@@ -1,0 +1,5 @@
+mutation updateReport($updateReportId: Int!, $data: UpdateReportInput!) {
+  updateReport(id: $updateReportId, data: $data) {
+    id
+  }
+}

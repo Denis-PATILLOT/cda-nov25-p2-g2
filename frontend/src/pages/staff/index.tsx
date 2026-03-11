@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/CurrentProfile";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import getUserInitial from "@/utils/getUserInitial";
+import Link from "next/link";
 
 export default function StaffDashboard() {
   const router = useRouter();
@@ -51,11 +52,13 @@ export default function StaffDashboard() {
               >
                 <div className="overflow-hidden h-[100px]">
                   {/** biome-ignore lint/performance/noImgElement: <explanation> */}
-                  <img
-                    src={child.picture}
-                    alt=""
-                    className="h-[100px] object-contain shadow-gray-300 shadow-xl cursor-pointer  ease-in-out duration-300 hover:scale-110 "
-                  />
+                  <Link href={`/staff/child/${child.id}/reports`}>
+                    <img
+                      src={child.picture}
+                      alt=""
+                      className="h-[100px] object-contain shadow-gray-300 shadow-xl cursor-pointer  ease-in-out duration-300 hover:scale-110 "
+                    />
+                  </Link>
                 </div>
                 <p className="mt-1  text-[#1b3c79]">{child.firstName}</p>
               </div>
