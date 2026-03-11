@@ -134,11 +134,34 @@ export default function EditChildPage() {
   const selectedGroupName =
     groupsData?.getAllGroups.find((g) => Number(g.id) === selectedGroupId)?.name ?? "—";
 
+  // Annuler : remet les valeurs originales du formulaire
+  function handleCancel() {
+    if (!child) return;
+    reset({
+      firstName: child.firstName,
+      lastName: child.lastName,
+      birthDate: new Date(child.birthDate).toISOString().split("T")[0],
+      healthRecord: child.healthRecord ?? "",
+    });
+    setSelectedGroupId(Number(child.group?.id) || null);
+    setEditingField(null);
+    setGroupDropdownOpen(false);
+  }
+
   return (
     <Layout pageTitle="Modifier fiche enfant - Admin">
       {/* Tout le contenu est dans un formulaire pour gérer la soumission globale */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mx-auto w-full max-w-[420px] px-4 pt-4 pb-10">
+        <div className="mx-auto w-full max-w-[420px] px-4 pt-2 pb-10">
+          {/* Flèche retour */}
+          <div className="mb-2">
+            <button type="button" onClick={() => router.push("/admin/childrenHistory")} className="p-0">
+              <div className="h-10 w-10 overflow-hidden flex items-center justify-center">
+                <img src="/admin/flechegauche.png" alt="Retour" className="h-16 w-16" />
+              </div>
+            </button>
+          </div>
+
           {/* Section avatar + nom + âge */}
           <div className="flex flex-col items-center mt-2">
             <div className="relative">
@@ -434,10 +457,10 @@ export default function EditChildPage() {
 
           {/* Boutons d'action */}
           <div className="mt-6 flex gap-3">
-            {/* Annuler retour sur la liste des enfants */}
+            {/* Annuler : remet les valeurs originales */}
             <button
               type="button"
-              onClick={() => router.push("/admin/childrenHistory")}
+              onClick={handleCancel}
               className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
             >
               Annuler

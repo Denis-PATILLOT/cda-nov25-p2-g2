@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import AddChildModal from "@/components/admin/AddChildModal";
 import AddParentModal from "@/components/admin/AddParentModal";
 import EditableRow from "@/components/admin/EditableRow";
@@ -14,7 +15,7 @@ import {
 import { useAdminGuard } from "@/hooks/useAdminGuard";
 import { getAge } from "@/utils/getAge";
 
-type ParentDraft = { first_name: string; last_name: string; email: string; phone: string };
+type FormValues = { first_name: string; last_name: string; email: string; phone: string };
 type EditingField = "name" | "email" | "phone" | null;
 
 export default function EditParentPage() {
@@ -32,9 +33,10 @@ export default function EditParentPage() {
   const [updateUser, { loading: saving }] = useAdminUpdateUserMutation();
   const [unlinkChild] = useLinkParentToChildMutation();
 
+  const { register, handleSubmit, reset, watch } = useForm<FormValues>();
+
   const [showAddModal, setShowAddModal] = useState(false);
   const [showAddChildModal, setShowAddChildModal] = useState(false);
-  const [draft, setDraft] = useState<ParentDraft | null>(null);
   const [editingField, setEditingField] = useState<EditingField>(null);
   const [success, setSuccess] = useState(false);
   const [unlinkSuccess, setUnlinkSuccess] = useState(false);
@@ -49,18 +51,14 @@ export default function EditParentPage() {
 
   useEffect(() => {
     if (parent) {
-      setDraft({
+      reset({
         first_name: parent.first_name,
         last_name: parent.last_name,
         email: parent.email ?? "",
         phone: parent.phone ?? "",
       });
     }
-  }, [parent?.id]);
-
-  function updateDraftField(field: keyof ParentDraft, value: string) {
-    setDraft((prev) => (prev ? { ...prev, [field]: value } : prev));
-  }
+  }, [parent?.id, reset]);
 
   function toggleField(field: EditingField) {
     setEditingField((prev) => (prev === field ? null : field));
@@ -68,7 +66,7 @@ export default function EditParentPage() {
 
   function handleCancel() {
     if (!parent) return;
-    setDraft({
+    reset({
       first_name: parent.first_name,
       last_name: parent.last_name,
       email: parent.email ?? "",
@@ -77,18 +75,17 @@ export default function EditParentPage() {
     setEditingField(null);
   }
 
-  async function handleSave() {
-    if (!draft) return;
+  const onSubmit = async (values: FormValues) => {
     setServerError("");
     try {
       await updateUser({
         variables: {
           data: {
             id: parentIdNum,
-            first_name: draft.first_name,
-            last_name: draft.last_name,
-            email: draft.email || null,
-            phone: draft.phone || null,
+            first_name: values.first_name,
+            last_name: values.last_name,
+            email: values.email || null,
+            phone: values.phone || null,
           },
         },
       });
@@ -97,7 +94,7 @@ export default function EditParentPage() {
     } catch {
       setServerError("Erreur lors de la sauvegarde.");
     }
-  }
+  };
 
   async function handleUnlinkChild(childId: number, currentParentIds: number[]) {
     const newParents = currentParentIds.filter((pid) => pid !== parentIdNum);
@@ -111,6 +108,10 @@ export default function EditParentPage() {
   if (!user || !isAdmin) return null;
 
   const linkedChildren = parent?.children ?? [];
+  const firstNameVal = watch("first_name");
+  const lastNameVal = watch("last_name");
+  const emailVal = watch("email");
+  const phoneVal = watch("phone");
 
   return (
     <Layout pageTitle="Modifier fiche parents - Admin">
@@ -184,201 +185,195 @@ export default function EditParentPage() {
         }}
       />
 
-      <div className="mx-auto w-full max-w-[420px] px-4 pt-2 pb-10">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => router.push("/admin/parentsHistory")}
-            className="p-0"
-          >
-            <div className="h-10 w-10 overflow-hidden flex items-center justify-center">
-              <img src="/admin/flechegauche.png" alt="Retour" className="h-16 w-16" />
-            </div>
-          </button>
-          <h1 className="text-[16px] font-semibold">Parents</h1>
-          <button
-            type="button"
-            onClick={() => setShowAddModal(true)}
-            className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-          >
-            + Ajouter un parent
-          </button>
-        </div>
-
-        {/* Carte parent */}
-        {parent && draft && (
-          <div className="mt-4 rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-4 py-3 shadow-md flex items-center gap-3">
-            <img
-              src={parent.avatar ?? "/admin/parentavatar.png"}
-              alt={`${parent.first_name} ${parent.last_name}`}
-              className="h-12 w-12 rounded-full object-cover border-2 border-(--color-primary) shrink-0"
-            />
-
-            <div className="flex-1 min-w-0">
-              {/* Nom */}
-              <EditableRow onToggle={() => toggleField("name")} borderBottom>
-                {editingField === "name" ? (
-                  <div className="flex gap-1 flex-1">
-                    <input
-                      value={draft.first_name}
-                      onChange={(e) => updateDraftField("first_name", e.target.value)}
-                      onBlur={() => setEditingField(null)}
-                      onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
-                      className="w-24 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[13px] outline-none"
-                    />
-                    <input
-                      value={draft.last_name}
-                      onChange={(e) => updateDraftField("last_name", e.target.value)}
-                      onBlur={() => setEditingField(null)}
-                      onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
-                      className="w-24 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[13px] outline-none"
-                    />
-                  </div>
-                ) : (
-                  <span className="text-[14px] font-semibold">
-                    {draft.first_name} {draft.last_name}
-                  </span>
-                )}
-              </EditableRow>
-
-              {/* Email */}
-              <EditableRow onToggle={() => toggleField("email")} borderBottom>
-                {editingField === "email" ? (
-                  <input
-                    type="email"
-                    value={draft.email}
-                    onChange={(e) => updateDraftField("email", e.target.value)}
-                    onBlur={() => setEditingField(null)}
-                    onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
-                    className="flex-1 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[12px] outline-none"
-                  />
-                ) : (
-                  <span className="text-[12px] opacity-70">{draft.email || "—"}</span>
-                )}
-              </EditableRow>
-
-              {/* Téléphone */}
-              <EditableRow onToggle={() => toggleField("phone")}>
-                {editingField === "phone" ? (
-                  <input
-                    type="tel"
-                    value={draft.phone}
-                    onChange={(e) => updateDraftField("phone", e.target.value)}
-                    onBlur={() => setEditingField(null)}
-                    onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
-                    className="flex-1 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[12px] outline-none"
-                  />
-                ) : (
-                  <span className="text-[12px] opacity-70">{draft.phone || "—"}</span>
-                )}
-              </EditableRow>
-            </div>
-          </div>
-        )}
-
-        {/* Feedback */}
-        {success && (
-          <p className="mt-3 text-center text-[12px] text-green-600 font-medium">
-            ✓ Modifications sauvegardées !
-          </p>
-        )}
-        {serverError && (
-          <p className="mt-3 text-center text-[12px] text-red-500 font-medium">{serverError}</p>
-        )}
-
-        {/* Annuler / Sauvegarder */}
-        <div className="mt-4 flex gap-3">
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-          >
-            Annuler
-          </button>
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={saving}
-            className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50"
-          >
-            {saving ? "Sauvegarde..." : "Sauvegarder"}
-          </button>
-        </div>
-
-        {/* Enfants liés */}
-        <div className="mt-7">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="mx-auto w-full max-w-[420px] px-4 pt-2 pb-10">
+          {/* Header */}
           <div className="flex items-center justify-between">
-            <p className="text-[13px] font-semibold">Enfants liés</p>
             <button
               type="button"
-              onClick={() => setShowAddChildModal(true)}
+              onClick={() => router.push("/admin/parentsHistory")}
+              className="p-0"
+            >
+              <div className="h-10 w-10 overflow-hidden flex items-center justify-center">
+                <img src="/admin/flechegauche.png" alt="Retour" className="h-16 w-16" />
+              </div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowAddModal(true)}
               className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
             >
-              + Ajouter un enfant
+              + Ajouter un parent
             </button>
           </div>
 
-          {linkedChildren.length > 0 && (
-            <div className="mt-3 flex flex-col gap-3">
-              {linkedChildren.map((c) => (
-                <div
-                  key={c.id}
-                  className="relative flex items-center justify-between rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-3 py-3 shadow-md"
-                >
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={c.picture}
-                      alt={`${c.firstName} ${c.lastName}`}
-                      className="h-12 w-12 rounded-full object-cover bg-gray-100 border-2 border-(--color-primary)"
-                    />
-                    <div>
-                      <div className="text-[14px] font-semibold">
-                        {c.firstName} {c.lastName}
-                      </div>
-                      <div className="mt-1 flex items-center gap-2">
-                        <span className="text-[10px] opacity-70">
-                          {getAge(String(c.birthDate))}
-                        </span>
-                        {c.group && (
-                          <span
-                            className="rounded-full border-2 border-white px-2 py-0.5 text-[11px] font-medium shadow-md whitespace-nowrap"
-                            style={{ backgroundColor: `var(--color-group${c.group.id})` }}
-                          >
-                            {c.group.name}
-                          </span>
-                        )}
-                      </div>
+          {/* Carte parent */}
+          {parent && (
+            <div className="mt-4 rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-4 py-3 shadow-md flex items-center gap-3">
+              <img
+                src={parent.avatar ?? "/admin/parentavatar.png"}
+                alt={`${parent.first_name} ${parent.last_name}`}
+                className="h-12 w-12 rounded-full object-cover border-2 border-(--color-primary) shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                {/* Nom */}
+                <EditableRow onToggle={() => toggleField("name")} borderBottom>
+                  {editingField === "name" ? (
+                    <div className="flex gap-1 flex-1">
+                      <input
+                        {...register("first_name")}
+                        onBlur={() => setEditingField(null)}
+                        onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
+                        className="w-24 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[13px] outline-none"
+                      />
+                      <input
+                        {...register("last_name")}
+                        onBlur={() => setEditingField(null)}
+                        onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
+                        className="w-24 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[13px] outline-none"
+                      />
                     </div>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => router.push(`/admin/children/${c.id}/edit`)}
-                    >
-                      <PencilIcon />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setConfirmUnlink({
-                          childId: c.id,
-                          name: `${c.firstName} ${c.lastName}`,
-                          parentIds: c.parents.map((p) => p.id),
-                        })
-                      }
-                      className="opacity-40 hover:opacity-80 transition-opacity"
-                    >
-                      <TrashIcon />
-                    </button>
-                  </div>
-                </div>
-              ))}
+                  ) : (
+                    <span className="text-[14px] font-semibold">
+                      {firstNameVal || parent.first_name} {lastNameVal || parent.last_name}
+                    </span>
+                  )}
+                </EditableRow>
+
+                {/* Email */}
+                <EditableRow onToggle={() => toggleField("email")} borderBottom>
+                  {editingField === "email" ? (
+                    <input
+                      type="email"
+                      {...register("email")}
+                      onBlur={() => setEditingField(null)}
+                      onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
+                      className="flex-1 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[12px] outline-none"
+                    />
+                  ) : (
+                    <span className="text-[12px] opacity-70">{emailVal || "—"}</span>
+                  )}
+                </EditableRow>
+
+                {/* Téléphone */}
+                <EditableRow onToggle={() => toggleField("phone")}>
+                  {editingField === "phone" ? (
+                    <input
+                      type="tel"
+                      {...register("phone")}
+                      onBlur={() => setEditingField(null)}
+                      onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
+                      className="flex-1 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[12px] outline-none"
+                    />
+                  ) : (
+                    <span className="text-[12px] opacity-70">{phoneVal || "—"}</span>
+                  )}
+                </EditableRow>
+              </div>
             </div>
           )}
 
+          {/* Feedback */}
+          {success && (
+            <p className="mt-3 text-center text-[12px] text-green-600 font-medium">
+              ✓ Modifications sauvegardées !
+            </p>
+          )}
+          {serverError && (
+            <p className="mt-3 text-center text-[12px] text-red-500 font-medium">{serverError}</p>
+          )}
+
+          {/* Annuler / Sauvegarder */}
+          <div className="mt-4 flex gap-3">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              disabled={saving}
+              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50"
+            >
+              {saving ? "Sauvegarde..." : "Sauvegarder"}
+            </button>
+          </div>
+
+          {/* Enfants liés */}
+          <div className="mt-7">
+            <div className="flex items-center justify-between">
+              <p className="text-[13px] font-semibold">Enfants liés</p>
+              <button
+                type="button"
+                onClick={() => setShowAddChildModal(true)}
+                className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+              >
+                + Ajouter un enfant
+              </button>
+            </div>
+
+            {linkedChildren.length > 0 && (
+              <div className="mt-3 flex flex-col gap-3">
+                {linkedChildren.map((c) => (
+                  <div
+                    key={c.id}
+                    className="relative flex items-center justify-between rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-3 py-3 shadow-md"
+                  >
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={c.picture}
+                        alt={`${c.firstName} ${c.lastName}`}
+                        className="h-12 w-12 rounded-full object-cover bg-gray-100 border-2 border-(--color-primary)"
+                      />
+                      <div>
+                        <div className="text-[14px] font-semibold">
+                          {c.firstName} {c.lastName}
+                        </div>
+                        <div className="mt-1 flex items-center gap-2">
+                          <span className="text-[10px] opacity-70">
+                            {getAge(String(c.birthDate))}
+                          </span>
+                          {c.group && (
+                            <span
+                              className="rounded-full border-2 border-white px-2 py-0.5 text-[11px] font-medium shadow-md whitespace-nowrap"
+                              style={{ backgroundColor: `var(--color-group${c.group.id})` }}
+                            >
+                              {c.group.name}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => router.push(`/admin/children/${c.id}/edit`)}
+                      >
+                        <PencilIcon />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setConfirmUnlink({
+                            childId: c.id,
+                            name: `${c.firstName} ${c.lastName}`,
+                            parentIds: c.parents.map((p) => p.id),
+                          })
+                        }
+                        className="opacity-40 hover:opacity-80 transition-opacity"
+                      >
+                        <TrashIcon />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </form>
     </Layout>
   );
 }
