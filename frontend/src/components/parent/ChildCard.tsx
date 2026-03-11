@@ -2,6 +2,7 @@ import type React from "react";
 
 type Props = {
   child: {
+    id?: number;
     firstName: string;
     lastName: string;
     birthDate: string | number;
@@ -11,43 +12,74 @@ type Props = {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
+function getAgeLabel(birthDate: string | number) {
+  const birth = new Date(birthDate);
+  const now = new Date();
+
+  let months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
+
+  if (now.getDate() < birth.getDate()) {
+    months -= 1;
+  }
+
+  if (months < 1) return "0 mois";
+  if (months < 12) return `${months} mois`;
+
+  const years = Math.floor(months / 12);
+  const remainingMonths = months % 12;
+
+  if (remainingMonths === 0) {
+    return years === 1 ? "1 an" : `${years} ans`;
+  }
+
+  return `${years} ans et ${remainingMonths} mois`;
+}
 export default function ChildCard({ child, onClick }: Props) {
-  const birth = new Date(child.birthDate).toLocaleDateString("fr-FR");
+  const ageLabel = getAgeLabel(child.birthDate);
 
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="
-        w-full text-left
-        rounded-3xl border-2 border-sky-200
-        bg-white/60 p-2
-        shadow-[0_10px_16px_rgba(20,40,90,0.06)]
-        backdrop-blur
-        transition
-        hover:scale-[1.02]
-        active:scale-95
+    <button type="button" onClick={onClick} className="relative flex w-full items-center text-left">
+      {/* PHOTO */}
+      <div
+        className="
+        relative z-10
+        h-[95px] w-[95px]
+        rounded-full
+        bg-gradient-to-b from-yellow-200 to-yellow-400
+        p-[6px]
+        shadow-[0_10px_18px_rgba(255,200,60,0.35)]
       "
-    >
-      <div className="flex items-center gap-4">
-        <div className="h-24 w-24 rounded-full bg-gradient-to-b from-yellow-200 to-yellow-300 p-[6px] shadow-[0_14px_25px_rgba(255,200,60,0.25)]">
-          {/* biome-ignore lint/performance/noImgElement: ok */}
-          <img
-            src={child.picture}
-            alt={`${child.firstName} ${child.lastName}`}
-            className="h-full w-full rounded-full border-4 border-white/90 object-cover"
-          />
-        </div>
+      >
+        <img
+          src={child.picture}
+          alt={`${child.firstName} ${child.lastName}`}
+          className="
+            h-full w-full
+            rounded-full
+            border-[4px] border-white
+            object-cover
+          "
+        />
+      </div>
 
-        <div className="flex-1 rounded-3xl bg-yellow-100/80 px-5 py-4 shadow-[0_10px_16px_rgba(20,40,90,0.06)]">
-          <p className="text-lg font-extrabold text-blue-900">
-            {child.firstName} {child.lastName}
-          </p>
+      {/* CARD TEXTE */}
+      <div
+        className="
+        -ml-6
+        flex-1
+        rounded-full
+        bg-[#f2dfa7]
+        pl-14 pr-6 py-3
+        shadow-[0_6px_12px_rgba(20,40,90,0.08)]
+      "
+      >
+        <p className="text-[18px] font-medium text-[#244389] leading-tight">
+          {child.firstName} {child.lastName}
+        </p>
 
-          <p className="text-base font-medium text-blue-900/90">{birth}</p>
+        <p className="text-[16px] text-[#244389] leading-tight mt-1">{ageLabel}</p>
 
-          <p className="text-base font-medium text-blue-900/90">{child.group?.name ?? ""}</p>
-        </div>
+        <p className="text-[16px] text-[#244389] leading-tight">{child.group?.name ?? ""}</p>
       </div>
     </button>
   );

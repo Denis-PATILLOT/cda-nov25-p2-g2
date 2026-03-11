@@ -1,4 +1,4 @@
-import Link from "next/link"; // Import pour les redirections
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Layout from "@/components/Layout";
@@ -20,51 +20,34 @@ export default function DashboardParents() {
 
   return (
     <Layout pageTitle="Accueil parent">
-      {/* HEADER DE BIENVENUE */}
-      <div className="mt-10 p-4 mb-6 w-full max-w-md rounded-2xl border-4 border-sky-300 bg-white/90 px-4 py-4 text-center shadow-[0_12px_30px_rgba(15,40,90,0.12)]">
-        <h1 className="text-3xl font-extrabold tracking-wide text-blue-900">
-          Bienvenue {user.first_name}
-        </h1>
-      </div>
+      <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col px-4 pt-8 pb-28">
+        {/* BLOC BIENVENUE */}
+        <section className="mb-8">
+          <div className="rounded-[26px] border-[4px] border-sky-200 bg-[#fffdfd]/95 px-6 py-5 text-center shadow-[0_8px_18px_rgba(20,40,90,0.14)]">
+            <h1 className="text-[28px] font-extrabold text-blue-900 md:text-[32px]">
+              Bienvenue {user.first_name}
+            </h1>
+          </div>
+        </section>
 
-      {/* SECTION ENFANTS */}
-      <div className="w-full max-w-md rounded-[28px] border-4 border-sky-300 bg-white/70 p-5 shadow-[0_14px_35px_rgba(15,40,90,0.12)] mb-6">
-        <div className="space-y-4">
-          {user.children?.map((child) => (
-            <ChildCard
-              key={child.id}
-              child={child}
-              onClick={() => router.push(`/report/${child.id}`)}
-            />
-          ))}
+        {/* CARTE PRINCIPALE */}
+        <section className="rounded-[38px] border-[4px] border-sky-200 bg-[#fcf8f8]/90 px-4 py-7 shadow-[0_12px_26px_rgba(20,40,90,0.12)]">
+          <div className="space-y-8">
+            {user.children?.map((child) => (
+              <ChildCard
+                key={child.id}
+                child={child}
+                onClick={() => router.push(`/report/${child.id}`)}
+              />
+            ))}
 
-          {user.children?.length === 0 && (
-            <p className="rounded-2xl bg-white/60 p-4 text-center text-blue-900/80">
-              Aucun enfant renvoyé par l’API.
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* SECTION BOUTONS DE GESTION COMPTE */}
-      <div className="flex w-full max-w-md flex-col gap-3">
-        <Link href="/parent/profil" className="w-full">
-          <button
-            type="button"
-            className="w-full rounded-2xl border-2 border-blue-400 bg-blue-500 py-3 font-bold text-white shadow-md transition-all hover:bg-blue-600 active:scale-95"
-          >
-            Voir mon profil
-          </button>
-        </Link>
-
-        <Link href="/parent/password" className="w-full">
-          <button
-            type="button"
-            className="w-full rounded-2xl border-2 border-sky-200 bg-white py-3 font-bold text-sky-600 shadow-md transition-all hover:bg-sky-50 active:scale-95"
-          >
-            Changer mon mot de passe
-          </button>
-        </Link>
+            {user.children?.length === 0 && (
+              <p className="rounded-2xl bg-white/70 p-4 text-center text-blue-900/80">
+                Aucun enfant renvoyé par l’API.
+              </p>
+            )}
+          </div>
+        </section>
       </div>
     </Layout>
   );
