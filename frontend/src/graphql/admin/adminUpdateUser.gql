@@ -1,5 +1,6 @@
-# Modifie les infos d'un utilisateur existant (nom, prénom, email, téléphone, avatar)
+# Modifie les infos d'un utilisateur existant (nom, prénom, email, téléphone, avatar, groupe)
 # Utilisé dans : parents/[id]/edit.tsx (sauvegarde des infos du parent)
+# staff/[id]/edit.tsx (sauvegarde des infos du membre du staff, avec group_id)
 mutation AdminUpdateUser($data: UpdateUserInput!) {
   updateUser(data: $data) {
     id

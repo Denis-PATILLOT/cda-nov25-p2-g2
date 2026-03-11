@@ -180,7 +180,8 @@ export default function EditStaffPage() {
                     </div>
                   ) : (
                     <span className="text-[14px] font-semibold">
-                      {firstNameVal || staffMember.first_name} {lastNameVal || staffMember.last_name}
+                      {firstNameVal || staffMember.first_name}{" "}
+                      {lastNameVal || staffMember.last_name}
                     </span>
                   )}
                 </EditableRow>
@@ -225,7 +226,11 @@ export default function EditStaffPage() {
                         className="w-full rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[12px] text-left outline-none flex justify-between items-center bg-white"
                       >
                         <span>{selectedGroupName ?? "Sélectionner un groupe"}</span>
-                        <span className={`text-gray-400 transition-transform duration-200 ${groupDropdownOpen ? "rotate-180" : ""}`}>▾</span>
+                        <span
+                          className={`text-gray-400 transition-transform duration-200 ${groupDropdownOpen ? "rotate-180" : ""}`}
+                        >
+                          ▾
+                        </span>
                       </button>
                       {groupDropdownOpen && (
                         <div className="absolute left-0 top-8 z-20 rounded-xl border-2 border-(--color-primary) bg-white overflow-hidden shadow-lg w-full">
@@ -246,17 +251,15 @@ export default function EditStaffPage() {
                         </div>
                       )}
                     </div>
+                  ) : selectedGroupId && selectedGroupName ? (
+                    <span
+                      className="rounded-full border-2 border-white px-2 py-0.5 text-[11px] font-medium shadow-md"
+                      style={{ backgroundColor: getGroupBg(String(selectedGroupId)) }}
+                    >
+                      {selectedGroupName}
+                    </span>
                   ) : (
-                    selectedGroupId && selectedGroupName ? (
-                      <span
-                        className="rounded-full border-2 border-white px-2 py-0.5 text-[11px] font-medium shadow-md"
-                        style={{ backgroundColor: getGroupBg(String(selectedGroupId)) }}
-                      >
-                        {selectedGroupName}
-                      </span>
-                    ) : (
-                      <span className="text-[12px] opacity-70">—</span>
-                    )
+                    <span className="text-[12px] opacity-70">—</span>
                   )}
                 </EditableRow>
               </div>

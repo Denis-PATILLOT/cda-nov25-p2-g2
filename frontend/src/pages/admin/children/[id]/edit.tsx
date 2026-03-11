@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import PencilIcon from "@/components/admin/PencilIcon";
 import Layout from "@/components/Layout";
 import {
   useAdminChildDetailQuery,
@@ -9,7 +10,6 @@ import {
 } from "@/graphql/generated/schema";
 import { useAdminGuard } from "@/hooks/useAdminGuard";
 import { getAge } from "@/utils/getAge";
-import PencilIcon from "@/components/admin/PencilIcon";
 
 // Formate une date en format lisible français (ex: "3 mars 2022")
 function formatDate(dateStr: string) {
@@ -155,7 +155,11 @@ export default function EditChildPage() {
         <div className="mx-auto w-full max-w-[420px] px-4 pt-2 pb-10">
           {/* Flèche retour */}
           <div className="mb-2">
-            <button type="button" onClick={() => router.push("/admin/childrenHistory")} className="p-0">
+            <button
+              type="button"
+              onClick={() => router.push("/admin/childrenHistory")}
+              className="p-0"
+            >
               <div className="h-10 w-10 overflow-hidden flex items-center justify-center">
                 <img src="/admin/flechegauche.png" alt="Retour" className="h-16 w-16" />
               </div>
@@ -474,7 +478,6 @@ export default function EditChildPage() {
               {saving ? "Sauvegarde..." : "Sauvegarder"}
             </button>
           </div>
-
         </div>
       </form>
     </Layout>

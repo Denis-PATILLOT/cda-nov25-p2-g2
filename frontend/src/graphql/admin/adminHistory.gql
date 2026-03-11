@@ -1,3 +1,6 @@
+# Récupère la liste complète de tous les enfants avec leurs infos et leurs parents liés
+# Utilisé dans : childrenHistory.tsx (liste admin), staff/[id]/edit.tsx (enfants du groupe)
+# Chaque enfant contient : id, noms, date de naissance, photo, dossier de santé, groupe, et liste des parents
 query AdminChildren {
   children {
     id
@@ -21,6 +24,9 @@ query AdminChildren {
   }
 }
 
+# Supprime définitivement un enfant par son id
+# Utilisé dans : childrenHistory.tsx (bouton Supprimer dans le menu •••)
+# Retourne un booléen indiquant le succès de la suppression
 mutation DeleteChild($id: Int!) {
   deleteChild(id: $id)
 }

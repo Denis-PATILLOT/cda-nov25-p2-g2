@@ -154,7 +154,10 @@ export default function AdminParentsPage() {
             <div className="absolute left-0 top-10 z-10 rounded-xl border-2 border-(--color-primary) bg-white overflow-hidden shadow-lg w-full">
               <button
                 type="button"
-                onClick={() => { setGroupFilter("ALL"); setGroupDropdownOpen(false); }}
+                onClick={() => {
+                  setGroupFilter("ALL");
+                  setGroupDropdownOpen(false);
+                }}
                 className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 hover:bg-orange-50 ${groupFilter === "ALL" ? "font-semibold" : ""}`}
               >
                 Tous les groupes
