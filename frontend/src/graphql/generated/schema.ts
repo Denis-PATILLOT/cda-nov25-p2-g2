@@ -264,6 +264,7 @@ export type Query = {
   __typename?: 'Query';
   adminCounts: AdminCounts;
   allParents: Array<User>;
+  allStaff: Array<User>;
   child: Child;
   children: Array<Child>;
   conversation?: Maybe<Conversation>;
@@ -430,6 +431,11 @@ export type AllParentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type AllParentsQuery = { __typename?: 'Query', allParents: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string, email: string, phone: string, avatar?: string | null, children?: Array<{ __typename?: 'Child', id: number, firstName: string, lastName: string, picture: string, birthDate: any, group: { __typename?: 'Group', id: string, name: string }, parents: Array<{ __typename?: 'User', id: number }> }> | null }> };
+
+export type AllStaffQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllStaffQuery = { __typename?: 'Query', allStaff: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string, email: string, phone: string, avatar?: string | null, group?: { __typename?: 'Group', id: string, name: string } | null }> };
 
 export type CreateChildMutationVariables = Exact<{
   data: NewChildInput;
@@ -911,6 +917,54 @@ export type AllParentsQueryHookResult = ReturnType<typeof useAllParentsQuery>;
 export type AllParentsLazyQueryHookResult = ReturnType<typeof useAllParentsLazyQuery>;
 export type AllParentsSuspenseQueryHookResult = ReturnType<typeof useAllParentsSuspenseQuery>;
 export type AllParentsQueryResult = ApolloReactCommon.QueryResult<AllParentsQuery, AllParentsQueryVariables>;
+export const AllStaffDocument = gql`
+    query AllStaff {
+  allStaff {
+    id
+    first_name
+    last_name
+    email
+    phone
+    avatar
+    group {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useAllStaffQuery__
+ *
+ * To run a query within a React component, call `useAllStaffQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllStaffQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllStaffQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllStaffQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AllStaffQuery, AllStaffQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<AllStaffQuery, AllStaffQueryVariables>(AllStaffDocument, options);
+      }
+export function useAllStaffLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AllStaffQuery, AllStaffQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<AllStaffQuery, AllStaffQueryVariables>(AllStaffDocument, options);
+        }
+export function useAllStaffSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllStaffQuery, AllStaffQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<AllStaffQuery, AllStaffQueryVariables>(AllStaffDocument, options);
+        }
+export type AllStaffQueryHookResult = ReturnType<typeof useAllStaffQuery>;
+export type AllStaffLazyQueryHookResult = ReturnType<typeof useAllStaffLazyQuery>;
+export type AllStaffSuspenseQueryHookResult = ReturnType<typeof useAllStaffSuspenseQuery>;
+export type AllStaffQueryResult = ApolloReactCommon.QueryResult<AllStaffQuery, AllStaffQueryVariables>;
 export const CreateChildDocument = gql`
     mutation CreateChild($data: NewChildInput!) {
   createChild(data: $data) {
