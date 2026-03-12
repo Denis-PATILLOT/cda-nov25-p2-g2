@@ -48,7 +48,7 @@ export default function AddStaffModal({ open, onClose }: Props) {
         variables: {
           data: { ...values, password: tempPassword, role: "staff", group_id: selectedGroupId },
         },
-        refetchQueries: ["AdminCounts"],
+        refetchQueries: ["AdminCounts", "AllStaff"],
       });
     } catch {
       setServerError("Une erreur est survenue. Vérifiez les informations.");

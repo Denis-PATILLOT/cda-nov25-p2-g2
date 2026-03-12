@@ -1,31 +1,26 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AddChildModal from "@/components/admin/AddChildModal";
 import AddParentModal from "@/components/admin/AddParentModal";
 import AddStaffModal from "@/components/admin/AddStaffModal";
 import Layout from "@/components/Layout";
 import { useAdminCountsQuery } from "@/graphql/generated/schema";
-import { useAuth } from "@/hooks/CurrentProfile";
+import { useAdminGuard } from "@/hooks/useAdminGuard";
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const { user, loading, isAdmin } = useAuth();
+  const { user, authLoading, isAdmin, shouldSkip } = useAdminGuard();
   const { data, loading: countsLoading } = useAdminCountsQuery({
     fetchPolicy: "network-only",
+    skip: shouldSkip,
   });
   const [openParentModal, setOpenParentModal] = useState(false);
   const [openChildModal, setOpenChildModal] = useState(false);
   const [openStaffModal, setOpenStaffModal] = useState(false);
   const counts = data?.adminCounts;
 
-  useEffect(() => {
-    if (loading) return;
-    if (!user) router.replace("/");
-    else if (!isAdmin) router.replace("/403");
-  }, [loading, user, isAdmin, router]);
-
-  if (loading) return null;
+  if (authLoading) return null;
   if (!user || !isAdmin) return null;
 
   return (
@@ -83,7 +78,7 @@ export default function AdminDashboard() {
     active:scale-95
     focus:outline-none
   "
-            onClick={() => router.push("/admin/staff")}
+            onClick={() => router.push("/admin/staffHistory")}
           >
             <Image
               src="/admin/staffavatar.png"

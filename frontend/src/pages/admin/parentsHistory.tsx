@@ -1,16 +1,17 @@
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import AddParentModal from "@/components/admin/AddParentModal";
+import ConfirmDeleteModal from "@/components/admin/ConfirmDeleteModal";
+import PencilIcon from "@/components/admin/PencilIcon";
+import TrashIcon from "@/components/admin/TrashIcon";
 import Layout from "@/components/Layout";
 import { useAllParentsQuery, useDeleteUserMutation } from "@/graphql/generated/schema";
-import { useAuth } from "@/hooks/CurrentProfile";
+import { useAdminGuard } from "@/hooks/useAdminGuard";
 import { getGroupBg } from "@/utils/getGroupBg";
 
 export default function AdminParentsPage() {
   const router = useRouter();
-
-  const { user, loading: authLoading, isAdmin } = useAuth();
-  const shouldSkip = authLoading || !user || !isAdmin;
+  const { user, authLoading, isAdmin, shouldSkip } = useAdminGuard();
 
   const { data, loading, error, refetch } = useAllParentsQuery({
     fetchPolicy: "network-only",
@@ -18,12 +19,6 @@ export default function AdminParentsPage() {
   });
 
   const [deleteUser] = useDeleteUserMutation();
-
-  useEffect(() => {
-    if (authLoading) return;
-    if (!user) router.replace("/");
-    else if (!isAdmin) router.replace("/403");
-  }, [authLoading, user, isAdmin, router]);
 
   const parents = data?.allParents ?? [];
 
@@ -35,16 +30,6 @@ export default function AdminParentsPage() {
   const [confirmDelete, setConfirmDelete] = useState<{ id: number; name: string } | null>(null);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setOpenMenuId(null);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const groups = useMemo(() => {
     const map = new Map<string, string>();
@@ -106,58 +91,13 @@ export default function AdminParentsPage() {
       />
 
       {confirmDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-          <button
-            type="button"
-            className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"
-            onClick={() => setConfirmDelete(null)}
-            aria-label="Fermer"
-          />
-          <div className="relative w-full max-w-[340px] rounded-3xl bg-[#FEF9F6] border-2 border-(--color-primary) p-6 shadow-xl flex flex-col items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-50 border-2 border-red-200">
-              <svg
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-7 w-7 text-red-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                />
-              </svg>
-            </div>
-            {deleteSuccess ? (
-              <p className="text-[14px] font-semibold text-green-600">✓ Parent supprimé avec succès !</p>
-            ) : (
-              <div className="text-center">
-                <p className="text-[15px] font-semibold">Êtes-vous sûr de vouloir supprimer</p>
-                <p className="text-[15px] font-semibold">{confirmDelete.name} ?</p>
-                <p className="mt-1 text-[12px] opacity-60">Cette action est irréversible.</p>
-              </div>
-            )}
-            <div className="flex w-full gap-3">
-              <button
-                type="button"
-                onClick={() => setConfirmDelete(null)}
-                className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-              >
-                Annuler
-              </button>
-              <button
-                type="button"
-                onClick={confirmDeleteParent}
-                className="flex-1 rounded-xl border-2 border-red-200 bg-white py-2 text-[13px] text-red-500 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-              >
-                Supprimer
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDeleteModal
+          name={confirmDelete.name}
+          successMessage="✓ Parent supprimé avec succès !"
+          success={deleteSuccess}
+          onCancel={() => setConfirmDelete(null)}
+          onConfirm={confirmDeleteParent}
+        />
       )}
 
       <div className="mx-auto w-full max-w-[420px] px-4 pt-2 pb-6">
@@ -214,6 +154,16 @@ export default function AdminParentsPage() {
 
           {groupDropdownOpen && (
             <div className="absolute left-0 top-10 z-10 rounded-xl border-2 border-(--color-primary) bg-white overflow-hidden shadow-lg w-full">
+              <button
+                type="button"
+                onClick={() => {
+                  setGroupFilter("ALL");
+                  setGroupDropdownOpen(false);
+                }}
+                className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 hover:bg-orange-50 ${groupFilter === "ALL" ? "font-semibold" : ""}`}
+              >
+                Tous les groupes
+              </button>
               {groups.map((g) => (
                 <button
                   key={g.id}
@@ -288,22 +238,7 @@ export default function AdminParentsPage() {
                             }}
                             className="flex items-center gap-3 px-4 py-2.5 text-left hover:bg-gray-50 border-b border-gray-100"
                           >
-                            <svg
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 shrink-0"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={1.5}
-                            >
-                              <title>Modifier</title>
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487z"
-                              />
-                            </svg>
+                            <PencilIcon />
                             Modifier
                           </button>
                           <button
@@ -313,22 +248,7 @@ export default function AdminParentsPage() {
                             }
                             className="flex items-center gap-3 px-4 py-2.5 text-left text-red-500 hover:bg-red-50"
                           >
-                            <svg
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 shrink-0"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={1.5}
-                            >
-                              <title>Supprimer</title>
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                              />
-                            </svg>
+                            <TrashIcon />
                             Supprimer
                           </button>
                         </div>
