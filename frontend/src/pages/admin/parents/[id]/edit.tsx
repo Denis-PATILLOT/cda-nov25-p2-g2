@@ -141,29 +141,31 @@ export default function EditParentPage() {
                 </p>
               </div>
             )}
-            <div className="flex w-full gap-3">
-              <button
-                type="button"
-                onClick={() => setConfirmUnlink(null)}
-                className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-              >
-                Annuler
-              </button>
-              <button
-                type="button"
-                onClick={async () => {
-                  await handleUnlinkChild(confirmUnlink.childId, confirmUnlink.parentIds);
-                  setUnlinkSuccess(true);
-                  setTimeout(() => {
-                    setUnlinkSuccess(false);
-                    setConfirmUnlink(null);
-                  }, 2000);
-                }}
-                className="flex-1 rounded-xl border-2 border-red-200 bg-white py-2 text-[13px] text-red-500 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-              >
-                Délier
-              </button>
-            </div>
+            {!unlinkSuccess && (
+              <div className="flex w-full gap-3">
+                <button
+                  type="button"
+                  onClick={() => setConfirmUnlink(null)}
+                  className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await handleUnlinkChild(confirmUnlink.childId, confirmUnlink.parentIds);
+                    setUnlinkSuccess(true);
+                    setTimeout(() => {
+                      setUnlinkSuccess(false);
+                      setConfirmUnlink(null);
+                    }, 2000);
+                  }}
+                  className="flex-1 rounded-xl border-2 border-red-200 bg-white py-2 text-[13px] text-red-500 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+                >
+                  Délier
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

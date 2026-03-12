@@ -48,22 +48,24 @@ export default function ConfirmDeleteModal({
             <p className="mt-1 text-[12px] opacity-60">Cette action est irréversible.</p>
           </div>
         )}
-        <div className="flex w-full gap-3">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-          >
-            Annuler
-          </button>
-          <button
-            type="button"
-            onClick={onConfirm}
-            className="flex-1 rounded-xl border-2 border-red-200 bg-white py-2 text-[13px] text-red-500 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-          >
-            Supprimer
-          </button>
-        </div>
+        {!success && (
+          <div className="flex w-full gap-3">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+            >
+              Annuler
+            </button>
+            <button
+              type="button"
+              onClick={onConfirm}
+              className="flex-1 rounded-xl border-2 border-red-200 bg-white py-2 text-[13px] text-red-500 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+            >
+              Supprimer
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
