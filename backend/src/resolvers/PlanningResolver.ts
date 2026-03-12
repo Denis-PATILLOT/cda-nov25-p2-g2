@@ -63,11 +63,11 @@ class UpdatePlanningInput {
   @Field({ nullable: true })
   snack?: string;
 
-  @Field({nullable: true})
-  morning_activities?: string
+  @Field({ nullable: true })
+  morning_activities: string;
 
-  @Field({nullable: true})
-  afternoon_activities?: string
+  @Field({ nullable: true })
+  afternoon_activities: string;
 }
 
 @Resolver()

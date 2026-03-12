@@ -26,7 +26,14 @@ export default function StaffDashboard() {
     return (
       <Layout pageTitle="Staff">
         <div className="max-w-full md:max-w-[600px]">
-          <h2 className="p-4 text-right text-[#1b3c79] font-light">{date.toLocaleDateString("fr-FR", {weekday:"long", day:"2-digit",  month: "long", year:"numeric"})}</h2>
+          <h2 className="p-4 text-right text-[#1b3c79] font-light">
+            {date.toLocaleDateString("fr-FR", {
+              weekday: "long",
+              day: "2-digit",
+              month: "long",
+              year: "numeric",
+            })}
+          </h2>
           <div className="w-[85%] py-8 bg-[#FEF9F6] rounded-4xl border-5 border-[#FFD771] mx-auto mb-10 flex items-center justify-evenly">
             <div className="w-20 h-20 rounded-full flex items-center justify-center text-sm font-bold overflow-hidden border-4 border-[#FFD771] md:w-24 md:h-24">
               {user.avatar ? (
@@ -44,6 +51,7 @@ export default function StaffDashboard() {
             </div>
           </div>
           <div className="flex w-full flex-wrap justify-start gap-3">
+<<<<<<< HEAD
               {(user.group?.children?.length as number) > 0 &&
             user?.group?.children?.map((child) => (
               <div
@@ -53,20 +61,30 @@ export default function StaffDashboard() {
                 <div className="overflow-hidden h-[100px]">
                   {/** biome-ignore lint/performance/noImgElement: <explanation> */}
                   <Link href={`/staff/child/${child.id}/reports`}>
+=======
+            {(user.group?.children?.length as number) > 0 &&
+              user?.group?.children?.map((child) => (
+                <div
+                  key={child.id}
+                  className="w-[45%] pt-4 pb-2 mx-5 bg-[#FEF9F6] rounded-4xl border-5 border-[#FFD771] flex flex-col items-center justify-evenly"
+                >
+                  <div className="overflow-hidden h-[100px]">
+                    {/** biome-ignore lint/performance/noImgElement: <explanation> */}
+>>>>>>> 751f522102db71156f2d3db26c5daf40debdda97
                     <img
                       src={child.picture}
                       alt=""
                       className="h-[100px] object-contain shadow-gray-300 shadow-xl cursor-pointer  ease-in-out duration-300 hover:scale-110 "
                     />
+<<<<<<< HEAD
                   </Link>
+=======
+                  </div>
+                  <p className="mt-1  text-[#1b3c79]">{child.firstName}</p>
+>>>>>>> 751f522102db71156f2d3db26c5daf40debdda97
                 </div>
-                <p className="mt-1  text-[#1b3c79]">{child.firstName}</p>
-              </div>
-
-
-            ))}
+              ))}
           </div>
-          
         </div>
       </Layout>
     );

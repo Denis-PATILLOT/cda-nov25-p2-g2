@@ -1,8 +1,9 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Layout from "@/components/Layout";
+import ChildCard from "@/components/parent/ChildCard";
 import { useAuth } from "@/hooks/CurrentProfile";
-import ChildCard from "../../components/ChildCard";
 
 export default function DashboardParents() {
   const router = useRouter();
@@ -16,30 +17,37 @@ export default function DashboardParents() {
 
   if (loading) return null;
   if (!user || !isParent) return null;
+
   return (
     <Layout pageTitle="Accueil parent">
-      <div className="mt-10 p-4 mb-6 w-full max-w-md rounded-2xl border-4 border-sky-300 bg-white/90 px-4 py-4 text-center shadow-[0_12px_30px_rgba(15,40,90,0.12)]">
-        <h1 className="text-3xl font-extrabold tracking-wide text-blue-900">
-          Bienvenue {user?.first_name}
-        </h1>
-      </div>
+      <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col px-4 pt-8 pb-28">
+        {/* BLOC BIENVENUE */}
+        <section className="mb-8">
+          <div className="rounded-[26px] border-[4px] border-sky-200 bg-[#fffdfd]/95 px-6 py-5 text-center shadow-[0_8px_18px_rgba(20,40,90,0.14)]">
+            <h1 className="text-[28px] font-extrabold text-blue-900 md:text-[32px]">
+              Bienvenue {user.first_name}
+            </h1>
+          </div>
+        </section>
 
-      <div className="w-full max-w-md rounded-[28px] border-4 border-sky-300 bg-white/70 p-5 shadow-[0_14px_35px_rgba(15,40,90,0.12)]">
-        <div className="space-y-4">
-          {user?.children?.map((child) => (
-            <ChildCard
-              key={child.id}
-              child={child}
-              onClick={() => console.log("ouvrir profil enfant", child)}
-            />
-          ))}
+        {/* CARTE PRINCIPALE */}
+        <section className="rounded-[38px] border-[4px] border-sky-200 bg-[#fcf8f8]/90 px-4 py-7 shadow-[0_12px_26px_rgba(20,40,90,0.12)]">
+          <div className="space-y-8">
+            {user.children?.map((child) => (
+              <ChildCard
+                key={child.id}
+                child={child}
+                onClick={() => router.push(`/report/${child.id}`)}
+              />
+            ))}
 
-          {user?.children?.length === 0 && (
-            <p className="rounded-2xl bg-white/60 p-4 text-center text-blue-900/80">
-              Aucun enfant renvoyé par l’API.
-            </p>
-          )}
-        </div>
+            {user.children?.length === 0 && (
+              <p className="rounded-2xl bg-white/70 p-4 text-center text-blue-900/80">
+                Aucun enfant renvoyé par l’API.
+              </p>
+            )}
+          </div>
+        </section>
       </div>
     </Layout>
   );

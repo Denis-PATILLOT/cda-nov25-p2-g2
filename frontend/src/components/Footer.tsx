@@ -1,10 +1,8 @@
-import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/hooks/CurrentProfile";
 
 export default function Footer() {
-  const router = useRouter();
 
   const {user, isAdmin, isParent, isStaff, isAuthenticated} = useAuth();
 

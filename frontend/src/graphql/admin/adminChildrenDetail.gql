@@ -1,0 +1,24 @@
+# Récupère le détail complet d'un enfant par son id (infos, groupe, parents)
+# Utilisé dans : children/[id]/edit.tsx (page edit enfant), parents/[id]/edit.tsx (page edit parent via childId)
+query AdminChildDetail($id: Int!) {
+  child(id: $id) {
+    id
+    firstName
+    lastName
+    birthDate
+    picture
+    healthRecord
+    group {
+      id
+      name
+    }
+    parents {
+      id
+      first_name
+      last_name
+      email
+      phone
+      avatar
+    }
+  }
+}

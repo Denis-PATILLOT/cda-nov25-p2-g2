@@ -20,7 +20,7 @@ export enum baby_moodFormat {
   Bad = "bad",
   Neutral = "neutral",
   Good = "good",
-  NA= "na"        // gestion d'une absence donc pas de mood = NA
+  NA = "na", // gestion d'une absence donc pas de mood = NA
 }
 
 registerEnumType(baby_moodFormat, {
@@ -43,7 +43,7 @@ export class Report extends BaseEntity {
   date: Date;
 
   @Field(() => String, { nullable: true })
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: "text" })
   staff_comment?: string | null;
 
   @Field()

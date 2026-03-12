@@ -1,0 +1,26 @@
+query AdminChildren {
+  children {
+    id
+    firstName
+    lastName
+    birthDate
+    picture
+    healthRecord
+    group {
+      id
+      name
+    }
+    parents {
+      id
+      first_name
+      last_name
+      email
+      phone
+      avatar
+    }
+  }
+}
+
+mutation DeleteChild($id: Int!) {
+  deleteChild(id: $id)
+}

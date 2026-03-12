@@ -9,6 +9,9 @@
   --color-primary: #f6dde4;
   --color-secondary: #d4efff;
   --color-tertiary: #ddeedd;
+  --color-group1: #ffbe1a;
+  --color-group2: #ddeedd;
+  --color-group3: #efd4ff;
 }
 
 body {
@@ -19,12 +22,14 @@ body {
 
 html,
 body,
-#__next, .body {
+#__next,
+.body {
   min-height: 100vh; /* afin d'avoir une page de hauteur min de l'écran */
 }
 
 body,
-#__next, .body {
+#__next,
+.body {
   margin: 0;
   display: flex;
   flex-direction: column;
