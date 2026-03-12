@@ -51,10 +51,9 @@ export default function Home() {
       <img src="/babyboardlogo.png" alt="logo" className="md:w-[40%] md:m-auto md:max-w-[600px]" />
 
       {errorSubmit && error && (
-        <p className="absolute top-5 left-0 right-0 mx-5 border border-red-500 bg-red-100 px-5 text-center text-red-500 md:mx-52 md:text-xl">
-          {error.message || "Une erreur est survenue lors de la connexion"}
-
-          <span className="absolute top-0 right-0 bottom-0 px-4 py-3">
+        <p className="text-red-500 text-center px-5 mx-5 alert bg-red-100 border border-red-500 absolute top-5 left-0 right-0 md:top-5 md:text-xl md:mx-52">
+          {error.message || "Une erreur est survenue..."}
+          <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
             <svg
               className="h-6 w-6 cursor-pointer fill-current text-red-500"
               xmlns="http://www.w3.org/2000/svg"
@@ -88,6 +87,7 @@ export default function Home() {
               errors.email ? "focus-visible:outline-2 focus-visible:outline-red-500" : ""
             }`}
           />
+          <p className="text-red-500 mb-1 ml-5">{errors.email?.message}</p>
 
           <p className="mb-1 text-red-500">{errors.email?.message}</p>
 

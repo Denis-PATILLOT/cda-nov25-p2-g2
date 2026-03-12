@@ -18,7 +18,7 @@ export default class ChildResolver {
   async child(@Arg("id", () => Int) id: number) {
     const child = await Child.findOne({
       where: { id },
-      relations: ["group", "reports", "parents"],
+      relations: ["group", "reports", "parents", "group.plannings"],
     });
 
     if (!child) {

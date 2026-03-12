@@ -224,7 +224,7 @@ export type NewChildInput = {
 };
 
 export type NewReportInput = {
-  baby_mood: Scalars['String']['input'];
+  baby_mood?: Scalars['String']['input'];
   child?: InputMaybe<ObjectId>;
   date: Scalars['DateTimeISO']['input'];
   isPresent: Scalars['Boolean']['input'];
@@ -250,12 +250,12 @@ export type Planning = {
 };
 
 export type PlanningInput = {
-  afternoon_activities?: InputMaybe<Scalars['String']['input']>;
+  afternoon_activities: Scalars['String']['input'];
   afternoon_nap: Scalars['String']['input'];
   date: Scalars['DateTimeISO']['input'];
   groupId: Scalars['Int']['input'];
   meal: Scalars['String']['input'];
-  morning_activities?: InputMaybe<Scalars['String']['input']>;
+  morning_activities: Scalars['String']['input'];
   morning_nap: Scalars['String']['input'];
   snack: Scalars['String']['input'];
 };
@@ -272,6 +272,7 @@ export type Query = {
   getAllPlannings: Array<Planning>;
   getAllPlanningsByGroup: Array<Planning>;
   getGroupById?: Maybe<Group>;
+  getPlanningByGroupIdAndDate: Planning;
   getPlanningById: Planning;
   me?: Maybe<User>;
   messagesFromConversation: Array<Message>;
@@ -308,6 +309,12 @@ export type QueryGetGroupByIdArgs = {
 };
 
 
+export type QueryGetPlanningByGroupIdAndDateArgs = {
+  date: Scalars['DateTimeISO']['input'];
+  id: Scalars['Int']['input'];
+};
+
+
 export type QueryGetPlanningByIdArgs = {
   id: Scalars['Int']['input'];
 };
@@ -319,7 +326,7 @@ export type QueryMessagesFromConversationArgs = {
 
 
 export type QueryReportArgs = {
-  id: Scalars['Float']['input'];
+  id: Scalars['Int']['input'];
 };
 
 export type Report = {
@@ -495,10 +502,39 @@ export type ChildByIdQueryVariables = Exact<{
 
 export type ChildByIdQuery = { __typename?: 'Query', child: { __typename?: 'Child', id: number, firstName: string, lastName: string, birthDate: any, picture: string, group: { __typename?: 'Group', name: string } } };
 
+export type ChildWithGroupAndPlanningsQueryVariables = Exact<{
+  childId: Scalars['Int']['input'];
+}>;
+
+
+export type ChildWithGroupAndPlanningsQuery = { __typename?: 'Query', child: { __typename?: 'Child', id: number, firstName: string, birthDate: any, lastName: string, picture: string, reports: Array<{ __typename?: 'Report', id: string, date: any }>, group: { __typename?: 'Group', id: string, name: string, plannings?: Array<{ __typename?: 'Planning', id: string, date: any }> | null } } };
+
 export type ChildrenQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ChildrenQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, children?: Array<{ __typename?: 'Child', id: number, firstName: string, lastName: string, birthDate: any, picture: string, healthRecord?: string | null, group: { __typename?: 'Group', name: string } }> | null } | null };
+
+export type CreatePlanningMutationVariables = Exact<{
+  data: PlanningInput;
+}>;
+
+
+export type CreatePlanningMutation = { __typename?: 'Mutation', createPlanning: { __typename?: 'Planning', id: string } };
+
+export type CreateReportMutationVariables = Exact<{
+  data: NewReportInput;
+}>;
+
+
+export type CreateReportMutation = { __typename?: 'Mutation', createReport: { __typename?: 'Report', id: string } };
+
+export type GetPlanningByGroupIdAndDateQueryVariables = Exact<{
+  date: Scalars['DateTimeISO']['input'];
+  groupId: Scalars['Int']['input'];
+}>;
+
+
+export type GetPlanningByGroupIdAndDateQuery = { __typename?: 'Query', getPlanningByGroupIdAndDate: { __typename?: 'Planning', id: string, meal?: string | null, morning_activities?: string | null, morning_nap?: string | null, snack?: string | null, date: any, afternoon_nap?: string | null, afternoon_activities?: string | null } };
 
 export type LoginMutationVariables = Exact<{
   data: LoginInput;
@@ -531,6 +567,13 @@ export type ReportByChildQueryVariables = Exact<{
 
 export type ReportByChildQuery = { __typename?: 'Query', child: { __typename?: 'Child', id: number, reports: Array<{ __typename?: 'Report', id: string, date: any, baby_mood: string, isPresent: boolean, picture?: string | null, staff_comment?: string | null }> } };
 
+export type ReportByIdQueryVariables = Exact<{
+  reportId: Scalars['Int']['input'];
+}>;
+
+
+export type ReportByIdQuery = { __typename?: 'Query', report?: { __typename?: 'Report', baby_mood: string, isPresent: boolean, picture?: string | null, staff_comment?: string | null, date: any, child: { __typename?: 'Child', id: number, picture: string, firstName: string, lastName: string, birthDate: any, group: { __typename?: 'Group', id: string, name: string, plannings?: Array<{ __typename?: 'Planning', id: string, date: any }> | null } } } | null };
+
 export type UpdatePlanningMutationVariables = Exact<{
   data: UpdatePlanningInput;
   updatePlanningId: Scalars['Int']['input'];
@@ -545,6 +588,14 @@ export type UpdateProfileMutationVariables = Exact<{
 
 
 export type UpdateProfileMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', id: number, first_name: string, last_name: string, phone: string, avatar?: string | null } };
+
+export type UpdateReportMutationVariables = Exact<{
+  updateReportId: Scalars['Int']['input'];
+  data: UpdateReportInput;
+}>;
+
+
+export type UpdateReportMutation = { __typename?: 'Mutation', updateReport: { __typename?: 'Report', id: string } };
 
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1281,6 +1332,62 @@ export type ChildByIdQueryHookResult = ReturnType<typeof useChildByIdQuery>;
 export type ChildByIdLazyQueryHookResult = ReturnType<typeof useChildByIdLazyQuery>;
 export type ChildByIdSuspenseQueryHookResult = ReturnType<typeof useChildByIdSuspenseQuery>;
 export type ChildByIdQueryResult = ApolloReactCommon.QueryResult<ChildByIdQuery, ChildByIdQueryVariables>;
+export const ChildWithGroupAndPlanningsDocument = gql`
+    query ChildWithGroupAndPlannings($childId: Int!) {
+  child(id: $childId) {
+    id
+    firstName
+    birthDate
+    lastName
+    picture
+    reports {
+      id
+      date
+    }
+    group {
+      id
+      name
+      plannings {
+        id
+        date
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useChildWithGroupAndPlanningsQuery__
+ *
+ * To run a query within a React component, call `useChildWithGroupAndPlanningsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChildWithGroupAndPlanningsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChildWithGroupAndPlanningsQuery({
+ *   variables: {
+ *      childId: // value for 'childId'
+ *   },
+ * });
+ */
+export function useChildWithGroupAndPlanningsQuery(baseOptions: ApolloReactHooks.QueryHookOptions<ChildWithGroupAndPlanningsQuery, ChildWithGroupAndPlanningsQueryVariables> & ({ variables: ChildWithGroupAndPlanningsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<ChildWithGroupAndPlanningsQuery, ChildWithGroupAndPlanningsQueryVariables>(ChildWithGroupAndPlanningsDocument, options);
+      }
+export function useChildWithGroupAndPlanningsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ChildWithGroupAndPlanningsQuery, ChildWithGroupAndPlanningsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<ChildWithGroupAndPlanningsQuery, ChildWithGroupAndPlanningsQueryVariables>(ChildWithGroupAndPlanningsDocument, options);
+        }
+export function useChildWithGroupAndPlanningsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ChildWithGroupAndPlanningsQuery, ChildWithGroupAndPlanningsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<ChildWithGroupAndPlanningsQuery, ChildWithGroupAndPlanningsQueryVariables>(ChildWithGroupAndPlanningsDocument, options);
+        }
+export type ChildWithGroupAndPlanningsQueryHookResult = ReturnType<typeof useChildWithGroupAndPlanningsQuery>;
+export type ChildWithGroupAndPlanningsLazyQueryHookResult = ReturnType<typeof useChildWithGroupAndPlanningsLazyQuery>;
+export type ChildWithGroupAndPlanningsSuspenseQueryHookResult = ReturnType<typeof useChildWithGroupAndPlanningsSuspenseQuery>;
+export type ChildWithGroupAndPlanningsQueryResult = ApolloReactCommon.QueryResult<ChildWithGroupAndPlanningsQuery, ChildWithGroupAndPlanningsQueryVariables>;
 export const ChildrenDocument = gql`
     query children {
   me {
@@ -1331,6 +1438,120 @@ export type ChildrenQueryHookResult = ReturnType<typeof useChildrenQuery>;
 export type ChildrenLazyQueryHookResult = ReturnType<typeof useChildrenLazyQuery>;
 export type ChildrenSuspenseQueryHookResult = ReturnType<typeof useChildrenSuspenseQuery>;
 export type ChildrenQueryResult = ApolloReactCommon.QueryResult<ChildrenQuery, ChildrenQueryVariables>;
+export const CreatePlanningDocument = gql`
+    mutation CreatePlanning($data: PlanningInput!) {
+  createPlanning(data: $data) {
+    id
+  }
+}
+    `;
+export type CreatePlanningMutationFn = ApolloReactCommon.MutationFunction<CreatePlanningMutation, CreatePlanningMutationVariables>;
+
+/**
+ * __useCreatePlanningMutation__
+ *
+ * To run a mutation, you first call `useCreatePlanningMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePlanningMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPlanningMutation, { data, loading, error }] = useCreatePlanningMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreatePlanningMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreatePlanningMutation, CreatePlanningMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<CreatePlanningMutation, CreatePlanningMutationVariables>(CreatePlanningDocument, options);
+      }
+export type CreatePlanningMutationHookResult = ReturnType<typeof useCreatePlanningMutation>;
+export type CreatePlanningMutationResult = ApolloReactCommon.MutationResult<CreatePlanningMutation>;
+export type CreatePlanningMutationOptions = ApolloReactCommon.BaseMutationOptions<CreatePlanningMutation, CreatePlanningMutationVariables>;
+export const CreateReportDocument = gql`
+    mutation CreateReport($data: NewReportInput!) {
+  createReport(data: $data) {
+    id
+  }
+}
+    `;
+export type CreateReportMutationFn = ApolloReactCommon.MutationFunction<CreateReportMutation, CreateReportMutationVariables>;
+
+/**
+ * __useCreateReportMutation__
+ *
+ * To run a mutation, you first call `useCreateReportMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateReportMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createReportMutation, { data, loading, error }] = useCreateReportMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateReportMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateReportMutation, CreateReportMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<CreateReportMutation, CreateReportMutationVariables>(CreateReportDocument, options);
+      }
+export type CreateReportMutationHookResult = ReturnType<typeof useCreateReportMutation>;
+export type CreateReportMutationResult = ApolloReactCommon.MutationResult<CreateReportMutation>;
+export type CreateReportMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateReportMutation, CreateReportMutationVariables>;
+export const GetPlanningByGroupIdAndDateDocument = gql`
+    query GetPlanningByGroupIdAndDate($date: DateTimeISO!, $groupId: Int!) {
+  getPlanningByGroupIdAndDate(date: $date, id: $groupId) {
+    id
+    meal
+    morning_activities
+    morning_nap
+    snack
+    date
+    afternoon_nap
+    afternoon_activities
+  }
+}
+    `;
+
+/**
+ * __useGetPlanningByGroupIdAndDateQuery__
+ *
+ * To run a query within a React component, call `useGetPlanningByGroupIdAndDateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPlanningByGroupIdAndDateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPlanningByGroupIdAndDateQuery({
+ *   variables: {
+ *      date: // value for 'date'
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export function useGetPlanningByGroupIdAndDateQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetPlanningByGroupIdAndDateQuery, GetPlanningByGroupIdAndDateQueryVariables> & ({ variables: GetPlanningByGroupIdAndDateQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetPlanningByGroupIdAndDateQuery, GetPlanningByGroupIdAndDateQueryVariables>(GetPlanningByGroupIdAndDateDocument, options);
+      }
+export function useGetPlanningByGroupIdAndDateLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPlanningByGroupIdAndDateQuery, GetPlanningByGroupIdAndDateQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetPlanningByGroupIdAndDateQuery, GetPlanningByGroupIdAndDateQueryVariables>(GetPlanningByGroupIdAndDateDocument, options);
+        }
+export function useGetPlanningByGroupIdAndDateSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetPlanningByGroupIdAndDateQuery, GetPlanningByGroupIdAndDateQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<GetPlanningByGroupIdAndDateQuery, GetPlanningByGroupIdAndDateQueryVariables>(GetPlanningByGroupIdAndDateDocument, options);
+        }
+export type GetPlanningByGroupIdAndDateQueryHookResult = ReturnType<typeof useGetPlanningByGroupIdAndDateQuery>;
+export type GetPlanningByGroupIdAndDateLazyQueryHookResult = ReturnType<typeof useGetPlanningByGroupIdAndDateLazyQuery>;
+export type GetPlanningByGroupIdAndDateSuspenseQueryHookResult = ReturnType<typeof useGetPlanningByGroupIdAndDateSuspenseQuery>;
+export type GetPlanningByGroupIdAndDateQueryResult = ApolloReactCommon.QueryResult<GetPlanningByGroupIdAndDateQuery, GetPlanningByGroupIdAndDateQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($data: LoginInput!) {
   login(data: $data)
@@ -1557,6 +1778,66 @@ export type ReportByChildQueryHookResult = ReturnType<typeof useReportByChildQue
 export type ReportByChildLazyQueryHookResult = ReturnType<typeof useReportByChildLazyQuery>;
 export type ReportByChildSuspenseQueryHookResult = ReturnType<typeof useReportByChildSuspenseQuery>;
 export type ReportByChildQueryResult = ApolloReactCommon.QueryResult<ReportByChildQuery, ReportByChildQueryVariables>;
+export const ReportByIdDocument = gql`
+    query ReportById($reportId: Int!) {
+  report(id: $reportId) {
+    baby_mood
+    child {
+      id
+      picture
+      firstName
+      lastName
+      birthDate
+      picture
+      group {
+        id
+        name
+        plannings {
+          id
+          date
+        }
+      }
+    }
+    isPresent
+    picture
+    staff_comment
+    date
+  }
+}
+    `;
+
+/**
+ * __useReportByIdQuery__
+ *
+ * To run a query within a React component, call `useReportByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useReportByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useReportByIdQuery({
+ *   variables: {
+ *      reportId: // value for 'reportId'
+ *   },
+ * });
+ */
+export function useReportByIdQuery(baseOptions: ApolloReactHooks.QueryHookOptions<ReportByIdQuery, ReportByIdQueryVariables> & ({ variables: ReportByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<ReportByIdQuery, ReportByIdQueryVariables>(ReportByIdDocument, options);
+      }
+export function useReportByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ReportByIdQuery, ReportByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<ReportByIdQuery, ReportByIdQueryVariables>(ReportByIdDocument, options);
+        }
+export function useReportByIdSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ReportByIdQuery, ReportByIdQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<ReportByIdQuery, ReportByIdQueryVariables>(ReportByIdDocument, options);
+        }
+export type ReportByIdQueryHookResult = ReturnType<typeof useReportByIdQuery>;
+export type ReportByIdLazyQueryHookResult = ReturnType<typeof useReportByIdLazyQuery>;
+export type ReportByIdSuspenseQueryHookResult = ReturnType<typeof useReportByIdSuspenseQuery>;
+export type ReportByIdQueryResult = ApolloReactCommon.QueryResult<ReportByIdQuery, ReportByIdQueryVariables>;
 export const UpdatePlanningDocument = gql`
     mutation UpdatePlanning($data: UpdatePlanningInput!, $updatePlanningId: Int!) {
   updatePlanning(data: $data, id: $updatePlanningId) {
@@ -1628,6 +1909,40 @@ export function useUpdateProfileMutation(baseOptions?: ApolloReactHooks.Mutation
 export type UpdateProfileMutationHookResult = ReturnType<typeof useUpdateProfileMutation>;
 export type UpdateProfileMutationResult = ApolloReactCommon.MutationResult<UpdateProfileMutation>;
 export type UpdateProfileMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateProfileMutation, UpdateProfileMutationVariables>;
+export const UpdateReportDocument = gql`
+    mutation updateReport($updateReportId: Int!, $data: UpdateReportInput!) {
+  updateReport(id: $updateReportId, data: $data) {
+    id
+  }
+}
+    `;
+export type UpdateReportMutationFn = ApolloReactCommon.MutationFunction<UpdateReportMutation, UpdateReportMutationVariables>;
+
+/**
+ * __useUpdateReportMutation__
+ *
+ * To run a mutation, you first call `useUpdateReportMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateReportMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateReportMutation, { data, loading, error }] = useUpdateReportMutation({
+ *   variables: {
+ *      updateReportId: // value for 'updateReportId'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateReportMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateReportMutation, UpdateReportMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<UpdateReportMutation, UpdateReportMutationVariables>(UpdateReportDocument, options);
+      }
+export type UpdateReportMutationHookResult = ReturnType<typeof useUpdateReportMutation>;
+export type UpdateReportMutationResult = ApolloReactCommon.MutationResult<UpdateReportMutation>;
+export type UpdateReportMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateReportMutation, UpdateReportMutationVariables>;
 export const UserDocument = gql`
     query user {
   me {
