@@ -51,39 +51,21 @@ export default function StaffDashboard() {
             </div>
           </div>
           <div className="flex w-full flex-wrap justify-start gap-3">
-<<<<<<< HEAD
               {(user.group?.children?.length as number) > 0 &&
             user?.group?.children?.map((child) => (
-              <div
-                key={child.id}
-                className="w-[45%] pt-4 pb-2 mx-5 bg-[#FEF9F6] rounded-4xl border-5 border-[#FFD771] flex flex-col items-center justify-evenly"
-              >
+              <div key={child.id} className="w-[45%] pt-4 pb-2 mx-5 bg-[#FEF9F6] rounded-4xl border-5 border-[#FFD771] flex flex-col items-center justify-evenly">
                 <div className="overflow-hidden h-[100px]">
                   {/** biome-ignore lint/performance/noImgElement: <explanation> */}
                   <Link href={`/staff/child/${child.id}/reports`}>
-=======
-            {(user.group?.children?.length as number) > 0 &&
-              user?.group?.children?.map((child) => (
-                <div
-                  key={child.id}
-                  className="w-[45%] pt-4 pb-2 mx-5 bg-[#FEF9F6] rounded-4xl border-5 border-[#FFD771] flex flex-col items-center justify-evenly"
-                >
-                  <div className="overflow-hidden h-[100px]">
-                    {/** biome-ignore lint/performance/noImgElement: <explanation> */}
->>>>>>> 751f522102db71156f2d3db26c5daf40debdda97
                     <img
                       src={child.picture}
                       alt=""
                       className="h-[100px] object-contain shadow-gray-300 shadow-xl cursor-pointer  ease-in-out duration-300 hover:scale-110 "
                     />
-<<<<<<< HEAD
                   </Link>
-=======
-                  </div>
-                  <p className="mt-1  text-[#1b3c79]">{child.firstName}</p>
->>>>>>> 751f522102db71156f2d3db26c5daf40debdda97
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         </div>
       </Layout>

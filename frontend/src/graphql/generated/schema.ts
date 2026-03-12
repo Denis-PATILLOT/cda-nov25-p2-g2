@@ -224,7 +224,7 @@ export type NewChildInput = {
 };
 
 export type NewReportInput = {
-  baby_mood: Scalars['String']['input'];
+  baby_mood?: Scalars['String']['input'];
   child?: InputMaybe<ObjectId>;
   date: Scalars['DateTimeISO']['input'];
   isPresent: Scalars['Boolean']['input'];
@@ -553,6 +553,13 @@ export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ProfileQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, first_name: string, last_name: string, avatar?: string | null, creation_date: any, email: string, phone: string, role: string, children?: Array<{ __typename?: 'Child', id: number, firstName: string, lastName: string, birthDate: any, picture: string, group: { __typename?: 'Group', id: string, name: string } }> | null, group?: { __typename?: 'Group', id: string, name: string, children?: Array<{ __typename?: 'Child', id: number, firstName: string, lastName: string, picture: string }> | null } | null } | null };
+
+export type ReportByChildQueryVariables = Exact<{
+  childId: Scalars['Int']['input'];
+}>;
+
+
+export type ReportByChildQuery = { __typename?: 'Query', child: { __typename?: 'Child', id: number, reports: Array<{ __typename?: 'Report', id: string, date: any, baby_mood: string, isPresent: boolean, picture?: string | null, staff_comment?: string | null }> } };
 
 export type ReportByIdQueryVariables = Exact<{
   reportId: Scalars['Int']['input'];
@@ -1669,6 +1676,54 @@ export type ProfileQueryHookResult = ReturnType<typeof useProfileQuery>;
 export type ProfileLazyQueryHookResult = ReturnType<typeof useProfileLazyQuery>;
 export type ProfileSuspenseQueryHookResult = ReturnType<typeof useProfileSuspenseQuery>;
 export type ProfileQueryResult = ApolloReactCommon.QueryResult<ProfileQuery, ProfileQueryVariables>;
+export const ReportByChildDocument = gql`
+    query ReportByChild($childId: Int!) {
+  child(id: $childId) {
+    id
+    reports {
+      id
+      date
+      baby_mood
+      isPresent
+      picture
+      staff_comment
+    }
+  }
+}
+    `;
+
+/**
+ * __useReportByChildQuery__
+ *
+ * To run a query within a React component, call `useReportByChildQuery` and pass it any options that fit your needs.
+ * When your component renders, `useReportByChildQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useReportByChildQuery({
+ *   variables: {
+ *      childId: // value for 'childId'
+ *   },
+ * });
+ */
+export function useReportByChildQuery(baseOptions: ApolloReactHooks.QueryHookOptions<ReportByChildQuery, ReportByChildQueryVariables> & ({ variables: ReportByChildQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<ReportByChildQuery, ReportByChildQueryVariables>(ReportByChildDocument, options);
+      }
+export function useReportByChildLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ReportByChildQuery, ReportByChildQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<ReportByChildQuery, ReportByChildQueryVariables>(ReportByChildDocument, options);
+        }
+export function useReportByChildSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ReportByChildQuery, ReportByChildQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<ReportByChildQuery, ReportByChildQueryVariables>(ReportByChildDocument, options);
+        }
+export type ReportByChildQueryHookResult = ReturnType<typeof useReportByChildQuery>;
+export type ReportByChildLazyQueryHookResult = ReturnType<typeof useReportByChildLazyQuery>;
+export type ReportByChildSuspenseQueryHookResult = ReturnType<typeof useReportByChildSuspenseQuery>;
+export type ReportByChildQueryResult = ApolloReactCommon.QueryResult<ReportByChildQuery, ReportByChildQueryVariables>;
 export const ReportByIdDocument = gql`
     query ReportById($reportId: Int!) {
   report(id: $reportId) {
@@ -1693,18 +1748,6 @@ export const ReportByIdDocument = gql`
     picture
     staff_comment
     date
-export const ReportByChildDocument = gql`
-    query ReportByChild($childId: Int!) {
-  child(id: $childId) {
-    id
-    reports {
-      id
-      date
-      baby_mood
-      isPresent
-      picture
-      staff_comment
-    }
   }
 }
     `;
@@ -1714,10 +1757,6 @@ export const ReportByChildDocument = gql`
  *
  * To run a query within a React component, call `useReportByIdQuery` and pass it any options that fit your needs.
  * When your component renders, `useReportByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * __useReportByChildQuery__
- *
- * To run a query within a React component, call `useReportByChildQuery` and pass it any options that fit your needs.
- * When your component renders, `useReportByChildQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -1745,28 +1784,6 @@ export type ReportByIdQueryHookResult = ReturnType<typeof useReportByIdQuery>;
 export type ReportByIdLazyQueryHookResult = ReturnType<typeof useReportByIdLazyQuery>;
 export type ReportByIdSuspenseQueryHookResult = ReturnType<typeof useReportByIdSuspenseQuery>;
 export type ReportByIdQueryResult = ApolloReactCommon.QueryResult<ReportByIdQuery, ReportByIdQueryVariables>;
- * const { data, loading, error } = useReportByChildQuery({
- *   variables: {
- *      childId: // value for 'childId'
- *   },
- * });
- */
-export function useReportByChildQuery(baseOptions: ApolloReactHooks.QueryHookOptions<ReportByChildQuery, ReportByChildQueryVariables> & ({ variables: ReportByChildQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useQuery<ReportByChildQuery, ReportByChildQueryVariables>(ReportByChildDocument, options);
-      }
-export function useReportByChildLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ReportByChildQuery, ReportByChildQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useLazyQuery<ReportByChildQuery, ReportByChildQueryVariables>(ReportByChildDocument, options);
-        }
-export function useReportByChildSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ReportByChildQuery, ReportByChildQueryVariables>) {
-          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useSuspenseQuery<ReportByChildQuery, ReportByChildQueryVariables>(ReportByChildDocument, options);
-        }
-export type ReportByChildQueryHookResult = ReturnType<typeof useReportByChildQuery>;
-export type ReportByChildLazyQueryHookResult = ReturnType<typeof useReportByChildLazyQuery>;
-export type ReportByChildSuspenseQueryHookResult = ReturnType<typeof useReportByChildSuspenseQuery>;
-export type ReportByChildQueryResult = ApolloReactCommon.QueryResult<ReportByChildQuery, ReportByChildQueryVariables>;
 export const UpdatePlanningDocument = gql`
     mutation UpdatePlanning($data: UpdatePlanningInput!, $updatePlanningId: Int!) {
   updatePlanning(data: $data, id: $updatePlanningId) {
