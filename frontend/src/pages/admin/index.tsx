@@ -255,7 +255,8 @@ export default function AdminDashboard() {
           <p className="text-[12px] font-semibold">Suivi</p>
           <button
             type="button"
-            className="mt-4 w-full rounded-2xl bg-white/80 py-3 text-[13px]  shadow-sm border-2 border-(--color-primary)"
+            onClick={() => router.push("/admin/reportsHistory")}
+          className="mt-4 w-full rounded-2xl bg-white/80 py-3 text-[13px] shadow-sm border-2 border-(--color-primary) transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
           >
             Voir tous les rapport
           </button>
