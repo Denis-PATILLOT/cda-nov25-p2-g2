@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { NewReportInput, useChildByIdQuery, useCreateReportMutation } from "@/graphql/generated/schema";
+import { NewReportInput, useChildByIdQuery, useChildWithGroupAndPlanningsQuery, useCreateReportMutation } from "@/graphql/generated/schema";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -7,7 +7,10 @@ import { useForm } from "react-hook-form";
 
 const CreateReportPage = () => {
     const router = useRouter();
-    const { id } = router.query; // on récupère les données voulues de l'url : id de
+    const { id } = router.query; // on récupère les données voulues de l'url : id de l'enfant
+
+    // récupération des reports de l'enfant en fin de traitement
+    const { refetch } = useChildWithGroupAndPlanningsQuery({variables: {childId: Number(id)}});
 
     const {data: dataChild, error} = useChildByIdQuery({variables : {id : Number(id)}});
 
@@ -35,8 +38,12 @@ const CreateReportPage = () => {
             const createdReport = await createReport({variables: {
                  data
             }});
-            if(createdReport)
-            router.push(`/staff/child/${id}/reports/${createdReport.data?.createReport.id}?created=true`, `/staff/child/${id}/reports/${createdReport.data?.createReport.id}`);
+            
+            await refetch();
+            if(createdReport) {
+                await refetch();
+                router.push(`/staff/child/${id}/reports/${createdReport.data?.createReport.id}?created=true`, `/staff/child/${id}/reports/${createdReport.data?.createReport.id}`);
+            } 
         } 
         catch(err) {
                 setErrorSubmit(true); // permet affichage erreur et sa disparition

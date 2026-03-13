@@ -78,7 +78,7 @@ const ReportDetails = () => {
                         
                         <p className="text-xs underline text-center">Résumé planning
                             <Link href={`/staff/planning/${planning.getPlanningByGroupIdAndDate.id}/edit`} title="Modifier planning" className="inline" >
-                                <img src="/boutons/modifier.png" className="inline w-10"/>
+                                <img src="/boutons/modifier.png" className="inline w-10 opacity-70 hover:opacity-100"/>
                             </Link>
                         </p>
                         
@@ -106,7 +106,7 @@ const ReportDetails = () => {
                         <div className="w-[90%] mx-auto">
                             <p className="text-xs underline text-center my-2">Compte-rendu
                                 <Link href={`/staff/child/${report.child.id}/reports/${report_id}/edit`} title="Modifier compte-rendu" className="inline" >
-                                    <img src="/boutons/modifier.png" className="inline w-10"/>
+                                    <img src="/boutons/modifier.png" className="inline w-10 opacity-70 hover:opacity-100"/>
                                 </Link>
                             </p>
 

@@ -61,8 +61,8 @@ const ChildReports = () => {
                                 </p>
                             </div>
                         }
-                        <div className="w-[90%] p-4 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold text-center border-3 border-[#FFD771] mx-auto">
-                            <h1 className="m-2">Comptes-rendus</h1>
+                        <div className="w-[90%] p-4 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold text-center border-3 border-[#FFD771] mx-auto min-h-[450px]">
+                            <h1 className="m-1 mb-2">Comptes-rendus</h1>
                             <Link href={`/staff/child/${id}/reports/create`}>
                                 <button className="bg-[#ffdd23] p-2 rounded-xl text-xs text-white hover:bg-[#ffbb25] cursor-pointer mb-2 text-right">Créer compte-rendu</button>
                             </Link>
@@ -95,7 +95,7 @@ const ChildReports = () => {
                                     </select>
                                 </div>
                             </div> 
-                            <div className="flex w-full flex-wrap justify-start gap-3">
+                            <div className="flex w-full mt-3 flex-wrap justify-start gap-3">
                                 
                                     { childReports && 
                                     

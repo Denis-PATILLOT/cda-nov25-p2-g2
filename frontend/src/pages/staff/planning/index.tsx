@@ -42,7 +42,7 @@ export default function StaffPlanning() {
         return(
                 <Layout pageTitle="Staff - plannings">
                     <div className="max-w-full mx-auto md:max-w-[600px]">
-                        <div className="w-[90%] p-4 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold text-center border-3 border-[#FFD771] mx-auto">
+                        <div className="w-[90%] p-4 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold text-center border-3 min-h-[600px] border-[#FFD771] mx-auto">
                             <h1 className="m-2 mb-2">
                                 <img src={"/calendrier.png"} width={50} className="inline-block" /> Plannings - {group.name}
                             </h1>
@@ -74,7 +74,7 @@ export default function StaffPlanning() {
                                     </select>
                                 </div>
                             </div>
-                            <div className="flex w-full flex-wrap justify-start gap-3">
+                            <div className="flex w-full flex-wrap justify-start gap-3 mt-5">
                                 
                                     { groupPlannings && 
                                     

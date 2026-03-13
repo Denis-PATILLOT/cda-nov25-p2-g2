@@ -51,7 +51,7 @@ const PlanningDetails = () => {
                     
                     <div className="flex justify-between items-center">
                         <Link href={`/staff/planning/${id}/edit`} title="Modifier planning" >
-                            <Image src="/boutons/modifier.png" alt="" width={50} height={20} className="inline-block"/>
+                            <Image src="/boutons/modifier.png" alt="" width={50} height={20} className="inline-block opacity-70 hover:opacity-100"/>
                         </Link>
                         <p className="text-sm">{planning.group.name}</p>
                     </div>
