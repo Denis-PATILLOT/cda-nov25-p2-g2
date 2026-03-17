@@ -87,7 +87,6 @@ export default function Home() {
               errors.email ? "focus-visible:outline-2 focus-visible:outline-red-500" : ""
             }`}
           />
-          <p className="text-red-500 mb-1 ml-5">{errors.email?.message}</p>
 
           <p className="mb-1 text-red-500">{errors.email?.message}</p>
 

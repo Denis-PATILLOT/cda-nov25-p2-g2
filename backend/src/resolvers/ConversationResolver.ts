@@ -2,104 +2,102 @@ import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { getCurrentUser } from "../auth";
 import { Conversation } from "../entities/Conversation";
 import { User } from "../entities/User";
-import { ForbiddenError, NotFoundError } from "../errors";
+import { ForbiddenError, NotFoundError, UnauthenticatedError } from "../errors";
 import type { GraphQLContext } from "../types";
+
 
 @Resolver()
 export default class ConversationResolver {
   @Query(() => [Conversation])
-  // myConversations : affiche toutes mes conversations dans un tableau, sans les détails - uniquement la date et les interlocuteurs
-  async myConversations(@Ctx() context: GraphQLContext) {
-    // getCurrentUser gère l'erreur UnauthenticatedError si l'utilisateur n'est pas connecté
-    const currentUser = await getCurrentUser(context);
-
+  async myConversations(@Ctx() context: GraphQLContext) { 
+    
+    const currentUser = await getCurrentUser(context); // utilisateur courant
     // Récupère toutes les conversations où l'utilisateur est soit l'initiator, soit le participant
-    // TypeORM utilise déjà un OR avec le tableau where: [...]
-    const conversations = await Conversation.find({
-      where: [
-        { initiator: { id: currentUser.id } },
-        { participant: { id: currentUser.id } },
-      ],
-      relations: ["initiator", "participant", "messages"],
-      order: { creationDate: "DESC" },
-    });
-
-    return conversations;
+    if(currentUser.role === "staff" || currentUser.role === "parent" || currentUser.role === "admin") {
+      const conversations = await Conversation.find({
+        where: [
+          { initiator: { id: currentUser.id } },
+          { participant: { id: currentUser.id } }
+        ],
+        relations: ["initiator", "participant", "messages", "messages.author", "initiator.children", "participant.children", "initiator.children.group", "participant.children.group"],
+        order: { creationDate: "DESC" },
+      });
+  
+      return conversations;
+    }
+    throw new UnauthenticatedError();
   }
 
+  // récupération d'une conversation via son id, avec chaque message et leur auteur
   @Query(() => Conversation, { nullable: true })
-  // conversation : affiche une conversation précise, avec tous les messages échangés dans cette conversation
   async conversation(
     @Arg("id", () => Int) id: number,
     @Ctx() context: GraphQLContext,
   ) {
     const currentUser = await getCurrentUser(context);
 
-    // Vérifie que la conversation existe
     const conversation = await Conversation.findOne({
       where: { id },
-      relations: ["initiator", "participant", "messages"],
+      relations: ["initiator", "participant", "messages", "messages.author", "initiator.children", "initiator.children.group", "participant.children", "participant.children.group"],
+      order: { messages : { date: "ASC"} }
     });
 
     if (!conversation) {
-      throw new NotFoundError({ message: "Conversation introuvable" });
+      throw new NotFoundError({ message: "Conversation is not found" });
     }
 
-    // Vérifie que l'utilisateur fait partie de la conversation
+    // l'utilisateur courant doit faire partie de la conversation
     if (
       conversation.initiator.id !== currentUser.id &&
       conversation.participant.id !== currentUser.id
     ) {
       throw new ForbiddenError({
-        message: "Vous n'avez pas accès à cette conversation",
+        message: "you can't access this conversation (you're not part of it)",
       });
     }
-
     return conversation;
   }
 
   @Mutation(() => Conversation)
   async createConversation(
     @Arg("participantId", () => Int) participantId: number,
+    @Arg("initiatorId", () => Int) initiatorId: number,
     @Ctx() context: GraphQLContext,
   ) {
     const currentUser = await getCurrentUser(context);
 
-    // Vérifie que l'utilisateur ne crée pas une conversation avec lui-même
-    if (currentUser.id === participantId) {
-      throw new ForbiddenError({
-        message: "Vous ne pouvez pas créer une conversation avec vous-même",
-      });
+    if(currentUser.id !== initiatorId) {
+      throw new ForbiddenError({message: "You don't have the right to create a conversation"})
     }
 
-    // Vérifie que le participant existe
+    if (currentUser.id === participantId) {
+      throw new ForbiddenError({ message: "you can't be the creator and the participant at same time" });
+    }
+
     const participant = await User.findOne({ where: { id: participantId } });
     if (!participant) {
-      throw new NotFoundError({ message: "Utilisateur introuvable" });
+      throw new NotFoundError({ message: "User not found" });
     }
 
-    // Vérifie qu'une conversation n'existe pas déjà entre ces deux utilisateurs
+    // Vérifie qu'une conversation n'existe pas déjà entre les deux utilisateurs de notre future conversation
     const existingConversation = await Conversation.findOne({
       where: [
         {
-          initiator: { id: currentUser.id },
+          initiator: { id: initiatorId },
           participant: { id: participantId },
         },
         {
           initiator: { id: participantId },
-          participant: { id: currentUser.id },
+          participant: { id: initiatorId },
         },
       ],
     });
 
     if (existingConversation) {
-      throw new ForbiddenError({
-        message: "Une conversation existe déjà avec cet utilisateur",
-      });
+      throw new ForbiddenError({ message: "A conversation already exists with these participants" });
     }
 
-    // Crée la nouvelle conversation
-    const newConversation = Conversation.create({
+    const newConversation = Conversation.create({  // si ok, on crée la conversation
       initiator: currentUser,
       participant: participant,
     });

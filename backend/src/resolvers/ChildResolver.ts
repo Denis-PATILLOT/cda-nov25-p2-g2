@@ -14,11 +14,22 @@ export default class ChildResolver {
     });
   }
 
+  @Query(() => [Child])
+  async childrenByGroup(@Arg("groupId", () => Int) groupId: number) {  // avoir les parents des enfants du groupe
+    return await Child.find({
+      relations: ["group", "parents"],
+      where: {group: {id: groupId}}
+    });
+  }
+
   @Query(() => Child)
   async child(@Arg("id", () => Int) id: number) {
     const child = await Child.findOne({
       where: { id },
       relations: ["group", "reports", "parents", "group.plannings"],
+      order: { reports : {  // pour avoir les reports en ordre choronologique
+          date: "ASC" }
+      }
     });
 
     if (!child) {

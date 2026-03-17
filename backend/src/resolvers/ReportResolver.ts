@@ -17,10 +17,10 @@ export default class ReportResolver {
     });
   }
 
-  // afficher un seul
+  // afficher un seul report
   @Query(() => Report, { nullable: true })
   async report(@Arg("id", () => Int) id: number) {
-    return Report.findOne({
+    const report =  await Report.findOne({
       relations: {
         child : {
           group : {
@@ -29,12 +29,14 @@ export default class ReportResolver {
           }
         },
         where: {id} 
-      
-      
     });
+
+    if(!report) throw new NotFoundError();
+    
+    return report;
   };
 
-  //   creer un report
+  // créer un report
   @Mutation(() => Report)
   async createReport(
     @Arg("data", () => NewReportInput, { validate: true })

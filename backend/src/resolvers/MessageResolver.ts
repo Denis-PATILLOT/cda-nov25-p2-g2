@@ -1,14 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-import {
-  Arg,
-  Ctx,
-  Field,
-  InputType,
-  Int,
-  Mutation,
-  Query,
-  Resolver,
-} from "type-graphql";
+import { Arg, Ctx, Field, InputType, Int, Mutation, Query, Resolver } from "type-graphql";
 import { getCurrentUser } from "../auth";
 import { Conversation } from "../entities/Conversation";
 import { Message } from "../entities/Message";
@@ -16,47 +7,39 @@ import { ForbiddenError, NotFoundError } from "../errors";
 import type { GraphQLContext } from "../types";
 
 @InputType()
-// La création d'un nouveau message implique la création de la classe CreateMessageInput
+
 export class CreateMessageInput {
   @Field()
-  @IsNotEmpty({ message: "Le contenu ne peut pas être vide" })
+  @IsNotEmpty({ message: "content can't be empty" })
   content: string;
 
   @Field(() => Int)
+  @IsNotEmpty({message: "conversation id must be indicated"})
   conversationId: number;
 }
 
 @Resolver()
 export default class MessageResolver {
-  // Retourne un tableau de messages d'une conversation
   @Query(() => [Message])
-  async messagesFromConversation(
-    @Arg("conversationId", () => Int) conversationId: number,
-    @Ctx() context: GraphQLContext,
-  ) {
+  async messagesFromConversation(@Arg("conversationId", () => Int) conversationId: number, @Ctx() context: GraphQLContext) {
+    
     const currentUser = await getCurrentUser(context);
-
-    // Vérifie que la conversation existe
+    
     const conversation = await Conversation.findOne({
       where: { id: conversationId },
       relations: ["initiator", "participant"],
     });
 
     if (!conversation) {
-      throw new NotFoundError({ message: "Conversation introuvable" });
+      throw new NotFoundError({ message: "conversation not found" });
     }
 
-    // Vérifie que l'utilisateur fait partie de la conversation
-    if (
-      conversation.initiator.id !== currentUser.id &&
-      conversation.participant.id !== currentUser.id
-    ) {
-      throw new ForbiddenError({
-        message: "Vous n'avez pas accès à cette conversation",
-      });
+    // l'utiliateur connecté doit faire parti de la conversation
+    if (conversation.initiator.id !== currentUser.id && conversation.participant.id !== currentUser.id) {
+      throw new ForbiddenError({ message: "you can't access this conversation" });
     }
 
-    // Récupère tous les messages de la conversation du plus ancien au plus récent
+    // Récupère les messages de la conversation selon l'ordre chronologique
     const messages = await Message.find({
       where: { conversation: { id: conversationId } },
       relations: ["author", "conversation"],
@@ -69,38 +52,27 @@ export default class MessageResolver {
   // Crée un nouveau message dans une conversation
   @Mutation(() => Message)
   async createMessage(
-    @Arg("data", () => CreateMessageInput, { validate: true })
-    data: CreateMessageInput,
-    @Ctx() context: GraphQLContext,
-  ) {
+    @Arg("data", () => CreateMessageInput, { validate: true }) data: CreateMessageInput, @Ctx() context: GraphQLContext) {
     const currentUser = await getCurrentUser(context);
 
-    // Vérifie que la conversation existe
-    const conversation = await Conversation.findOne({
+    const conversationFound = await Conversation.findOne({
       where: { id: data.conversationId },
       relations: ["initiator", "participant"],
     });
 
-    if (!conversation) {
-      throw new NotFoundError({ message: "Conversation introuvable" });
+    if (!conversationFound) {
+      throw new NotFoundError({ message: "conversation not found" });
     }
 
-    // Vérifie que l'utilisateur fait partie de la conversation
-    if (
-      conversation.initiator.id !== currentUser.id &&
-      conversation.participant.id !== currentUser.id
-    ) {
-      throw new ForbiddenError({
-        message:
-          "Vous ne pouvez pas envoyer de message dans cette conversation",
-      });
+    // l'utiliateur connecté doit faire parti de la conversation
+    if (conversationFound.initiator.id !== currentUser.id && conversationFound.participant.id !== currentUser.id) {
+      throw new ForbiddenError({ message: "you can't access this conversation" });
     }
 
-    // Crée le nouveau message et l'enregistre dans la BDD
     const newMessage = Message.create({
       content: data.content,
       author: currentUser,
-      conversation: conversation,
+      conversation: conversationFound,
     });
 
     return await newMessage.save();

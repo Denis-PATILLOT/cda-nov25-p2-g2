@@ -1,0 +1,5 @@
+mutation CreateConversation($initiatorId: Int!, $participantId: Int!) {
+  createConversation(initiatorId: $initiatorId, participantId: $participantId) {
+    id
+  }
+}
