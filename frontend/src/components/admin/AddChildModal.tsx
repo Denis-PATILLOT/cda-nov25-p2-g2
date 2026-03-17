@@ -161,7 +161,7 @@ export default function AddChildModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+    <div className="fixed inset-0 z-50 flex items-start justify-center px-4 py-8 overflow-y-auto">
       <button
         type="button"
         className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"
@@ -169,17 +169,13 @@ export default function AddChildModal({
         aria-label="Fermer la modal"
       />
 
-      <div className="relative w-full max-w-[400px] rounded-3xl bg-[#FEF9F6] border-2 border-(--color-secondary) p-5 shadow-xl">
+      <div className="relative w-full max-w-[400px] rounded-3xl bg-[#FEF9F6] border-2 border-(--color-secondary) p-5 shadow-xl my-auto md:max-w-[560px] md:p-8">
         {/* Header */}
         <div className="flex items-center gap-10">
-          <Image
-            src="/boutons/plus.png"
-            alt="Ajouter"
-            width={80}
-            height={80}
-            className="rounded-full"
-          />
-          <h2 className="text-[16px] font-semibold">Ajouter un enfant</h2>
+          <div className="relative shrink-0 w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden">
+            <Image src="/boutons/plus.png" alt="Ajouter" fill className="object-cover" />
+          </div>
+          <h2 className="text-[16px] font-semibold md:text-[22px]">Ajouter un enfant</h2>
         </div>
 
         {/* Onglets */}
@@ -188,14 +184,14 @@ export default function AddChildModal({
             <button
               type="button"
               onClick={() => setTab("create")}
-              className={`flex-1 py-1.5 text-[12px] font-medium transition-colors ${tab === "create" ? "bg-(--color-primary) text-white" : "bg-white text-gray-500 hover:bg-orange-50"}`}
+              className={`flex-1 py-1.5 text-[12px] font-medium transition-colors md:text-[15px] md:py-2.5 ${tab === "create" ? "bg-(--color-primary) text-white" : "bg-white text-gray-500 hover:bg-orange-50"}`}
             >
               Créer un enfant
             </button>
             <button
               type="button"
               onClick={() => setTab("link")}
-              className={`flex-1 py-1.5 text-[12px] font-medium transition-colors ${tab === "link" ? "bg-(--color-primary) text-white" : "bg-white text-gray-500 hover:bg-orange-50"}`}
+              className={`flex-1 py-1.5 text-[12px] font-medium transition-colors md:text-[15px] md:py-2.5 ${tab === "link" ? "bg-(--color-primary) text-white" : "bg-white text-gray-500 hover:bg-orange-50"}`}
             >
               Enfant existant
             </button>
@@ -205,59 +201,59 @@ export default function AddChildModal({
         {/* Onglet Créer */}
         {tab === "create" && (
           <form onSubmit={handleSubmit(onSubmit)} className="mt-3 space-y-4">
-            <p className="text-[13px] font-medium">Informations</p>
+            <p className="text-[13px] font-medium md:text-[16px]">Informations</p>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label htmlFor="firstName" className="text-[12px] font-medium">
+                <label htmlFor="firstName" className="text-[12px] font-medium md:text-[14px]">
                   Prénom*
                 </label>
                 <input
                   id="firstName"
                   {...register("firstName", { required: "Champ requis" })}
-                  className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none ${errors.firstName ? "border-red-400" : "border-(--color-primary)"}`}
+                  className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none md:text-[15px] md:py-2 md:px-3 ${errors.firstName ? "border-red-400" : "border-(--color-primary)"}`}
                 />
                 {errors.firstName && (
-                  <p className="text-[11px] text-red-500">{errors.firstName.message}</p>
+                  <p className="text-[11px] text-red-500 md:text-[13px]">{errors.firstName.message}</p>
                 )}
               </div>
 
               <div className="space-y-1">
-                <label htmlFor="lastName" className="text-[12px] font-medium">
+                <label htmlFor="lastName" className="text-[12px] font-medium md:text-[14px]">
                   Nom*
                 </label>
                 <input
                   id="lastName"
                   {...register("lastName", { required: "Champ requis" })}
-                  className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none ${errors.lastName ? "border-red-400" : "border-(--color-primary)"}`}
+                  className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none md:text-[15px] md:py-2 md:px-3 ${errors.lastName ? "border-red-400" : "border-(--color-primary)"}`}
                 />
                 {errors.lastName && (
-                  <p className="text-[11px] text-red-500">{errors.lastName.message}</p>
+                  <p className="text-[11px] text-red-500 md:text-[13px]">{errors.lastName.message}</p>
                 )}
               </div>
             </div>
 
             <div className="space-y-1">
-              <label htmlFor="birthDate" className="text-[12px] font-medium">
+              <label htmlFor="birthDate" className="text-[12px] font-medium md:text-[14px]">
                 Date de naissance*
               </label>
               <input
                 id="birthDate"
                 type="date"
                 {...register("birthDate", { required: "Champ requis" })}
-                className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none ${errors.birthDate ? "border-red-400" : "border-(--color-primary)"} ${!birthDateValue ? "text-gray-400" : "text-gray-900"}`}
+                className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none md:text-[15px] md:py-2 md:px-3 ${errors.birthDate ? "border-red-400" : "border-(--color-primary)"} ${!birthDateValue ? "text-gray-400" : "text-gray-900"}`}
               />
               {errors.birthDate && (
-                <p className="text-[11px] text-red-500">{errors.birthDate.message}</p>
+                <p className="text-[11px] text-red-500 md:text-[13px]">{errors.birthDate.message}</p>
               )}
             </div>
 
             <div>
-              <p className="text-[13px] font-medium mb-1">Groupe*</p>
+              <p className="text-[13px] font-medium mb-1 md:text-[16px]">Groupe*</p>
               <button
                 type="button"
                 onClick={() => setGroupDropdownOpen((prev) => !prev)}
-                className={`w-full rounded-xl border-2 bg-white px-3 py-1.5 text-[12px] text-left outline-none flex justify-between items-center ${groupError ? "border-red-400" : "border-(--color-primary)"}`}
+                className={`w-full rounded-xl border-2 bg-white px-3 py-1.5 text-[12px] text-left outline-none flex justify-between items-center md:text-[15px] md:py-2 ${groupError ? "border-red-400" : "border-(--color-primary)"}`}
               >
                 <span className="text-gray-400">
                   {selectedGroupId ? "1 groupe sélectionné" : "Sélectionner un groupe"}
@@ -280,7 +276,7 @@ export default function AddChildModal({
                         setGroupDropdownOpen(false);
                         setGroupError(false);
                       }}
-                      className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 last:border-0 hover:bg-orange-50 ${selectedGroupId === Number(g.id) ? "font-semibold" : ""}`}
+                      className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 last:border-0 hover:bg-orange-50 md:text-[15px] md:px-4 md:py-2.5 ${selectedGroupId === Number(g.id) ? "font-semibold" : ""}`}
                     >
                       {g.name}
                     </button>
@@ -290,7 +286,7 @@ export default function AddChildModal({
 
               {selectedGroupId && (
                 <div className="mt-2">
-                  <span className="flex items-center gap-1 rounded-full bg-white border border-(--color-secondary) px-2 py-0.5 text-[11px] w-fit">
+                  <span className="flex items-center gap-1 rounded-full bg-white border border-(--color-secondary) px-2 py-0.5 text-[11px] w-fit md:text-[13px]">
                     {groupsData?.getAllGroups.find((g) => Number(g.id) === selectedGroupId)?.name}
                     <button
                       type="button"
@@ -303,43 +299,43 @@ export default function AddChildModal({
                 </div>
               )}
 
-              {groupError && <p className="text-[11px] text-red-500">Champ requis</p>}
+              {groupError && <p className="text-[11px] text-red-500 md:text-[13px]">Champ requis</p>}
             </div>
 
             <div className="space-y-1">
-              <label htmlFor="healthRecord" className="text-[12px] font-medium">
+              <label htmlFor="healthRecord" className="text-[12px] font-medium md:text-[14px]">
                 Dossier de santé <span className="text-gray-400">(allergies, notes...)</span>
               </label>
               <textarea
                 id="healthRecord"
                 {...register("healthRecord")}
                 rows={3}
-                className="w-full rounded-xl border-2 border-(--color-primary) bg-white px-2 py-1 text-[13px] outline-none resize-none"
+                className="w-full rounded-xl border-2 border-(--color-primary) bg-white px-2 py-1 text-[13px] outline-none resize-none md:text-[15px] md:py-2 md:px-3"
                 placeholder="Ex: allergie aux arachides, asthme..."
               />
             </div>
 
             {success && (
-              <p className="text-center text-[12px] text-green-600 font-medium py-1">
+              <p className="text-center text-[12px] text-green-600 font-medium py-1 md:text-[14px]">
                 ✓ Enfant créé avec succès !
               </p>
             )}
             {serverError && (
-              <p className="text-center text-[12px] text-red-500 font-medium py-1">{serverError}</p>
+              <p className="text-center text-[12px] text-red-500 font-medium py-1 md:text-[14px]">{serverError}</p>
             )}
 
             <div className="mt-2 flex justify-between gap-4">
               <button
                 type="button"
                 onClick={handleClose}
-                className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+                className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[16px] md:py-2.5"
               >
                 Annuler
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
+                className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 md:text-[16px] md:py-2.5"
               >
                 {isSubmitting ? "Création..." : "Créer enfant"}
               </button>
@@ -351,27 +347,27 @@ export default function AddChildModal({
         {tab === "link" && (
           <div className="mt-3 flex flex-col gap-3">
             {linkSuccess !== null && (
-              <p className="text-center text-[12px] text-green-600 font-medium py-1">
+              <p className="text-center text-[12px] text-green-600 font-medium py-1 md:text-[14px]">
                 ✓ Enfant lié avec succès !
               </p>
             )}
 
             <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
               {availableChildren.length === 0 && linkSuccess === null && (
-                <p className="text-center text-[12px] opacity-50 py-4">Aucun enfant disponible.</p>
+                <p className="text-center text-[12px] opacity-50 py-4 md:text-[15px]">Aucun enfant disponible.</p>
               )}
               {availableChildren.map((child) => (
                 <div
                   key={child.id}
                   className="flex items-center justify-between rounded-xl border-2 border-(--color-primary) bg-white px-3 py-2"
                 >
-                  <span className="text-[13px] font-medium">
+                  <span className="text-[13px] font-medium md:text-[16px]">
                     {child.firstName} {child.lastName}
                   </span>
                   <button
                     type="button"
                     onClick={() => handleLinkChild(child)}
-                    className="rounded-lg border-2 border-(--color-secondary) bg-white px-2 py-0.5 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+                    className="rounded-lg border-2 border-(--color-secondary) bg-white px-2 py-0.5 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[14px] md:px-3 md:py-1"
                   >
                     Lier
                   </button>
@@ -380,13 +376,13 @@ export default function AddChildModal({
             </div>
 
             {linkError && (
-              <p className="text-center text-[12px] text-red-500 font-medium">{linkError}</p>
+              <p className="text-center text-[12px] text-red-500 font-medium md:text-[14px]">{linkError}</p>
             )}
 
             <button
               type="button"
               onClick={handleClose}
-              className="mt-1 w-full rounded-xl border-2 border-(--color-tertiary) bg-white py-1.5 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+              className="mt-1 w-full rounded-xl border-2 border-(--color-tertiary) bg-white py-1.5 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[16px] md:py-2.5"
             >
               Fermer
             </button>

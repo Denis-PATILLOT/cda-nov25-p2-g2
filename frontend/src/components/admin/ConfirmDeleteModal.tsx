@@ -21,12 +21,12 @@ export default function ConfirmDeleteModal({
         onClick={onCancel}
         aria-label="Fermer"
       />
-      <div className="relative w-full max-w-[340px] rounded-3xl bg-[#FEF9F6] border-2 border-(--color-primary) p-6 shadow-xl flex flex-col items-center gap-4">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-50 border-2 border-red-200">
+      <div className="relative w-full max-w-[340px] rounded-3xl bg-[#FEF9F6] border-2 border-(--color-primary) p-6 shadow-xl flex flex-col items-center gap-4 md:max-w-[460px] md:p-8 md:gap-6">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-50 border-2 border-red-200 md:h-20 md:w-20">
           <svg
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
-            className="h-7 w-7 text-red-400"
+            className="h-7 w-7 text-red-400 md:h-10 md:w-10"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -40,12 +40,12 @@ export default function ConfirmDeleteModal({
           </svg>
         </div>
         {success ? (
-          <p className="text-[14px] font-semibold text-green-600">{successMessage}</p>
+          <p className="text-[14px] font-semibold text-green-600 md:text-[18px]">{successMessage}</p>
         ) : (
           <div className="text-center">
-            <p className="text-[15px] font-semibold">Êtes-vous sûr de vouloir supprimer</p>
-            <p className="text-[15px] font-semibold">{name} ?</p>
-            <p className="mt-1 text-[12px] opacity-60">Cette action est irréversible.</p>
+            <p className="text-[15px] font-semibold md:text-[18px]">Êtes-vous sûr de vouloir supprimer</p>
+            <p className="text-[15px] font-semibold md:text-[18px]">{name} ?</p>
+            <p className="mt-1 text-[12px] opacity-60 md:text-[14px]">Cette action est irréversible.</p>
           </div>
         )}
         {!success && (
@@ -53,14 +53,14 @@ export default function ConfirmDeleteModal({
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[16px] md:py-3"
             >
               Annuler
             </button>
             <button
               type="button"
               onClick={onConfirm}
-              className="flex-1 rounded-xl border-2 border-red-200 bg-white py-2 text-[13px] text-red-500 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+              className="flex-1 rounded-xl border-2 border-red-200 bg-white py-2 text-[13px] text-red-500 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[16px] md:py-3"
             >
               Supprimer
             </button>
