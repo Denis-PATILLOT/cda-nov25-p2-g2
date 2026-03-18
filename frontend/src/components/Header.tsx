@@ -130,7 +130,7 @@ export default function Header({ user, refetch }: HeaderProps) {
 
             <div className="p-2">
               <Link
-                href={`/${user.role}/profil`}
+                href={`/${user.role}/profile`}
                 className="flex items-center gap-3 rounded-2xl px-4 py-3 text-blue-900 transition hover:bg-sky-50"
                 onClick={() => setIsMenuOpen(false)}
               >

@@ -1,8 +1,13 @@
-import { Arg, ID, Int, Mutation, Query, Resolver } from "type-graphql";
-import { baby_moodFormat, NewReportInput, Report, UpdateReportInput } from "../entities/Report";
-import { NotFoundError } from "../errors";
-import { Child } from "../entities/Child";
 import { GraphQLError } from "graphql/error";
+import { Arg, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Child } from "../entities/Child";
+import {
+  baby_moodFormat,
+  NewReportInput,
+  Report,
+  UpdateReportInput,
+} from "../entities/Report";
+import { NotFoundError } from "../errors";
 
 @Resolver()
 export default class ReportResolver {
@@ -22,17 +27,15 @@ export default class ReportResolver {
   async report(@Arg("id", () => Int) id: number) {
     return Report.findOne({
       relations: {
-        child : {
-          group : {
-            plannings: true
-            } 
-          }
+        child: {
+          group: {
+            plannings: true,
+          },
         },
-        where: {id} 
-      
-      
+      },
+      where: { id },
     });
-  };
+  }
 
   //   creer un report
   @Mutation(() => Report)
@@ -42,22 +45,26 @@ export default class ReportResolver {
   ): Promise<Report> {
     const child = await Child.findOne({
       where: { id: data.child?.id },
-      relations: ["group", "group.plannings", "group.plannings.group"]
+      relations: ["group", "group.plannings", "group.plannings.group"],
     });
     if (!child) throw new NotFoundError();
 
-    const reportExistsAlready = await Report.findOne({ 
-      relations: ["child"], 
-      where : { date : data.date, child: data.child },
+    const reportExistsAlready = await Report.findOne({
+      relations: ["child"],
+      where: { date: data.date, child: data.child },
     });
-    if(reportExistsAlready) throw new GraphQLError("Report already exists for this child");
+    if (reportExistsAlready)
+      throw new GraphQLError("Report already exists for this child");
 
-    const existingPlanning = child.group.plannings.some(p => p.date.toISOString() === data.date.toISOString());  // comparaison de date avec passage en string (car sinon 2 objets date ne seront jamais égaux entre eux !)
-    if(!existingPlanning) throw new GraphQLError("No planning existed for that date and group");
+    const existingPlanning = child.group.plannings.some(
+      (p) => p.date.toISOString() === data.date.toISOString(),
+    ); // comparaison de date avec passage en string (car sinon 2 objets date ne seront jamais égaux entre eux !)
+    if (!existingPlanning)
+      throw new GraphQLError("No planning existed for that date and group");
 
     const newReport = new Report();
     Object.assign(newReport, data);
-    
+
     await newReport.save();
     return newReport;
   }
@@ -77,7 +84,7 @@ export default class ReportResolver {
     if (!reportToUpdate) throw new NotFoundError();
 
     // si pas présent (champ inaccessible dans data car pas coché dans le formulaire), on vide les données inutiles
-    if(!data.isPresent ) {
+    if (!data.isPresent) {
       data.baby_mood = baby_moodFormat.NA;
       data.picture = null;
       data.staff_comment = null;
