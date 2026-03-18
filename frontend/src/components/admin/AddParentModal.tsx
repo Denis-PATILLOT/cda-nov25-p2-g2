@@ -135,7 +135,9 @@ export default function AddParentModal({ open, onClose }: Props) {
                 className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none md:text-[15px] md:py-2 md:px-3 ${errors.first_name ? "border-red-400" : "border-(--color-primary)"}`}
               />
               {errors.first_name && (
-                <p className="text-[11px] text-red-500 md:text-[13px]">{errors.first_name.message}</p>
+                <p className="text-[11px] text-red-500 md:text-[13px]">
+                  {errors.first_name.message}
+                </p>
               )}
             </div>
 
@@ -149,7 +151,9 @@ export default function AddParentModal({ open, onClose }: Props) {
                 className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none md:text-[15px] md:py-2 md:px-3 ${errors.last_name ? "border-red-400" : "border-(--color-primary)"}`}
               />
               {errors.last_name && (
-                <p className="text-[11px] text-red-500 md:text-[13px]">{errors.last_name.message}</p>
+                <p className="text-[11px] text-red-500 md:text-[13px]">
+                  {errors.last_name.message}
+                </p>
               )}
             </div>
           </div>
@@ -165,7 +169,9 @@ export default function AddParentModal({ open, onClose }: Props) {
               {...register("email", { required: "Champ requis" })}
               className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none md:text-[15px] md:py-2 md:px-3 ${errors.email ? "border-red-400" : "border-(--color-primary)"}`}
             />
-            {errors.email && <p className="text-[11px] text-red-500 md:text-[13px]">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-[11px] text-red-500 md:text-[13px]">{errors.email.message}</p>
+            )}
           </div>
 
           {/* Téléphone */}
@@ -178,7 +184,9 @@ export default function AddParentModal({ open, onClose }: Props) {
               {...register("phone", { required: "Champ requis" })}
               className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none md:text-[15px] md:py-2 md:px-3 ${errors.phone ? "border-red-400" : "border-(--color-primary)"}`}
             />
-            {errors.phone && <p className="text-[11px] text-red-500 md:text-[13px]">{errors.phone.message}</p>}
+            {errors.phone && (
+              <p className="text-[11px] text-red-500 md:text-[13px]">{errors.phone.message}</p>
+            )}
           </div>
           {/* Enfants liés */}
           <div>
@@ -277,7 +285,9 @@ export default function AddParentModal({ open, onClose }: Props) {
             </p>
           )}
           {serverError && (
-            <p className="text-center text-[12px] text-red-500 font-medium py-1 md:text-[14px]">{serverError}</p>
+            <p className="text-center text-[12px] text-red-500 font-medium py-1 md:text-[14px]">
+              {serverError}
+            </p>
           )}
 
           {/* Buttons */}

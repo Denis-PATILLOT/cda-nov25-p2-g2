@@ -36,9 +36,17 @@ export default function AdminDashboard() {
             className="flex items-center gap-2 border-2 border-(--color-primary) bg-white/80 rounded-2xl px-2 py-2 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 focus:outline-none md:h-[150px] md:gap-10 md:px-10 md:rounded-3xl"
             onClick={() => router.push("/admin/childrenHistory")}
           >
-            <Image src="/admin/bbavatar.png" width={64} height={64} className="w-16 h-16 object-contain md:w-28 md:h-28" alt="Enfants" />
+            <Image
+              src="/admin/bbavatar.png"
+              width={64}
+              height={64}
+              className="w-16 h-16 object-contain md:w-28 md:h-28"
+              alt="Enfants"
+            />
             <div className="text-left">
-              <div className="text-[18px] font-semibold md:text-[38px]">{countsLoading ? "..." : (counts?.childrenCount ?? 0)}</div>
+              <div className="text-[18px] font-semibold md:text-[38px]">
+                {countsLoading ? "..." : (counts?.childrenCount ?? 0)}
+              </div>
               <div className="text-[12px] md:text-[17px]">Enfants</div>
             </div>
           </button>
@@ -48,9 +56,17 @@ export default function AdminDashboard() {
             className="flex items-center gap-2 border-2 border-(--color-primary) bg-white/80 rounded-2xl px-2 py-2 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 focus:outline-none md:h-[150px] md:gap-10 md:px-10 md:rounded-3xl"
             onClick={() => router.push("/admin/staffHistory")}
           >
-            <Image src="/admin/staffavatar.png" width={64} height={64} className="w-16 h-16 object-contain md:w-28 md:h-28" alt="Staff" />
+            <Image
+              src="/admin/staffavatar.png"
+              width={64}
+              height={64}
+              className="w-16 h-16 object-contain md:w-28 md:h-28"
+              alt="Staff"
+            />
             <div className="text-left">
-              <div className="text-[18px] font-semibold md:text-[38px]">{countsLoading ? "..." : (counts?.staffCount ?? 0)}</div>
+              <div className="text-[18px] font-semibold md:text-[38px]">
+                {countsLoading ? "..." : (counts?.staffCount ?? 0)}
+              </div>
               <div className="text-[12px] md:text-[17px]">Staff</div>
             </div>
           </button>
@@ -60,9 +76,17 @@ export default function AdminDashboard() {
             className="flex items-center gap-2 border-2 border-(--color-primary) bg-white/80 rounded-2xl px-2 py-2 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 focus:outline-none md:h-[150px] md:gap-10 md:px-10 md:rounded-3xl"
             onClick={() => router.push("/admin/parentsHistory")}
           >
-            <Image src="/admin/parentavatar.png" width={64} height={64} className="w-16 h-16 object-contain md:w-28 md:h-28" alt="Parents" />
+            <Image
+              src="/admin/parentavatar.png"
+              width={64}
+              height={64}
+              className="w-16 h-16 object-contain md:w-28 md:h-28"
+              alt="Parents"
+            />
             <div className="text-left">
-              <div className="text-[18px] font-semibold md:text-[38px]">{countsLoading ? "..." : (counts?.parentCount ?? 0)}</div>
+              <div className="text-[18px] font-semibold md:text-[38px]">
+                {countsLoading ? "..." : (counts?.parentCount ?? 0)}
+              </div>
               <div className="text-[12px] md:text-[17px]">Parents</div>
             </div>
           </button>
@@ -84,7 +108,13 @@ export default function AdminDashboard() {
               </span>
               <div className="flex items-center gap-6 h-full">
                 <div className="h-10 w-10 flex items-center justify-center md:h-28 md:w-28">
-                  <Image src="/admin/bbavatar.png" width={64} height={64} className="w-16 h-16 object-contain md:w-28 md:h-28" alt="Enfants" />
+                  <Image
+                    src="/admin/bbavatar.png"
+                    width={64}
+                    height={64}
+                    className="w-16 h-16 object-contain md:w-28 md:h-28"
+                    alt="Enfants"
+                  />
                 </div>
                 <div className="text-left text-[12px] leading-tight md:text-[18px] md:leading-snug">
                   Ajouter <br /> un enfant
@@ -103,7 +133,13 @@ export default function AdminDashboard() {
               </span>
               <div className="flex items-center gap-6 h-full">
                 <div className="h-10 w-10 flex items-center justify-center md:h-28 md:w-28">
-                  <Image src="/admin/staffavatar.png" width={64} height={64} className="w-16 h-16 object-contain md:w-28 md:h-28" alt="Staff" />
+                  <Image
+                    src="/admin/staffavatar.png"
+                    width={64}
+                    height={64}
+                    className="w-16 h-16 object-contain md:w-28 md:h-28"
+                    alt="Staff"
+                  />
                 </div>
                 <div className="text-left text-[12px] leading-tight md:text-[18px] md:leading-snug">
                   Ajouter <br /> un membre <br /> du staff
@@ -124,7 +160,13 @@ export default function AdminDashboard() {
                   </span>
                   <div className="flex items-center gap-6 h-full">
                     <div className="h-10 w-10 flex items-center justify-center md:h-28 md:w-28">
-                      <Image src="/admin/parentavatar.png" width={64} height={64} className="w-16 h-16 object-contain md:w-28 md:h-28" alt="Parents" />
+                      <Image
+                        src="/admin/parentavatar.png"
+                        width={64}
+                        height={64}
+                        className="w-16 h-16 object-contain md:w-28 md:h-28"
+                        alt="Parents"
+                      />
                     </div>
                     <div className="text-left text-[12px] leading-tight md:text-[18px] md:leading-snug">
                       Ajouter <br /> un parent

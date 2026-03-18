@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AddStaffModal from "@/components/admin/AddStaffModal";
 import ConfirmDeleteModal from "@/components/admin/ConfirmDeleteModal";
 import PencilIcon from "@/components/admin/PencilIcon";
@@ -112,11 +112,17 @@ export default function AdminStaffPage() {
         <div className="relative flex items-center justify-between md:mt-20">
           <button type="button" onClick={() => router.push("/admin")} className="p-0">
             <div className="h-10 w-10 overflow-hidden flex items-center justify-center md:h-20 md:w-20">
-              <img src="/admin/flechegauche.png" alt="Retour" className="h-16 w-16 md:h-28 md:w-28" />
+              <img
+                src="/admin/flechegauche.png"
+                alt="Retour"
+                className="h-16 w-16 md:h-28 md:w-28"
+              />
             </div>
           </button>
 
-          <h1 className="text-[16px] font-semibold md:absolute md:left-1/2 md:-translate-x-1/2 md:text-[28px]">Membre du staff</h1>
+          <h1 className="text-[16px] font-semibold md:absolute md:left-1/2 md:-translate-x-1/2 md:text-[28px]">
+            Membre du staff
+          </h1>
 
           <button
             type="button"
@@ -189,9 +195,13 @@ export default function AdminStaffPage() {
           )}
         </div>
 
-        {loading && <p className="mt-6 text-center text-[13px] opacity-70 md:text-[18px]">Chargement...</p>}
+        {loading && (
+          <p className="mt-6 text-center text-[13px] opacity-70 md:text-[18px]">Chargement...</p>
+        )}
         {error && (
-          <p className="mt-6 text-center text-[13px] text-red-600 md:text-[18px]">Erreur lors du chargement.</p>
+          <p className="mt-6 text-center text-[13px] text-red-600 md:text-[18px]">
+            Erreur lors du chargement.
+          </p>
         )}
 
         {!loading && !error && (

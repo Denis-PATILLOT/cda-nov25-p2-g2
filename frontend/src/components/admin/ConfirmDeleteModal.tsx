@@ -40,12 +40,18 @@ export default function ConfirmDeleteModal({
           </svg>
         </div>
         {success ? (
-          <p className="text-[14px] font-semibold text-green-600 md:text-[18px]">{successMessage}</p>
+          <p className="text-[14px] font-semibold text-green-600 md:text-[18px]">
+            {successMessage}
+          </p>
         ) : (
           <div className="text-center">
-            <p className="text-[15px] font-semibold md:text-[18px]">Êtes-vous sûr de vouloir supprimer</p>
+            <p className="text-[15px] font-semibold md:text-[18px]">
+              Êtes-vous sûr de vouloir supprimer
+            </p>
             <p className="text-[15px] font-semibold md:text-[18px]">{name} ?</p>
-            <p className="mt-1 text-[12px] opacity-60 md:text-[14px]">Cette action est irréversible.</p>
+            <p className="mt-1 text-[12px] opacity-60 md:text-[14px]">
+              Cette action est irréversible.
+            </p>
           </div>
         )}
         {!success && (

@@ -214,7 +214,9 @@ export default function AddChildModal({
                   className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none md:text-[15px] md:py-2 md:px-3 ${errors.firstName ? "border-red-400" : "border-(--color-primary)"}`}
                 />
                 {errors.firstName && (
-                  <p className="text-[11px] text-red-500 md:text-[13px]">{errors.firstName.message}</p>
+                  <p className="text-[11px] text-red-500 md:text-[13px]">
+                    {errors.firstName.message}
+                  </p>
                 )}
               </div>
 
@@ -228,7 +230,9 @@ export default function AddChildModal({
                   className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none md:text-[15px] md:py-2 md:px-3 ${errors.lastName ? "border-red-400" : "border-(--color-primary)"}`}
                 />
                 {errors.lastName && (
-                  <p className="text-[11px] text-red-500 md:text-[13px]">{errors.lastName.message}</p>
+                  <p className="text-[11px] text-red-500 md:text-[13px]">
+                    {errors.lastName.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -244,7 +248,9 @@ export default function AddChildModal({
                 className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none md:text-[15px] md:py-2 md:px-3 ${errors.birthDate ? "border-red-400" : "border-(--color-primary)"} ${!birthDateValue ? "text-gray-400" : "text-gray-900"}`}
               />
               {errors.birthDate && (
-                <p className="text-[11px] text-red-500 md:text-[13px]">{errors.birthDate.message}</p>
+                <p className="text-[11px] text-red-500 md:text-[13px]">
+                  {errors.birthDate.message}
+                </p>
               )}
             </div>
 
@@ -299,7 +305,9 @@ export default function AddChildModal({
                 </div>
               )}
 
-              {groupError && <p className="text-[11px] text-red-500 md:text-[13px]">Champ requis</p>}
+              {groupError && (
+                <p className="text-[11px] text-red-500 md:text-[13px]">Champ requis</p>
+              )}
             </div>
 
             <div className="space-y-1">
@@ -321,7 +329,9 @@ export default function AddChildModal({
               </p>
             )}
             {serverError && (
-              <p className="text-center text-[12px] text-red-500 font-medium py-1 md:text-[14px]">{serverError}</p>
+              <p className="text-center text-[12px] text-red-500 font-medium py-1 md:text-[14px]">
+                {serverError}
+              </p>
             )}
 
             <div className="mt-2 flex justify-between gap-4">
@@ -354,7 +364,9 @@ export default function AddChildModal({
 
             <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
               {availableChildren.length === 0 && linkSuccess === null && (
-                <p className="text-center text-[12px] opacity-50 py-4 md:text-[15px]">Aucun enfant disponible.</p>
+                <p className="text-center text-[12px] opacity-50 py-4 md:text-[15px]">
+                  Aucun enfant disponible.
+                </p>
               )}
               {availableChildren.map((child) => (
                 <div
@@ -376,7 +388,9 @@ export default function AddChildModal({
             </div>
 
             {linkError && (
-              <p className="text-center text-[12px] text-red-500 font-medium md:text-[14px]">{linkError}</p>
+              <p className="text-center text-[12px] text-red-500 font-medium md:text-[14px]">
+                {linkError}
+              </p>
             )}
 
             <button

@@ -197,7 +197,11 @@ export default function EditParentPage() {
               className="p-0"
             >
               <div className="h-10 w-10 overflow-hidden flex items-center justify-center md:h-20 md:w-20">
-                <img src="/admin/flechegauche.png" alt="Retour" className="h-16 w-16 md:h-28 md:w-28" />
+                <img
+                  src="/admin/flechegauche.png"
+                  alt="Retour"
+                  className="h-16 w-16 md:h-28 md:w-28"
+                />
               </div>
             </button>
             <button

@@ -161,7 +161,11 @@ export default function EditChildPage() {
               className="p-0"
             >
               <div className="h-10 w-10 overflow-hidden flex items-center justify-center md:h-20 md:w-20">
-                <img src="/admin/flechegauche.png" alt="Retour" className="h-16 w-16 md:h-28 md:w-28" />
+                <img
+                  src="/admin/flechegauche.png"
+                  alt="Retour"
+                  className="h-16 w-16 md:h-28 md:w-28"
+                />
               </div>
             </button>
           </div>
@@ -283,7 +287,9 @@ export default function EditChildPage() {
 
           {/* Section Infos de l'enfant */}
           <div className="mt-5 md:mt-8">
-            <h2 className="text-center text-[14px] font-semibold mb-3 md:text-[20px] md:mb-5">Infos de l&apos;enfant</h2>
+            <h2 className="text-center text-[14px] font-semibold mb-3 md:text-[20px] md:mb-5">
+              Infos de l&apos;enfant
+            </h2>
 
             {/* Conteneur principal du bloc */}
             <div

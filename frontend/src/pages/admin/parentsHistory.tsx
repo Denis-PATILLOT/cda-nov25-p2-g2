@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AddParentModal from "@/components/admin/AddParentModal";
 import ConfirmDeleteModal from "@/components/admin/ConfirmDeleteModal";
 import PencilIcon from "@/components/admin/PencilIcon";
@@ -116,11 +116,17 @@ export default function AdminParentsPage() {
         <div className="relative flex items-center justify-between md:mt-20">
           <button type="button" onClick={() => router.push("/admin")} className="p-0">
             <div className="h-10 w-10 overflow-hidden flex items-center justify-center md:h-20 md:w-20">
-              <img src="/admin/flechegauche.png" alt="Retour" className="h-16 w-16 md:h-28 md:w-28" />
+              <img
+                src="/admin/flechegauche.png"
+                alt="Retour"
+                className="h-16 w-16 md:h-28 md:w-28"
+              />
             </div>
           </button>
 
-          <h1 className="text-[16px] font-semibold md:absolute md:left-1/2 md:-translate-x-1/2 md:text-[28px]">Parents</h1>
+          <h1 className="text-[16px] font-semibold md:absolute md:left-1/2 md:-translate-x-1/2 md:text-[28px]">
+            Parents
+          </h1>
 
           <button
             type="button"
@@ -193,9 +199,13 @@ export default function AdminParentsPage() {
           )}
         </div>
 
-        {loading && <p className="mt-6 text-center text-[13px] opacity-70 md:text-[18px]">Chargement...</p>}
+        {loading && (
+          <p className="mt-6 text-center text-[13px] opacity-70 md:text-[18px]">Chargement...</p>
+        )}
         {error && (
-          <p className="mt-6 text-center text-[13px] text-red-600 md:text-[18px]">Erreur lors du chargement.</p>
+          <p className="mt-6 text-center text-[13px] text-red-600 md:text-[18px]">
+            Erreur lors du chargement.
+          </p>
         )}
 
         {!loading && !error && (
@@ -269,7 +279,10 @@ export default function AdminParentsPage() {
                   {parentChildren.length > 0 && (
                     <div className="mt-2 flex flex-col gap-1 pl-[60px] md:pl-[100px] md:mt-3 md:gap-2">
                       {parentChildren.map((child) => (
-                        <div key={child.id} className="flex items-center gap-2 md:grid md:grid-cols-[3fr_2fr] md:gap-3">
+                        <div
+                          key={child.id}
+                          className="flex items-center gap-2 md:grid md:grid-cols-[3fr_2fr] md:gap-3"
+                        >
                           <div className="flex items-center gap-2 md:gap-3">
                             <img
                               src={child.picture}
@@ -282,7 +295,11 @@ export default function AdminParentsPage() {
                           </div>
                           <span
                             className="justify-self-start rounded-full border-2 border-white px-2 py-0.5 text-[10px] font-medium shadow-sm whitespace-nowrap md:text-[13px] md:px-3"
-                            style={{ backgroundColor: child.group ? getGroupBg(String(child.group.id)) : "transparent" }}
+                            style={{
+                              backgroundColor: child.group
+                                ? getGroupBg(String(child.group.id))
+                                : "transparent",
+                            }}
                           >
                             {child.group?.name ?? ""}
                           </span>
