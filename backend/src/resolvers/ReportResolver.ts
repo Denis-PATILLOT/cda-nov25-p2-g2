@@ -1,4 +1,4 @@
-import { Arg, ID, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Int, Mutation, Query, Resolver } from "type-graphql";
 import { baby_moodFormat, NewReportInput, Report, UpdateReportInput } from "../entities/Report";
 import { NotFoundError } from "../errors";
 import { Child } from "../entities/Child";
@@ -10,9 +10,7 @@ export default class ReportResolver {
   @Query(() => [Report])
   async reports() {
     return Report.find({
-      relations: [
-        "child", // parents ou admin ou assistante mat
-      ],
+      relations: ["child", "child.group"],
       order: { date: "DESC" },
     });
   }
