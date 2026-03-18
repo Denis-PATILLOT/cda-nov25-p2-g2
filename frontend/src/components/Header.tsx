@@ -79,7 +79,7 @@ export default function Header({ user, refetch }: HeaderProps) {
           <button
             type="button"
             onClick={() => setIsMenuOpen((prev) => !prev)}
-            className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-4 border-white/90 bg-pink-50 shadow-[0_8px_20px_rgba(20,40,90,0.15)] transition duration-200 hover:scale-105 hover:border-yellow-200 md:h-20 md:w-20"
+            className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-4 border-white/90 bg-pink-50 shadow-[0_8px_20px_rgba(20,40,90,0.15)] transition duration-200 cursor-pointer hover:scale-105 hover:border-yellow-200 md:h-20 md:w-20"
           >
             {user.avatar ? (
               // biome-ignore lint/performance/noImgElement: <explanation>
@@ -150,7 +150,7 @@ export default function Header({ user, refetch }: HeaderProps) {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-red-500 transition hover:bg-red-50"
+                className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-red-500 transition hover:bg-red-50 cursor-pointer"
               >
                 <span className="text-lg">🚪</span>
                 <span className="font-medium">Déconnexion</span>

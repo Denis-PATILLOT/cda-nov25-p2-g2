@@ -1,0 +1,13 @@
+mutation CreateMessage($data: CreateMessageInput!) {
+  createMessage(data: $data) {
+    id
+    content
+    date
+    author {
+      id
+    }
+    conversation {
+      id
+    }
+  }
+}

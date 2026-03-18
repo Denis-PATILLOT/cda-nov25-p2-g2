@@ -1,0 +1,23 @@
+query GetConversation($id: Int!) {
+  conversation(id: $id) {
+    id
+    creationDate
+    initiator {
+      id
+      first_name
+    }
+    participant {
+      id
+      first_name
+    }
+    messages {
+      id
+      content
+      date
+      author {
+        id
+        first_name
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { PlanningInput, useCreatePlanningMutation } from "@/graphql/generated/schema";
+import { PlanningInput, useCreatePlanningMutation, useGetAllPlanningsByGroupQuery } from "@/graphql/generated/schema";
 import { useAuth } from "@/hooks/CurrentProfile";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -19,6 +19,9 @@ const CreatePlanningPage = () => {
         formState: { errors },
       } = useForm<PlanningInput>();
     
+    // récupération plannings
+    const {refetch}= useGetAllPlanningsByGroupQuery({variables: {groupId: Number(user?.group?.id)}})
+
     // gestion du hook pour la création d'un planning
     const [createPlanning, {error}] = useCreatePlanningMutation();
     
@@ -31,8 +34,9 @@ const CreatePlanningPage = () => {
 
                 const result = await createPlanning({ variables: { data } });
 
-                if(result) { 
-                    const id = result.data!.createPlanning.id 
+                if(result) {
+                    await refetch(); 
+                    const id = result.data!.createPlanning.id;
                     router.push(`/staff/planning/${id}?created=true`, `/staff/planning/${id}`);    
                 }
             } catch(err) {
