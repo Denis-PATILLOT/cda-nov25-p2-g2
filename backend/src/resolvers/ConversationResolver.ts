@@ -94,7 +94,7 @@ export default class ConversationResolver {
     });
 
     if (existingConversation) {
-      throw new ForbiddenError({ message: "A conversation already exists with these participants" });
+      throw new ForbiddenError({ message: "A conversation already exists with these participants" } );
     }
 
     const newConversation = Conversation.create({  // si ok, on crée la conversation

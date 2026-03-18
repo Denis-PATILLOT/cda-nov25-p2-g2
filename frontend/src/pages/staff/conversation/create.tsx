@@ -4,7 +4,7 @@ import { useChildrenByGroupQuery, useCreateConversationMutation, useCurrentUserC
 import { useAuth } from "@/hooks/CurrentProfile";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const CreateConversationPage = () => {
   
@@ -15,7 +15,7 @@ const CreateConversationPage = () => {
 
   const [createConversation ] = useCreateConversationMutation();
 
-  const [errorMessage, setErrorMessage] = useState<String|undefined>();
+  const [errorMessage, setErrorMessage] = useState<any|undefined>();
   
   const handleClickButton = async(e:any, parentId: number) => {
     if(user)
@@ -33,7 +33,7 @@ const CreateConversationPage = () => {
       if(data?.createConversation.id) router.push(`/staff/conversation/${data.createConversation.id}`);
 
     } catch(err:any) {
-      setErrorMessage(err.message)
+      setErrorMessage(err)
     }
     
   }
@@ -48,7 +48,7 @@ const CreateConversationPage = () => {
         <div className="max-w-full mx-auto md:max-w-[600px]">
           {errorMessage && 
             <p className="text-red-500 text-center px-5 mx-5 my-3 alert bg-red-100 border border-red-500 relative md:top-5 md:text-xl md:mx-52">
-              {errorMessage}
+              {errorMessage.errors[0].extensions.code === "FORBIDDEN" && errorMessage.message.includes("conversation already exists") && "Cette conversaiton existe déjà"}
             <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
               <svg
                 className="h-6 w-6 cursor-pointer fill-current text-red-500"

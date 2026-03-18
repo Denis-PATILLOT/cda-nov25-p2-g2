@@ -138,14 +138,16 @@ export default function Header({ user, refetch }: HeaderProps) {
                 <span className="font-medium">Voir mon profil</span>
               </Link>
 
-              <Link
-                href={`/${user.role}/password`}
-                className="flex items-center gap-3 rounded-2xl px-4 py-3 text-blue-900 transition hover:bg-pink-50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <span className="text-lg">🔒</span>
-                <span className="font-medium">Changer de mot de passe</span>
-              </Link>
+              {user.role === "parent" && 
+                <Link
+                  href={`/${user.role}/password`}
+                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-blue-900 transition hover:bg-pink-50"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span className="text-lg">🔒</span>
+                  <span className="font-medium">Changer de mot de passe</span>
+                </Link>
+              }
 
               <button
                 type="button"

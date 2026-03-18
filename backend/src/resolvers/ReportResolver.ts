@@ -52,10 +52,10 @@ export default class ReportResolver {
       relations: ["child"], 
       where : { date : data.date, child: data.child },
     });
-    if(reportExistsAlready) throw new GraphQLError("Report already exists for this child");
+    if(reportExistsAlready) throw new GraphQLError("Report already exists for this child", {extensions: { code: "REPORT ALREADY EXISTED", argumentName: "report" }});
 
     const existingPlanning = child.group.plannings.some(p => p.date.toISOString() === data.date.toISOString());  // comparaison de date avec passage en string (car sinon 2 objets date ne seront jamais égaux entre eux !)
-    if(!existingPlanning) throw new GraphQLError("No planning existed for that date and group");
+    if(!existingPlanning) throw new GraphQLError(`No planning existed for that date and group : ${new Date(data.date).toLocaleDateString("FR-fr")}`);
 
     const newReport = new Report();
     Object.assign(newReport, data);

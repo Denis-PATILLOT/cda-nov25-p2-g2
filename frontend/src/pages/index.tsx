@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import Layout from "@/components/Layout";
 import { type LoginInput, useLoginMutation } from "@/graphql/generated/schema";
 import { useAuth } from "@/hooks/CurrentProfile";
+import { GraphQLError } from "graphql/error";
+import { CombinedGraphQLErrors } from "@apollo/client";
 
 export default function Home() {
   const router = useRouter();
@@ -36,10 +38,9 @@ export default function Home() {
       console.log("loginform is submitting");
       await login({ variables: { data } });
       await refetch();
-    } catch (err) {
+    } catch (err: unknown) {
       setErrorSubmit(true);
-      console.error(err);
-    }
+   }
   };
 
   const handleClickEye = () => {
@@ -51,8 +52,10 @@ export default function Home() {
       <img src="/babyboardlogo.png" alt="logo" className="md:w-[40%] md:m-auto md:max-w-[600px]" />
 
       {errorSubmit && error && (
-        <p className="text-red-500 text-center px-5 mx-5 alert bg-red-100 border border-red-500 absolute top-5 left-0 right-0 md:top-5 md:text-xl md:mx-52">
-          {error.message || "Une erreur est survenue..."}
+        <p className="text-red-500 px-5 mx-5 alert bg-red-100 border border-red-500 absolute top-3 left-0 right-0 md:top-5 md:text-xl md:mx-52">
+          { error instanceof TypeError && error.message.includes("Network") && <>Erreur de connexion rencontrée.<br /> Merci de réessayer utlérieurement</> }
+          { error instanceof CombinedGraphQLErrors && error.errors[0].extensions?.code === "UNAUTHENTICATED" && "Identifiants incorrects" }
+          
           <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
             <svg
               className="h-6 w-6 cursor-pointer fill-current text-red-500"
