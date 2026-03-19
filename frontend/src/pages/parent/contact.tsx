@@ -222,7 +222,7 @@ const ContactDirectricePage = () => {
               </form>
 
               <p className="bb-notice-text">
-                Votre message sera envoyé directement à la boîte de la direction.
+                Votre message sera envoyé directement à la boîte mail de la direction.
               </p>
             </div>
           </main>
