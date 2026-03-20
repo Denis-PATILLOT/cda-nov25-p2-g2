@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Layout from "@/components/Layout";
 import { useCreateMessageMutation, useGetConversationQuery } from "@/graphql/generated/schema";
 import { useAuth } from "@/hooks/CurrentProfile";
@@ -34,7 +35,7 @@ const ConversationId = () => {
         setMessageToSend("");
         
     }
-
+  
     // hauteur du textarea en fonction du contenu
     const textareaMessage = useRef<HTMLTextAreaElement>();
     
@@ -42,6 +43,10 @@ const ConversationId = () => {
         textareaMessage.current.style.height = "40px";
         textareaMessage.current.style.height = textareaMessage.current.scrollHeight + "px";
     }
+
+    useEffect(() => { // scroll en bas à l'ouverture de la conversation
+        window.scrollTo({ top: window.document.documentElement.offsetHeight, left: 0, behavior: "smooth" })
+    },[]);
 
     if(user && isAuthenticated) {
         return( 
@@ -63,7 +68,7 @@ const ConversationId = () => {
                                 data.conversation.messages.map(m => 
                                     <>
                                         <span className={`${m.author.id === user.id ? "text-end mr-1" : "text-start ml-1"} text-[0.6em] mt-3`}>{new Date(m.date).toLocaleDateString("FR-fr", {hour:"2-digit", minute:"2-digit"})}</span>
-                                        <div className={`w-[fit] text-start  border-[#FFD771] border-2 px-2 py-1 rounded-xl mb-5 ${ m.author.id === user.id ? "bg-amber-200 self-end" : "bg-yellow-100 self-start"}`}>{m.content}
+                                        <div className={`w-fit text-start  border-[#FFD771] border-2 px-2 py-1 rounded-xl mb-5 ${ m.author.id === user.id ? "bg-amber-200 self-end" : "bg-yellow-100 self-start"}`}>{m.content}
                                         </div>
                                     </>
                                     

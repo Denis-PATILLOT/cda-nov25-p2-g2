@@ -19,8 +19,8 @@ export default class ConversationResolver {
           { initiator: { id: currentUser.id } },
           { participant: { id: currentUser.id } }
         ],
-        relations: ["initiator", "participant", "messages", "messages.author", "initiator.children", "participant.children", "initiator.children.group", "participant.children.group"],
-        order: { creationDate: "DESC" },
+        relations: ["initiator", "participant", "messages", "messages.author","initiator.group", "participant.group", "initiator.children", "participant.children", "initiator.children.group", "participant.children.group"],
+        order: { creationDate: "DESC", messages: { date: "ASC"} },
       });
   
       return conversations;

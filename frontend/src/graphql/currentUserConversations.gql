@@ -7,6 +7,9 @@ query CurrentUserConversations {
       first_name
       last_name
       role
+      group {
+        id
+      }
       children {
         firstName
         lastName
@@ -21,12 +24,24 @@ query CurrentUserConversations {
       first_name
       last_name
       role
+      group {
+        id
+      }
       children {
         firstName
         lastName
         group {
           id
         }
+      }
+    }
+    messages {
+      date
+      content
+      author {
+        id
+        first_name
+        last_name
       }
     }
   }
