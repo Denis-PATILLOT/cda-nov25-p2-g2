@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import { useGetPlanningByGroupIdAndDateQuery, useReportByIdQuery } from "@/graphql/generated/schema";
+import { CombinedGraphQLErrors } from "@apollo/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -18,7 +19,7 @@ const ReportDetails = () => {
        created === "true" ? setCreatedReport(true) : null
     }, [created]);
   
-    const { data, error } = useReportByIdQuery({variables: {reportId: Number(report_id)}})
+    const { data,loading, error } = useReportByIdQuery({variables: {reportId: Number(report_id)}})
     const report = data?.report || null;
     
     
@@ -60,9 +61,17 @@ const ReportDetails = () => {
                                 </p>
                             </div>
                 }
+                {!loading && error && <p className="text-500-red alert bg-[#FEF9F6] border-red-500 m-2">
+                    { error instanceof TypeError && error?.message.includes("Network") && <>Erreur de connexion rencontrée.<br /> Merci de réessayer utlérieurement</> }
+                    { error instanceof CombinedGraphQLErrors && error.errors[0].extensions?.code === "FORBIDDEN"  && "Vous ne pouvez accéder à ce compte-rendu" }
+                    { error instanceof CombinedGraphQLErrors && error.errors[0].extensions?.code === "NOT_FOUND" && "Compte-rendu introuvable" }    
+                </p>}
+                { !loading && !error && Number(id) !== Number(report?.child.id) &&  <p className="text-500-red alert bg-[#FEF9F6] border-red-500 m-2">"Données incorrectes"</p> } 
+                 
+                
+                {report && Number(id) === Number(report?.child.id) &&
                 <div className="w-[90%] px-4 py-1 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold mx-auto border-3 border-[#FFD771]">
-                    {error && <p>{error.message}</p>}
-                    {!planning && <p>pas de planning correspondant à cette date</p>}
+                    {!planning && !error && <p>pas de planning correspondant à cette date</p>}
 
                     {report && planning &&
                     <>
@@ -124,7 +133,10 @@ const ReportDetails = () => {
                     </>
                     }
                 </div>
+                
+                }
                 </div>
+            
         </Layout>
     );
 }

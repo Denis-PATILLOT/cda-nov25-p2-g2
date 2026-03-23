@@ -403,8 +403,10 @@ export type User = {
   id: Scalars['Int']['output'];
   last_name: Scalars['String']['output'];
   messages: Array<Message>;
+  participatedConversations?: Maybe<Array<Conversation>>;
   phone: Scalars['String']['output'];
   role: Scalars['String']['output'];
+  startedConversations?: Maybe<Array<Conversation>>;
 };
 
 export type AdminChildDetailQueryVariables = Exact<{
@@ -528,7 +530,7 @@ export type ChildrenByGroupQueryVariables = Exact<{
 }>;
 
 
-export type ChildrenByGroupQuery = { __typename?: 'Query', childrenByGroup: Array<{ __typename?: 'Child', firstName: string, lastName: string, parents: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string }> }> };
+export type ChildrenByGroupQuery = { __typename?: 'Query', childrenByGroup: Array<{ __typename?: 'Child', firstName: string, lastName: string, parents: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string, participatedConversations?: Array<{ __typename?: 'Conversation', initiator: { __typename?: 'User', id: number } }> | null, startedConversations?: Array<{ __typename?: 'Conversation', participant: { __typename?: 'User', id: number } }> | null }> }> };
 
 export type CreateConversationMutationVariables = Exact<{
   initiatorId: Scalars['Int']['input'];
@@ -1461,6 +1463,16 @@ export const ChildrenByGroupDocument = gql`
       id
       first_name
       last_name
+      participatedConversations {
+        initiator {
+          id
+        }
+      }
+      startedConversations {
+        participant {
+          id
+        }
+      }
     }
   }
 }

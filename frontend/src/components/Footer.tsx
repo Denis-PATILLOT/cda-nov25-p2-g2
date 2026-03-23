@@ -14,7 +14,8 @@ export default function Footer() {
       <Link href={` ${isAuthenticated && isStaff ? `/${user?.role}/planning` : "#"}`}>
         <Image src={"/calendrier.png"} alt="" width={120} height={100} title={isAuthenticated && isStaff ? "plannings" : ""} />
       </Link>
-      <Link href={` ${isAuthenticated && isStaff ? `/${user?.role}/conversation` : "#"}`}>
+      <Link href={` ${isAuthenticated && isStaff ? `/${user?.role}/conversation`  : 
+                    isAuthenticated && isParent ? `/${user?.role}/messages` : "#"} `}>
         <Image src={"/chat.png"} alt="" width={120} height={100} title={isAuthenticated && isStaff ? "conversations" : ""} />
       </Link>
     </footer>

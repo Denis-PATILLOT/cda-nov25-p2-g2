@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import { useGetPlanningByIdQuery } from "@/graphql/generated/schema";
+import { CombinedGraphQLErrors } from "@apollo/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -20,18 +21,21 @@ const PlanningDetails = () => {
   
   const planning = data?.getPlanningById || null;
 
-  if(error) {
-    return <p>error</p>
-  }
-
-  if(planning) {
-    return(
+  return(
         <Layout pageTitle={`Staff - planning ${id}`}>
             <div className="max-w-full mx-auto md:max-w-[600px]">
+                {error &&  
+                    <p className="text-red-500 px-5 mx-5 alert border-red-500">
+                        { error instanceof TypeError && error?.message.includes("Network") && <>Erreur de connexion rencontrée.<br /> Merci de réessayer utlérieurement</> }
+                        { error instanceof CombinedGraphQLErrors && error.message.startsWith("you can't access this planning") && "Vous ne pouvez accéder à ce planning" }
+                        { error instanceof CombinedGraphQLErrors && error.errors[0].extensions?.code === "NOT_FOUND" && "Planning introuvable" }
+                    </p>
+                }
+
+                {planning && !error && 
                 <div className="w-[90%] px-4 py-1 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold mx-auto border-3 border-[#FFD771]">
-
+                   
                     {createdPlanning && 
-
                     <p className="text-green-500 text-center px-3 mx-2 mt-3 alert bg-green-200 border border-green-500 relative md:text-xl md:w-full">
                         Planning créé avec succès
                         <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
@@ -48,7 +52,8 @@ const PlanningDetails = () => {
                         </span>
                     </p>
                     }
-                    
+                
+                
                     <div className="flex justify-between items-center">
                         <Link href={`/staff/planning/${id}/edit`} title="Modifier planning" >
                             <Image src="/boutons/modifier.png" alt="" width={50} height={20} className="inline-block opacity-70 hover:opacity-100"/>
@@ -102,10 +107,11 @@ const PlanningDetails = () => {
                         <input type="text" value={planning.snack!} readOnly disabled className="border-2 border-amber-300 bg-[#FEE8B6] p-2 rounded-lg w-full inline-block mt-1 mb-3" />
                     </div>
                 </div>
+            }                
             </div>
+    
         </Layout>
     );
-  }
-};
+}
 
 export default PlanningDetails;

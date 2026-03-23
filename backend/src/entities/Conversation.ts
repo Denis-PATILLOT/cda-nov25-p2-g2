@@ -22,11 +22,11 @@ export class Conversation extends BaseEntity {
   creationDate: Date;
 
   @Field(() => User)
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, initiator => initiator.startedConversations)
   initiator: User;
 
   @Field(() => User)
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, participant => participant.participatedConversations)
   participant: User;
 
   @Field(() => [Message])

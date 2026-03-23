@@ -55,7 +55,7 @@ export default function Home() {
         <p className="text-red-500 px-5 mx-5 alert bg-red-100 border border-red-500 absolute top-3 left-0 right-0 md:top-5 md:text-xl md:mx-52">
           { error instanceof TypeError && error.message.includes("Network") && <>Erreur de connexion rencontrée.<br /> Merci de réessayer utlérieurement</> }
           { error instanceof CombinedGraphQLErrors && error.errors[0].extensions?.code === "UNAUTHENTICATED" && "Identifiants incorrects" }
-          
+                    
           <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
             <svg
               className="h-6 w-6 cursor-pointer fill-current text-red-500"

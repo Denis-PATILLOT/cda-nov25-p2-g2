@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 import { useCreateMessageMutation, useGetConversationQuery } from "@/graphql/generated/schema";
 import { useAuth } from "@/hooks/CurrentProfile";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 
 const ConversationId = () => {
@@ -12,7 +12,7 @@ const ConversationId = () => {
 
     const {user, isAuthenticated, group, } = useAuth();
 
-    const {data, loading, error, refetch} = useGetConversationQuery({variables: {conversationId: Number(conversationId)}, pollInterval: 5000});
+    const {data, loading, error, refetch} = useGetConversationQuery({variables: {conversationId: Number(conversationId)}, pollInterval: 5000, fetchPolicy:"cache-and-network"}); // pour avoir les bonnes données de messages (ordre respecté)
 
     // création d'un message pour l'utilisateur connecté
     const [createMessage, {error: errorMessageCreation}] = useCreateMessageMutation();
@@ -31,22 +31,22 @@ const ConversationId = () => {
             }
         }});
         await refetch();
-        textareaMessage.current.style.height = "40px"; // hauteur par défaut
+        textareaMessage.current!.style.height = "40px"; // hauteur par défaut
         setMessageToSend("");
         
     }
   
     // hauteur du textarea en fonction du contenu
-    const textareaMessage = useRef<HTMLTextAreaElement>();
+    const textareaMessage = useRef<HTMLTextAreaElement|null>(null);
     
     const handleInput = () => {
-        textareaMessage.current.style.height = "40px";
-        textareaMessage.current.style.height = textareaMessage.current.scrollHeight + "px";
+        textareaMessage.current!.style.height = "40px";
+        textareaMessage.current!.style.height = textareaMessage.current!.scrollHeight + "px";
     }
 
-    useEffect(() => { // scroll en bas à l'ouverture de la conversation
-        window.scrollTo({ top: window.document.documentElement.offsetHeight, left: 0, behavior: "smooth" })
-    },[]);
+    useEffect(() => { // scroll en bas à l'ouverture de la conversation après chargement données
+        window.scrollTo({ top: window.document.documentElement.offsetHeight, behavior: "smooth" })
+    },[data]); 
 
     if(user && isAuthenticated) {
         return( 
@@ -60,17 +60,17 @@ const ConversationId = () => {
                     
                     {error && <p>{error.message}</p>}
                     
-                    {data?.conversation && 
+                    {data?.conversation &&
                     <p className="text-left text-[0.7em]">créée le {new Date(data?.conversation?.creationDate).toLocaleDateString()} par {data.conversation.initiator.first_name}</p>
                     }
                     <div className="flex flex-col min-h-[420px] my-2">
                     {data?.conversation?.messages?.length && data?.conversation?.messages?.length > 0 ?
                                 data.conversation.messages.map(m => 
-                                    <>
+                                    <Fragment key={m.author+m.date}>
                                         <span className={`${m.author.id === user.id ? "text-end mr-1" : "text-start ml-1"} text-[0.6em] mt-3`}>{new Date(m.date).toLocaleDateString("FR-fr", {hour:"2-digit", minute:"2-digit"})}</span>
                                         <div className={`w-fit text-start  border-[#FFD771] border-2 px-2 py-1 rounded-xl mb-5 ${ m.author.id === user.id ? "bg-amber-200 self-end" : "bg-yellow-100 self-start"}`}>{m.content}
                                         </div>
-                                    </>
+                                    </Fragment>
                                     
                                 ) : 
                                 <div className="text-end min-h-[410px] italic mt-3">aucun message actuellement</div>

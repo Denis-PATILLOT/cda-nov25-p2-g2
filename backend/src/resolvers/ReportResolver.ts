@@ -1,8 +1,10 @@
-import { Arg, ID, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, ID, Int, Mutation, Query, Resolver } from "type-graphql";
 import { baby_moodFormat, NewReportInput, Report, UpdateReportInput } from "../entities/Report";
-import { NotFoundError } from "../errors";
+import { ForbiddenError, NotFoundError } from "../errors";
 import { Child } from "../entities/Child";
 import { GraphQLError } from "graphql/error";
+import { GraphQLContext } from "../types";
+import { getCurrentUser } from "../auth";
 
 @Resolver()
 export default class ReportResolver {
@@ -19,7 +21,10 @@ export default class ReportResolver {
 
   // afficher un seul report
   @Query(() => Report, { nullable: true })
-  async report(@Arg("id", () => Int) id: number) {
+  async report(@Arg("id", () => Int) id: number, @Ctx() context: GraphQLContext) {
+    
+    const user = await getCurrentUser(context);
+    
     const report =  await Report.findOne({
       relations: {
         child : {
@@ -31,7 +36,9 @@ export default class ReportResolver {
         where: {id} 
     });
 
-    if(!report) throw new NotFoundError();
+    if(!report) throw new NotFoundError({message: "Report not found"});
+
+    if (user.group?.id !== report.child.group.id) throw new ForbiddenError({message: "You can't access this report"})
     
     return report;
   };

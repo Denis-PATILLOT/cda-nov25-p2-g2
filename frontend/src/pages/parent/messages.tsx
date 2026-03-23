@@ -37,7 +37,7 @@ const MessagingPage = () => {
 
     const [messageToSend, setMessageToSend] = useState<string>("");
 
-    const {data, error, refetch: refetchMyConversations} = useCurrentUserConversationsQuery();
+    const {data, error, refetch: refetchMyConversations} = useCurrentUserConversationsQuery({fetchPolicy:"cache-and-network"}); // on veut éviter le cache à ce niveau afin d'avoir les bonnes conversations du parent connecté
 
     // création conversation pour une concversation non créée de base avec un staff ou directrice
     const [createConversation, {error: errorCreateConversation}] = useCreateConversationMutation();
@@ -51,7 +51,7 @@ const MessagingPage = () => {
         conversation => ((conversation.initiator.role === selectedRole && conversation.initiator.group?.id === selectedChild?.group.id) || (conversation.participant.role === selectedRole && conversation.participant.group?.id === selectedChild?.group.id)));
     
     
-    const {data: messagesData, error: messagesError, refetch} = useGetMessagesFromConversationQuery({variables: {conversationId: Number(conversationFiltered?.id)}, pollInterval: 5000});
+    const {data: messagesData, error: messagesError, refetch} = useGetMessagesFromConversationQuery({variables: {conversationId: Number(conversationFiltered?.id)}, pollInterval: 5000, fetchPolicy:"cache-and-network"});
 
     const messages = messagesData?.messagesFromConversation;
 
@@ -61,11 +61,11 @@ const MessagingPage = () => {
     };
 
     // hauteur du textarea en fonction du contenu
-    const textareaMessage = useRef<HTMLTextAreaElement>();
+    const textareaMessage = useRef<HTMLTextAreaElement|null>(null);
     
     const handleInput = () => {
-        textareaMessage.current.style.height = "40px";
-        textareaMessage.current.style.height = textareaMessage.current.scrollHeight + "px";
+        textareaMessage.current!.style.height = "40px";
+        textareaMessage.current!.style.height = textareaMessage.current!.scrollHeight + "px";
     }
 
     // création d'un message pour l'utilisateur connecté
@@ -118,7 +118,7 @@ const MessagingPage = () => {
             }
             }});
             await refetch();
-            textareaMessage.current.style.height = "40px"; // hauteur par défaut
+            textareaMessage.current!.style.height = "40px"; // hauteur par défaut
             setMessageToSend("");
         }
     }
@@ -167,7 +167,7 @@ const MessagingPage = () => {
             </div>
 
             {/* Liste des messages typée par author */}
-            <div className="flex flex-col p-6">
+            <div className="flex flex-col p-6 min-h-[275px]">
             {!conversationFiltered && <p>aucune conversation existante</p>}
             {conversationFiltered && conversationFiltered.messages.length === 0 && <p>pas de message actuellement</p>}
             {conversationFiltered && messages && messages.map(m => 

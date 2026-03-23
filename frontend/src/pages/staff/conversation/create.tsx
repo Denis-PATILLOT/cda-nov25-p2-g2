@@ -10,8 +10,8 @@ const CreateConversationPage = () => {
   
   const router = useRouter();
   const { user, group } = useAuth();
-
-  const { data, loading, error} = useChildrenByGroupQuery({variables: { groupId: Number(group?.id)}});
+  // récup des enfants et des parents (ceux-ci avec leurs conversations démarrées ou participées)
+  const { data, loading, error} = useChildrenByGroupQuery({variables: { groupId: Number(group?.id)}, fetchPolicy:"cache-and-network"});
 
   const {refetch} = useCurrentUserConversationsQuery();
 
@@ -25,7 +25,7 @@ const CreateConversationPage = () => {
       e.preventDefault();
       console.log("user courant : ", user?.id);
       console.log("parent id : ", parentId);
-      const {data } = await createConversation({
+      const { data } = await createConversation({
         variables: {
           initiatorId: Number(user.id),
           participantId: Number(parentId)
@@ -41,11 +41,9 @@ const CreateConversationPage = () => {
     
   }
 
-  // useEffect(() =>
-  //   setErrorMessage(errorConversation?.message) // on passe la valeur de l'erreur en création de la conversation pour l'afficher
-  // ,[errorConversation])
-
   if(data && group) {
+    console.log(data.childrenByGroup);
+    
     return(
       <Layout pageTitle="Staff - plannings">
         <div className="max-w-full mx-auto md:max-w-[600px]">
@@ -66,9 +64,10 @@ const CreateConversationPage = () => {
             </p>
           }
           
-          <div className="w-[90%] p-4 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold text-center border-3 min-h-[600px] border-[#FFD771] mx-auto">
-              <h1 className="text-start">
-                <img src={"/boutons/chat.png"} width={100} className="inline"/>Parents {group.name}
+          <div className="w-[90%] p-4 bg-[#FEF9F6] rounded-2xl text-center text-[#1b3c79] font-semibold border-3 min-h-[600px] border-[#FFD771] mx-auto">
+              <span className="text-xs text-end block">{group.name}</span>
+              <h1 className="mr-10">
+                <img src={"/boutons/chat.png"} width={100} className="inline"/>Parents
                 </h1>
               
               <div className="w-full text-start">
@@ -76,11 +75,20 @@ const CreateConversationPage = () => {
                 {error && <p>{error.message}</p>}
                 {data.childrenByGroup.length === 0 && <p>Aucun enfant pour ce groupe</p>}
                 
-                {data.childrenByGroup.length > 0 && data.childrenByGroup.map(child => 
+
+                {!loading && data.childrenByGroup.length > 0 && data.childrenByGroup &&
+                  data.childrenByGroup.filter(child => child.parents.some(p => p.startedConversations?.every(c => c.participant.id !== user?.id) && p.participatedConversations?.every(c => c.initiator.id !== user?.id))).length === 0 ?
+                  <p>Tous les parents du groupe ont une conversation</p> :
+                // on enleve les enfants qui ont tous leurs parents qui ont au moins une conversation avec l'ass maternelle
+                data.childrenByGroup.filter(child => child.parents.some(p => p.startedConversations?.every(c => c.participant.id !== user?.id) && p.participatedConversations?.every(c => c.initiator.id !== user?.id)))
+                .map(child => 
                     <div className="bg-[#fdf4e6]  border-[#FFD771] border-2" key={child.firstName + child.lastName}>
                       <div className="bg-amber-50 px-15 py-2 border-b-2 border-[#FFD771] text-center">{child.firstName} {child.lastName}</div>
                         <ul>
-                        {child.parents.map(parent =>
+                        {child.parents
+                        // on garde chaque parent qui n'a pas de conversation avec l'ass mat.
+                        .filter(parent => parent.startedConversations?.every(c => c.participant.id !== user?.id) && parent.participatedConversations?.every(c => c.initiator.id !== user?.id))
+                        .map(parent =>
                             <Link key={parent.id} href="#" className="cursor-pointer" onClick={(e) => handleClickButton(e, parent.id)}>
                                 <li className="text-start ml-3 my-2 block">
                                     <img src={"/admin/flechedroite.png"} width={30} className="inline-block" /> 
@@ -92,8 +100,8 @@ const CreateConversationPage = () => {
                         )}
                         </ul>
                     </div>
-                    
-                )}
+                  )
+                  }
                 </div>
               </div>
           </div>
