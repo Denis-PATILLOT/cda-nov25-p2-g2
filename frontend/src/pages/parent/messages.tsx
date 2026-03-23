@@ -39,7 +39,7 @@ const MessagingPage = () => {
 
     const {data, error, refetch: refetchMyConversations} = useCurrentUserConversationsQuery({fetchPolicy:"cache-and-network"}); // on veut éviter le cache à ce niveau afin d'avoir les bonnes conversations du parent connecté
 
-    // création conversation pour une concversation non créée de base avec un staff ou directrice
+    // création conversation pour une conversation non créée de base avec un staff ou directrice
     const [createConversation, {error: errorCreateConversation}] = useCreateConversationMutation();
 
     const conversationsList = data?.myConversations || [];

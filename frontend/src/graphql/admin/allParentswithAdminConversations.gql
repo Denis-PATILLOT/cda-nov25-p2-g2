@@ -1,0 +1,32 @@
+# parents avec leurs conversations avec l'admin (ou pas si non existant)
+query AllParentsWithAdminConverations {
+  allParentsWithAdminConverations {
+    id
+    first_name
+    last_name
+    avatar
+    children {
+      id
+      firstName
+      lastName
+      picture
+      birthDate
+      group {
+        id
+        name
+      }
+    }
+    startedConversations {
+      id
+      participant {
+        id
+      }
+    }
+    participatedConversations {
+      id
+      initiator {
+        id
+      }
+    }
+  }
+}
