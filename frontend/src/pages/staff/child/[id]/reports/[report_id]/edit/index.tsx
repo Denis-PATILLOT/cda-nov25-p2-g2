@@ -12,6 +12,9 @@ const EditReport = () => {
 
     // gestion du hook pour la mutation d'un report
     const [updateProfile, {loading}] = useUpdateReportMutation();
+
+    // gestion d'erreurs validation en édition d'un report
+    const [errorEdit, setErrorEdit] = useState<string|null>(null);
     
     const report = data?.report || null;
     console.log("report : " , report);
@@ -29,19 +32,37 @@ const EditReport = () => {
             const formData = new FormData(e.currentTarget as unknown as any);
             const reportData = Object.fromEntries(formData) as unknown as any;
             reportData.isPresent = reportData.isPresent === "on" ? true : false;
+            reportData.staff_comment = reportData.isPresent ? reportData.staff_comment.length !== 0 ?  reportData.staff_comment : null : null;
             reportData.date = report!.date;
             reportData.child = { id: Number(id)};
-            reportData.picture = reportData.picture.length === 0 ? null : reportData.picture; // pour gérer le cas où on ne met pas de donnée dans l'url
-            reportData.baby_mood = reportData.baby_mood ? reportData.baby_mood : "na"  // si pas présent, on met une valeur à baby_mood à "na"
+            reportData.picture = reportData.isPresent ? reportData.picture.length !== 0 ? reportData.picture : null : null; // pour gérer le cas où on ne met pas de donnée dans l'url
+            reportData.baby_mood = reportData.isPresent ? reportData.baby_mood : "na" // si pas présent, on met une valeur à baby_mood à "na"
+            
             console.log(reportData);
+
+            if(reportData.picture && !reportData.picture.match(/https:\/\/(www.)?[a-zA-Z0-9-]+(\.[a-zA-Z]+)+(\/(\w|[-_%.#?=&+])+)+/))
+            {
+                setErrorEdit("L'url de l'image doit commencer par https:// et être une url valide");
+                return;
+            }
+
+            if(reportData.isPresent && !reportData.staff_comment) {
+                setErrorEdit("Veuiller remplir le champ commentaire journée");
+                return;
+            }
+
+            if(reportData.isPresent && !reportData.baby_mood) {
+                setErrorEdit("Veuiller indiquer l'humeur du jour");
+                return;
+            }
+
             await updateProfile({variables: {
                 updateReportId : Number(report_id),
                 data: reportData 
             }});
             await refetch(); // mise à jour du report avant redirection
             router.push(`/staff/child/${id}/reports/${report_id}`);
-    }
-    
+    };
     
     return(
         <Layout pageTitle={`Staff - planning ${id}`}>
@@ -60,9 +81,32 @@ const EditReport = () => {
                                     </span>
                                 </p>
                             </div>
+
                 }
+
+                {/* erreurs de validation */}
+                {errorEdit && 
+                    <p className="text-red-500 text-center px-5 mx-5 my-3 alert bg-red-100 border relative border-red-500 md:text-xl md:mx-52">
+                        {errorEdit}
+                        <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+                            <svg
+                                className="h-6 w-6 cursor-pointer fill-current text-red-500"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                onClick={() => setErrorEdit(null)}
+                            >
+                                <title>Close</title>
+                                <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                            </svg>
+                        </span>
+                    </p>
+                }
+
                 <div className="w-[90%] px-4 py-1 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold mx-auto border-3 border-[#FFD771]">
                     {error && <p>{error.message}</p>}
+                    
+                    
+
                     {!report && <p>pas de compte-rendu existant</p>}
                     
                     {report &&  
@@ -83,7 +127,7 @@ const EditReport = () => {
                                 </label>
                                 <textarea id="staff_comment" name="staff_comment" defaultValue={report.staff_comment!}  disabled={!isPresent} rows={4} className={`border-2 border-amber-300 p-2 rounded-lg w-full inline-block mt-1 mb-3 ${isPresent ? "bg-[#FEE8B6]" : "bg-gray-400 cursor-not-allowed"} `} />
                                 {report.picture && <img src={report.picture} alt="" className="border-2 border-amber-300 bg-[#FEE8B6] rounded-lg w-full inline-block mt-3"/>}
-                                <input type="text" name="picture" placeholder="url photo à indiquer" className={`border-2 border-amber-300 p-2 rounded-lg w-full inline-block my-3 ${isPresent ? "bg-[#FEE8B6]" : "bg-gray-400 cursor-not-allowed"} `} defaultValue={ report.picture ? report.picture: ""} />
+                                <input type="text" name="picture" placeholder="url photo (https://...)" disabled={!isPresent} pattern="https://.+" className={`border-2 border-amber-300 p-2 rounded-lg w-full inline-block my-3 ${isPresent ? "bg-[#FEE8B6]" : "bg-gray-400 cursor-not-allowed"} `} defaultValue={ report.picture ? report.picture: ""} />
                                 {/* <img src={`/babymood/${report.baby_mood}.png`} alt={report.baby_mood} /> */}
                                 <div className="flex justify-between">
                                     <input type="radio" name="baby_mood" id="baby_mood_good" value="good" disabled={!isPresent} defaultChecked={report.baby_mood === "good"} />
@@ -105,12 +149,3 @@ const EditReport = () => {
 }
 
 export default EditReport;
-
-
-
-  
-  
-  
-  
-  
-  

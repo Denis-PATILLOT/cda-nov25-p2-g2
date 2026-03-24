@@ -26,13 +26,10 @@ export class Message extends BaseEntity {
   date: Date;
 
   @Field(() => User)
-  @ManyToOne(() => User, { eager: true })
+  @ManyToOne(() => User, author => author.messages)
   author: User;
 
   @Field(() => Conversation)
-  @ManyToOne(
-    () => Conversation,
-    (conversation) => conversation.messages,
-  )
+  @ManyToOne(() => Conversation, conversation => conversation.messages)
   conversation: Conversation;
 }

@@ -1,0 +1,5 @@
+query GetStaffUser($groupId: Int!) {
+  getStaffUser(groupId: $groupId) {
+  id  
+  }
+}

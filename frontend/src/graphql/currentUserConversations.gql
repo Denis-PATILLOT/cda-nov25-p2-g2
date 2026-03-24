@@ -1,11 +1,15 @@
-query GetConversation($conversationId: Int!) {
-  conversation(id: $conversationId) {
-    creationDate
+query CurrentUserConversations {
+  myConversations {
     id
+    creationDate
     initiator {
       id
       first_name
       last_name
+      role
+      group {
+        id
+      }
       children {
         firstName
         lastName
@@ -13,11 +17,16 @@ query GetConversation($conversationId: Int!) {
           id
         }
       }
+      
     }
     participant {
       id
       first_name
       last_name
+      role
+      group {
+        id
+      }
       children {
         firstName
         lastName

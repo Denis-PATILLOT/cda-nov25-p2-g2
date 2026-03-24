@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/CurrentProfile";
 import Layout from "@/components/Layout";
 import { useChildWithGroupAndPlanningsQuery } from "@/graphql/generated/schema";
+import { CombinedGraphQLErrors } from "@apollo/client";
 
 const ChildReports = () => {
     const router = useRouter();
@@ -45,9 +46,16 @@ const ChildReports = () => {
 
         return(
                 <Layout pageTitle="Staff - comptes-rendus">
+                    {error && <p className="text-red-500 alert border-red-500 text-center m-2">
+                            { error instanceof TypeError && error?.message.includes("Network") && <>Erreur de connexion rencontrée.<br /> Merci de réessayer utlérieurement</> }
+                            { error instanceof CombinedGraphQLErrors && error.errors[0].extensions?.code === "FORBIDDEN" && "Vous ne pouvez accéder à cet enfant" }
+                            { error instanceof CombinedGraphQLErrors && error.errors[0].extensions?.code === "NOT_FOUND" && "Enfant introuvable" }
+                        </p>
+                        
+                    }
+                    {child && !error &&
                     <div className="max-w-full mx-auto md:max-w-[600px]">
-                        {child && 
-                            <div className="w-[full] flex justify-start items-center mt-5 mb-8 text-[#1b3c79] ">
+                        <div className="w-[full] flex justify-start items-center mt-5 mb-8 text-[#1b3c79] ">
                                 {/* img car Image ne passe pas avec l'url de notre enfant */}
                                 <img src={child.picture} alt={`picture of ${child.firstName} ${child.lastName}`} className="h-[130px] ml-5 object-contain rounded-[50%] border-3 border-[#ffdd23] absolute" /> 
                                 <p className="w-[67%] h-[100px] rounded-4xl bg-[#FEF9F6] border-3 border-[#FFD771] ml-25 text-center pt-3 pl-5 flex justify-end">
@@ -60,14 +68,14 @@ const ChildReports = () => {
                                     </span>
                                 </p>
                             </div>
-                        }
+                    
                         <div className="w-[90%] p-4 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold text-center border-3 border-[#FFD771] mx-auto min-h-[450px]">
                             <h1 className="m-1 mb-2">Comptes-rendus</h1>
                             <Link href={`/staff/child/${id}/reports/create`}>
                                 <button className="bg-[#ffdd23] p-2 rounded-xl text-xs text-white hover:bg-[#ffbb25] cursor-pointer mb-2 text-right">Créer compte-rendu</button>
                             </Link>
                             {loading && <p>Chargement des données</p>}
-                            {error && <p className="text-red-500">Erreur : {error.message}</p>}
+                            
                             {child && 
                             <>
                             <div className="flex gap-5 justify-evenly">
@@ -122,10 +130,10 @@ const ChildReports = () => {
                             </>
                             }
                         </div>
-                    </div>
+        
+                </div> }
                 </Layout>
-            ); 
+    );
     }
 }
-
 export default ChildReports;

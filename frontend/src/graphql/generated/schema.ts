@@ -128,6 +128,7 @@ export type MutationCreateChildArgs = {
 
 
 export type MutationCreateConversationArgs = {
+  initiatorId: Scalars['Int']['input'];
   participantId: Scalars['Int']['input'];
 };
 
@@ -267,13 +268,16 @@ export type Query = {
   allStaff: Array<User>;
   child: Child;
   children: Array<Child>;
+  childrenByGroup: Array<Child>;
   conversation?: Maybe<Conversation>;
+  getAdminUser: User;
   getAllGroups: Array<Group>;
   getAllPlannings: Array<Planning>;
   getAllPlanningsByGroup: Array<Planning>;
   getGroupById?: Maybe<Group>;
   getPlanningByGroupIdAndDate: Planning;
   getPlanningById: Planning;
+  getStaffUser: User;
   me?: Maybe<User>;
   messagesFromConversation: Array<Message>;
   myConversations: Array<Conversation>;
@@ -285,6 +289,11 @@ export type Query = {
 
 export type QueryChildArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryChildrenByGroupArgs = {
+  groupId: Scalars['Int']['input'];
 };
 
 
@@ -317,6 +326,11 @@ export type QueryGetPlanningByGroupIdAndDateArgs = {
 
 export type QueryGetPlanningByIdArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetStaffUserArgs = {
+  groupId: Scalars['Int']['input'];
 };
 
 
@@ -389,8 +403,11 @@ export type User = {
   group?: Maybe<Group>;
   id: Scalars['Int']['output'];
   last_name: Scalars['String']['output'];
+  messages: Array<Message>;
+  participatedConversations?: Maybe<Array<Conversation>>;
   phone: Scalars['String']['output'];
   role: Scalars['String']['output'];
+  startedConversations?: Maybe<Array<Conversation>>;
 };
 
 export type AdminChildDetailQueryVariables = Exact<{
@@ -519,6 +536,28 @@ export type ChildrenQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ChildrenQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, children?: Array<{ __typename?: 'Child', id: number, firstName: string, lastName: string, birthDate: any, picture: string, healthRecord?: string | null, group: { __typename?: 'Group', name: string } }> | null } | null };
 
+export type ChildrenByGroupQueryVariables = Exact<{
+  groupId: Scalars['Int']['input'];
+}>;
+
+
+export type ChildrenByGroupQuery = { __typename?: 'Query', childrenByGroup: Array<{ __typename?: 'Child', firstName: string, lastName: string, parents: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string, participatedConversations?: Array<{ __typename?: 'Conversation', initiator: { __typename?: 'User', id: number } }> | null, startedConversations?: Array<{ __typename?: 'Conversation', participant: { __typename?: 'User', id: number } }> | null }> }> };
+
+export type CreateConversationMutationVariables = Exact<{
+  initiatorId: Scalars['Int']['input'];
+  participantId: Scalars['Int']['input'];
+}>;
+
+
+export type CreateConversationMutation = { __typename?: 'Mutation', createConversation: { __typename?: 'Conversation', id: number } };
+
+export type CreateMessageMutationVariables = Exact<{
+  data: CreateMessageInput;
+}>;
+
+
+export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'Message', id: number } };
+
 export type CreatePlanningMutationVariables = Exact<{
   data: PlanningInput;
 }>;
@@ -533,6 +572,30 @@ export type CreateReportMutationVariables = Exact<{
 
 export type CreateReportMutation = { __typename?: 'Mutation', createReport: { __typename?: 'Report', id: string } };
 
+export type CurrentUserConversationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CurrentUserConversationsQuery = { __typename?: 'Query', myConversations: Array<{ __typename?: 'Conversation', id: number, creationDate: any, initiator: { __typename?: 'User', id: number, first_name: string, last_name: string, role: string, group?: { __typename?: 'Group', id: string } | null, children?: Array<{ __typename?: 'Child', firstName: string, lastName: string, group: { __typename?: 'Group', id: string } }> | null }, participant: { __typename?: 'User', id: number, first_name: string, last_name: string, role: string, group?: { __typename?: 'Group', id: string } | null, children?: Array<{ __typename?: 'Child', firstName: string, lastName: string, group: { __typename?: 'Group', id: string } }> | null }, messages: Array<{ __typename?: 'Message', date: any, content: string, author: { __typename?: 'User', id: number, first_name: string, last_name: string } }> }> };
+
+export type GetAdminUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAdminUserQuery = { __typename?: 'Query', getAdminUser: { __typename?: 'User', id: number } };
+
+export type GetConversationQueryVariables = Exact<{
+  conversationId: Scalars['Int']['input'];
+}>;
+
+
+export type GetConversationQuery = { __typename?: 'Query', conversation?: { __typename?: 'Conversation', creationDate: any, id: number, initiator: { __typename?: 'User', id: number, first_name: string, last_name: string, children?: Array<{ __typename?: 'Child', firstName: string, lastName: string, group: { __typename?: 'Group', id: string } }> | null }, participant: { __typename?: 'User', id: number, first_name: string, last_name: string, children?: Array<{ __typename?: 'Child', firstName: string, lastName: string, group: { __typename?: 'Group', id: string } }> | null }, messages: Array<{ __typename?: 'Message', date: any, content: string, author: { __typename?: 'User', id: number, first_name: string, last_name: string } }> } | null };
+
+export type GetMessagesFromConversationQueryVariables = Exact<{
+  conversationId: Scalars['Int']['input'];
+}>;
+
+
+export type GetMessagesFromConversationQuery = { __typename?: 'Query', messagesFromConversation: Array<{ __typename?: 'Message', content: string, date: any, author: { __typename?: 'User', id: number } }> };
+
 export type GetPlanningByGroupIdAndDateQueryVariables = Exact<{
   date: Scalars['DateTimeISO']['input'];
   groupId: Scalars['Int']['input'];
@@ -540,6 +603,13 @@ export type GetPlanningByGroupIdAndDateQueryVariables = Exact<{
 
 
 export type GetPlanningByGroupIdAndDateQuery = { __typename?: 'Query', getPlanningByGroupIdAndDate: { __typename?: 'Planning', id: string, meal?: string | null, morning_activities?: string | null, morning_nap?: string | null, snack?: string | null, date: any, afternoon_nap?: string | null, afternoon_activities?: string | null } };
+
+export type GetStaffUserQueryVariables = Exact<{
+  groupId: Scalars['Int']['input'];
+}>;
+
+
+export type GetStaffUserQuery = { __typename?: 'Query', getStaffUser: { __typename?: 'User', id: number } };
 
 export type LoginMutationVariables = Exact<{
   data: LoginInput;
@@ -1498,6 +1568,129 @@ export type ChildrenQueryHookResult = ReturnType<typeof useChildrenQuery>;
 export type ChildrenLazyQueryHookResult = ReturnType<typeof useChildrenLazyQuery>;
 export type ChildrenSuspenseQueryHookResult = ReturnType<typeof useChildrenSuspenseQuery>;
 export type ChildrenQueryResult = ApolloReactCommon.QueryResult<ChildrenQuery, ChildrenQueryVariables>;
+export const ChildrenByGroupDocument = gql`
+    query ChildrenByGroup($groupId: Int!) {
+  childrenByGroup(groupId: $groupId) {
+    firstName
+    lastName
+    parents {
+      id
+      first_name
+      last_name
+      participatedConversations {
+        initiator {
+          id
+        }
+      }
+      startedConversations {
+        participant {
+          id
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useChildrenByGroupQuery__
+ *
+ * To run a query within a React component, call `useChildrenByGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChildrenByGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChildrenByGroupQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export function useChildrenByGroupQuery(baseOptions: ApolloReactHooks.QueryHookOptions<ChildrenByGroupQuery, ChildrenByGroupQueryVariables> & ({ variables: ChildrenByGroupQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<ChildrenByGroupQuery, ChildrenByGroupQueryVariables>(ChildrenByGroupDocument, options);
+      }
+export function useChildrenByGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ChildrenByGroupQuery, ChildrenByGroupQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<ChildrenByGroupQuery, ChildrenByGroupQueryVariables>(ChildrenByGroupDocument, options);
+        }
+export function useChildrenByGroupSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ChildrenByGroupQuery, ChildrenByGroupQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<ChildrenByGroupQuery, ChildrenByGroupQueryVariables>(ChildrenByGroupDocument, options);
+        }
+export type ChildrenByGroupQueryHookResult = ReturnType<typeof useChildrenByGroupQuery>;
+export type ChildrenByGroupLazyQueryHookResult = ReturnType<typeof useChildrenByGroupLazyQuery>;
+export type ChildrenByGroupSuspenseQueryHookResult = ReturnType<typeof useChildrenByGroupSuspenseQuery>;
+export type ChildrenByGroupQueryResult = ApolloReactCommon.QueryResult<ChildrenByGroupQuery, ChildrenByGroupQueryVariables>;
+export const CreateConversationDocument = gql`
+    mutation CreateConversation($initiatorId: Int!, $participantId: Int!) {
+  createConversation(initiatorId: $initiatorId, participantId: $participantId) {
+    id
+  }
+}
+    `;
+export type CreateConversationMutationFn = ApolloReactCommon.MutationFunction<CreateConversationMutation, CreateConversationMutationVariables>;
+
+/**
+ * __useCreateConversationMutation__
+ *
+ * To run a mutation, you first call `useCreateConversationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateConversationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createConversationMutation, { data, loading, error }] = useCreateConversationMutation({
+ *   variables: {
+ *      initiatorId: // value for 'initiatorId'
+ *      participantId: // value for 'participantId'
+ *   },
+ * });
+ */
+export function useCreateConversationMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateConversationMutation, CreateConversationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<CreateConversationMutation, CreateConversationMutationVariables>(CreateConversationDocument, options);
+      }
+export type CreateConversationMutationHookResult = ReturnType<typeof useCreateConversationMutation>;
+export type CreateConversationMutationResult = ApolloReactCommon.MutationResult<CreateConversationMutation>;
+export type CreateConversationMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateConversationMutation, CreateConversationMutationVariables>;
+export const CreateMessageDocument = gql`
+    mutation CreateMessage($data: CreateMessageInput!) {
+  createMessage(data: $data) {
+    id
+  }
+}
+    `;
+export type CreateMessageMutationFn = ApolloReactCommon.MutationFunction<CreateMessageMutation, CreateMessageMutationVariables>;
+
+/**
+ * __useCreateMessageMutation__
+ *
+ * To run a mutation, you first call `useCreateMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMessageMutation, { data, loading, error }] = useCreateMessageMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateMessageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateMessageMutation, CreateMessageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<CreateMessageMutation, CreateMessageMutationVariables>(CreateMessageDocument, options);
+      }
+export type CreateMessageMutationHookResult = ReturnType<typeof useCreateMessageMutation>;
+export type CreateMessageMutationResult = ApolloReactCommon.MutationResult<CreateMessageMutation>;
+export type CreateMessageMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateMessageMutation, CreateMessageMutationVariables>;
 export const CreatePlanningDocument = gql`
     mutation CreatePlanning($data: PlanningInput!) {
   createPlanning(data: $data) {
@@ -1564,6 +1757,244 @@ export function useCreateReportMutation(baseOptions?: ApolloReactHooks.MutationH
 export type CreateReportMutationHookResult = ReturnType<typeof useCreateReportMutation>;
 export type CreateReportMutationResult = ApolloReactCommon.MutationResult<CreateReportMutation>;
 export type CreateReportMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateReportMutation, CreateReportMutationVariables>;
+export const CurrentUserConversationsDocument = gql`
+    query CurrentUserConversations {
+  myConversations {
+    id
+    creationDate
+    initiator {
+      id
+      first_name
+      last_name
+      role
+      group {
+        id
+      }
+      children {
+        firstName
+        lastName
+        group {
+          id
+        }
+      }
+    }
+    participant {
+      id
+      first_name
+      last_name
+      role
+      group {
+        id
+      }
+      children {
+        firstName
+        lastName
+        group {
+          id
+        }
+      }
+    }
+    messages {
+      date
+      content
+      author {
+        id
+        first_name
+        last_name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useCurrentUserConversationsQuery__
+ *
+ * To run a query within a React component, call `useCurrentUserConversationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCurrentUserConversationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCurrentUserConversationsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCurrentUserConversationsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CurrentUserConversationsQuery, CurrentUserConversationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<CurrentUserConversationsQuery, CurrentUserConversationsQueryVariables>(CurrentUserConversationsDocument, options);
+      }
+export function useCurrentUserConversationsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CurrentUserConversationsQuery, CurrentUserConversationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<CurrentUserConversationsQuery, CurrentUserConversationsQueryVariables>(CurrentUserConversationsDocument, options);
+        }
+export function useCurrentUserConversationsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<CurrentUserConversationsQuery, CurrentUserConversationsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<CurrentUserConversationsQuery, CurrentUserConversationsQueryVariables>(CurrentUserConversationsDocument, options);
+        }
+export type CurrentUserConversationsQueryHookResult = ReturnType<typeof useCurrentUserConversationsQuery>;
+export type CurrentUserConversationsLazyQueryHookResult = ReturnType<typeof useCurrentUserConversationsLazyQuery>;
+export type CurrentUserConversationsSuspenseQueryHookResult = ReturnType<typeof useCurrentUserConversationsSuspenseQuery>;
+export type CurrentUserConversationsQueryResult = ApolloReactCommon.QueryResult<CurrentUserConversationsQuery, CurrentUserConversationsQueryVariables>;
+export const GetAdminUserDocument = gql`
+    query GetAdminUser {
+  getAdminUser {
+    id
+  }
+}
+    `;
+
+/**
+ * __useGetAdminUserQuery__
+ *
+ * To run a query within a React component, call `useGetAdminUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAdminUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAdminUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAdminUserQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAdminUserQuery, GetAdminUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetAdminUserQuery, GetAdminUserQueryVariables>(GetAdminUserDocument, options);
+      }
+export function useGetAdminUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAdminUserQuery, GetAdminUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetAdminUserQuery, GetAdminUserQueryVariables>(GetAdminUserDocument, options);
+        }
+export function useGetAdminUserSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetAdminUserQuery, GetAdminUserQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<GetAdminUserQuery, GetAdminUserQueryVariables>(GetAdminUserDocument, options);
+        }
+export type GetAdminUserQueryHookResult = ReturnType<typeof useGetAdminUserQuery>;
+export type GetAdminUserLazyQueryHookResult = ReturnType<typeof useGetAdminUserLazyQuery>;
+export type GetAdminUserSuspenseQueryHookResult = ReturnType<typeof useGetAdminUserSuspenseQuery>;
+export type GetAdminUserQueryResult = ApolloReactCommon.QueryResult<GetAdminUserQuery, GetAdminUserQueryVariables>;
+export const GetConversationDocument = gql`
+    query GetConversation($conversationId: Int!) {
+  conversation(id: $conversationId) {
+    creationDate
+    id
+    initiator {
+      id
+      first_name
+      last_name
+      children {
+        firstName
+        lastName
+        group {
+          id
+        }
+      }
+    }
+    participant {
+      id
+      first_name
+      last_name
+      children {
+        firstName
+        lastName
+        group {
+          id
+        }
+      }
+    }
+    messages {
+      date
+      content
+      author {
+        id
+        first_name
+        last_name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetConversationQuery__
+ *
+ * To run a query within a React component, call `useGetConversationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetConversationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetConversationQuery({
+ *   variables: {
+ *      conversationId: // value for 'conversationId'
+ *   },
+ * });
+ */
+export function useGetConversationQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetConversationQuery, GetConversationQueryVariables> & ({ variables: GetConversationQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetConversationQuery, GetConversationQueryVariables>(GetConversationDocument, options);
+      }
+export function useGetConversationLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetConversationQuery, GetConversationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetConversationQuery, GetConversationQueryVariables>(GetConversationDocument, options);
+        }
+export function useGetConversationSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetConversationQuery, GetConversationQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<GetConversationQuery, GetConversationQueryVariables>(GetConversationDocument, options);
+        }
+export type GetConversationQueryHookResult = ReturnType<typeof useGetConversationQuery>;
+export type GetConversationLazyQueryHookResult = ReturnType<typeof useGetConversationLazyQuery>;
+export type GetConversationSuspenseQueryHookResult = ReturnType<typeof useGetConversationSuspenseQuery>;
+export type GetConversationQueryResult = ApolloReactCommon.QueryResult<GetConversationQuery, GetConversationQueryVariables>;
+export const GetMessagesFromConversationDocument = gql`
+    query GetMessagesFromConversation($conversationId: Int!) {
+  messagesFromConversation(conversationId: $conversationId) {
+    author {
+      id
+    }
+    content
+    date
+  }
+}
+    `;
+
+/**
+ * __useGetMessagesFromConversationQuery__
+ *
+ * To run a query within a React component, call `useGetMessagesFromConversationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMessagesFromConversationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMessagesFromConversationQuery({
+ *   variables: {
+ *      conversationId: // value for 'conversationId'
+ *   },
+ * });
+ */
+export function useGetMessagesFromConversationQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetMessagesFromConversationQuery, GetMessagesFromConversationQueryVariables> & ({ variables: GetMessagesFromConversationQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetMessagesFromConversationQuery, GetMessagesFromConversationQueryVariables>(GetMessagesFromConversationDocument, options);
+      }
+export function useGetMessagesFromConversationLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetMessagesFromConversationQuery, GetMessagesFromConversationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetMessagesFromConversationQuery, GetMessagesFromConversationQueryVariables>(GetMessagesFromConversationDocument, options);
+        }
+export function useGetMessagesFromConversationSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetMessagesFromConversationQuery, GetMessagesFromConversationQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<GetMessagesFromConversationQuery, GetMessagesFromConversationQueryVariables>(GetMessagesFromConversationDocument, options);
+        }
+export type GetMessagesFromConversationQueryHookResult = ReturnType<typeof useGetMessagesFromConversationQuery>;
+export type GetMessagesFromConversationLazyQueryHookResult = ReturnType<typeof useGetMessagesFromConversationLazyQuery>;
+export type GetMessagesFromConversationSuspenseQueryHookResult = ReturnType<typeof useGetMessagesFromConversationSuspenseQuery>;
+export type GetMessagesFromConversationQueryResult = ApolloReactCommon.QueryResult<GetMessagesFromConversationQuery, GetMessagesFromConversationQueryVariables>;
 export const GetPlanningByGroupIdAndDateDocument = gql`
     query GetPlanningByGroupIdAndDate($date: DateTimeISO!, $groupId: Int!) {
   getPlanningByGroupIdAndDate(date: $date, id: $groupId) {
@@ -1612,6 +2043,46 @@ export type GetPlanningByGroupIdAndDateQueryHookResult = ReturnType<typeof useGe
 export type GetPlanningByGroupIdAndDateLazyQueryHookResult = ReturnType<typeof useGetPlanningByGroupIdAndDateLazyQuery>;
 export type GetPlanningByGroupIdAndDateSuspenseQueryHookResult = ReturnType<typeof useGetPlanningByGroupIdAndDateSuspenseQuery>;
 export type GetPlanningByGroupIdAndDateQueryResult = ApolloReactCommon.QueryResult<GetPlanningByGroupIdAndDateQuery, GetPlanningByGroupIdAndDateQueryVariables>;
+export const GetStaffUserDocument = gql`
+    query GetStaffUser($groupId: Int!) {
+  getStaffUser(groupId: $groupId) {
+    id
+  }
+}
+    `;
+
+/**
+ * __useGetStaffUserQuery__
+ *
+ * To run a query within a React component, call `useGetStaffUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStaffUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStaffUserQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export function useGetStaffUserQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetStaffUserQuery, GetStaffUserQueryVariables> & ({ variables: GetStaffUserQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetStaffUserQuery, GetStaffUserQueryVariables>(GetStaffUserDocument, options);
+      }
+export function useGetStaffUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetStaffUserQuery, GetStaffUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetStaffUserQuery, GetStaffUserQueryVariables>(GetStaffUserDocument, options);
+        }
+export function useGetStaffUserSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetStaffUserQuery, GetStaffUserQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<GetStaffUserQuery, GetStaffUserQueryVariables>(GetStaffUserDocument, options);
+        }
+export type GetStaffUserQueryHookResult = ReturnType<typeof useGetStaffUserQuery>;
+export type GetStaffUserLazyQueryHookResult = ReturnType<typeof useGetStaffUserLazyQuery>;
+export type GetStaffUserSuspenseQueryHookResult = ReturnType<typeof useGetStaffUserSuspenseQuery>;
+export type GetStaffUserQueryResult = ApolloReactCommon.QueryResult<GetStaffUserQuery, GetStaffUserQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($data: LoginInput!) {
   login(data: $data)
