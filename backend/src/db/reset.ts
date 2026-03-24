@@ -31,7 +31,7 @@ async function main() {
   }).save();
 
   const group3 = await Group.create({
-    name: "grande section",
+    name: "Grande section",
     capacity: 18,
   }).save();
 

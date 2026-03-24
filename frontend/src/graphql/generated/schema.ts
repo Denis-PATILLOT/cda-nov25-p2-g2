@@ -265,7 +265,7 @@ export type Query = {
   __typename?: 'Query';
   adminCounts: AdminCounts;
   allParents: Array<User>;
-  allStaff: Array<User>;
+  allParentsWithAdminConverations: Array<User>;
   child: Child;
   children: Array<Child>;
   childrenByGroup: Array<Child>;
@@ -456,15 +456,10 @@ export type AllParentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AllParentsQuery = { __typename?: 'Query', allParents: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string, email: string, phone: string, avatar?: string | null, children?: Array<{ __typename?: 'Child', id: number, firstName: string, lastName: string, picture: string, birthDate: any, group: { __typename?: 'Group', id: string, name: string }, parents: Array<{ __typename?: 'User', id: number }> }> | null }> };
 
-export type AllReportsQueryVariables = Exact<{ [key: string]: never; }>;
+export type AllParentsWithAdminConverationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllReportsQuery = { __typename?: 'Query', reports: Array<{ __typename?: 'Report', id: string, date: any, isPresent: boolean, baby_mood: string, staff_comment?: string | null, picture?: string | null, child: { __typename?: 'Child', id: number, firstName: string, lastName: string, picture: string, birthDate: any, group: { __typename?: 'Group', id: string, name: string } } }> };
-
-export type AllStaffQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AllStaffQuery = { __typename?: 'Query', allStaff: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string, email: string, phone: string, avatar?: string | null, group?: { __typename?: 'Group', id: string, name: string } | null }> };
+export type AllParentsWithAdminConverationsQuery = { __typename?: 'Query', allParentsWithAdminConverations: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string, avatar?: string | null, children?: Array<{ __typename?: 'Child', id: number, firstName: string, lastName: string, picture: string, birthDate: any, group: { __typename?: 'Group', id: string, name: string } }> | null, startedConversations?: Array<{ __typename?: 'Conversation', id: number, participant: { __typename?: 'User', id: number } }> | null, participatedConversations?: Array<{ __typename?: 'Conversation', id: number, initiator: { __typename?: 'User', id: number } }> | null }> };
 
 export type CreateChildMutationVariables = Exact<{
   data: NewChildInput;
@@ -587,7 +582,7 @@ export type GetConversationQueryVariables = Exact<{
 }>;
 
 
-export type GetConversationQuery = { __typename?: 'Query', conversation?: { __typename?: 'Conversation', creationDate: any, id: number, initiator: { __typename?: 'User', id: number, first_name: string, last_name: string, children?: Array<{ __typename?: 'Child', firstName: string, lastName: string, group: { __typename?: 'Group', id: string } }> | null }, participant: { __typename?: 'User', id: number, first_name: string, last_name: string, children?: Array<{ __typename?: 'Child', firstName: string, lastName: string, group: { __typename?: 'Group', id: string } }> | null }, messages: Array<{ __typename?: 'Message', date: any, content: string, author: { __typename?: 'User', id: number, first_name: string, last_name: string } }> } | null };
+export type GetConversationQuery = { __typename?: 'Query', conversation?: { __typename?: 'Conversation', creationDate: any, id: number, initiator: { __typename?: 'User', id: number, first_name: string, last_name: string, avatar?: string | null, children?: Array<{ __typename?: 'Child', firstName: string, lastName: string, group: { __typename?: 'Group', id: string } }> | null }, participant: { __typename?: 'User', id: number, first_name: string, last_name: string, avatar?: string | null, children?: Array<{ __typename?: 'Child', firstName: string, lastName: string, group: { __typename?: 'Group', id: string } }> | null }, messages: Array<{ __typename?: 'Message', id: number, date: any, content: string, author: { __typename?: 'User', id: number, first_name: string, last_name: string } }> } | null };
 
 export type GetMessagesFromConversationQueryVariables = Exact<{
   conversationId: Scalars['Int']['input'];
@@ -1043,16 +1038,14 @@ export type AllParentsQueryHookResult = ReturnType<typeof useAllParentsQuery>;
 export type AllParentsLazyQueryHookResult = ReturnType<typeof useAllParentsLazyQuery>;
 export type AllParentsSuspenseQueryHookResult = ReturnType<typeof useAllParentsSuspenseQuery>;
 export type AllParentsQueryResult = ApolloReactCommon.QueryResult<AllParentsQuery, AllParentsQueryVariables>;
-export const AllReportsDocument = gql`
-    query AllReports {
-  reports {
+export const AllParentsWithAdminConverationsDocument = gql`
+    query AllParentsWithAdminConverations {
+  allParentsWithAdminConverations {
     id
-    date
-    isPresent
-    baby_mood
-    staff_comment
-    picture
-    child {
+    first_name
+    last_name
+    avatar
+    children {
       id
       firstName
       lastName
@@ -1063,89 +1056,53 @@ export const AllReportsDocument = gql`
         name
       }
     }
-  }
-}
-    `;
-
-/**
- * __useAllReportsQuery__
- *
- * To run a query within a React component, call `useAllReportsQuery` and pass it any options that fit your needs.
- * When your component renders, `useAllReportsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAllReportsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useAllReportsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AllReportsQuery, AllReportsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useQuery<AllReportsQuery, AllReportsQueryVariables>(AllReportsDocument, options);
-      }
-export function useAllReportsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AllReportsQuery, AllReportsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useLazyQuery<AllReportsQuery, AllReportsQueryVariables>(AllReportsDocument, options);
-        }
-export function useAllReportsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllReportsQuery, AllReportsQueryVariables>) {
-          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useSuspenseQuery<AllReportsQuery, AllReportsQueryVariables>(AllReportsDocument, options);
-        }
-export type AllReportsQueryHookResult = ReturnType<typeof useAllReportsQuery>;
-export type AllReportsLazyQueryHookResult = ReturnType<typeof useAllReportsLazyQuery>;
-export type AllReportsSuspenseQueryHookResult = ReturnType<typeof useAllReportsSuspenseQuery>;
-export type AllReportsQueryResult = ApolloReactCommon.QueryResult<AllReportsQuery, AllReportsQueryVariables>;
-export const AllStaffDocument = gql`
-    query AllStaff {
-  allStaff {
-    id
-    first_name
-    last_name
-    email
-    phone
-    avatar
-    group {
+    startedConversations {
       id
-      name
+      participant {
+        id
+      }
+    }
+    participatedConversations {
+      id
+      initiator {
+        id
+      }
     }
   }
 }
     `;
 
 /**
- * __useAllStaffQuery__
+ * __useAllParentsWithAdminConverationsQuery__
  *
- * To run a query within a React component, call `useAllStaffQuery` and pass it any options that fit your needs.
- * When your component renders, `useAllStaffQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAllParentsWithAdminConverationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllParentsWithAdminConverationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAllStaffQuery({
+ * const { data, loading, error } = useAllParentsWithAdminConverationsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useAllStaffQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AllStaffQuery, AllStaffQueryVariables>) {
+export function useAllParentsWithAdminConverationsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AllParentsWithAdminConverationsQuery, AllParentsWithAdminConverationsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useQuery<AllStaffQuery, AllStaffQueryVariables>(AllStaffDocument, options);
+        return ApolloReactHooks.useQuery<AllParentsWithAdminConverationsQuery, AllParentsWithAdminConverationsQueryVariables>(AllParentsWithAdminConverationsDocument, options);
       }
-export function useAllStaffLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AllStaffQuery, AllStaffQueryVariables>) {
+export function useAllParentsWithAdminConverationsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AllParentsWithAdminConverationsQuery, AllParentsWithAdminConverationsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useLazyQuery<AllStaffQuery, AllStaffQueryVariables>(AllStaffDocument, options);
+          return ApolloReactHooks.useLazyQuery<AllParentsWithAdminConverationsQuery, AllParentsWithAdminConverationsQueryVariables>(AllParentsWithAdminConverationsDocument, options);
         }
-export function useAllStaffSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllStaffQuery, AllStaffQueryVariables>) {
+export function useAllParentsWithAdminConverationsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllParentsWithAdminConverationsQuery, AllParentsWithAdminConverationsQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useSuspenseQuery<AllStaffQuery, AllStaffQueryVariables>(AllStaffDocument, options);
+          return ApolloReactHooks.useSuspenseQuery<AllParentsWithAdminConverationsQuery, AllParentsWithAdminConverationsQueryVariables>(AllParentsWithAdminConverationsDocument, options);
         }
-export type AllStaffQueryHookResult = ReturnType<typeof useAllStaffQuery>;
-export type AllStaffLazyQueryHookResult = ReturnType<typeof useAllStaffLazyQuery>;
-export type AllStaffSuspenseQueryHookResult = ReturnType<typeof useAllStaffSuspenseQuery>;
-export type AllStaffQueryResult = ApolloReactCommon.QueryResult<AllStaffQuery, AllStaffQueryVariables>;
+export type AllParentsWithAdminConverationsQueryHookResult = ReturnType<typeof useAllParentsWithAdminConverationsQuery>;
+export type AllParentsWithAdminConverationsLazyQueryHookResult = ReturnType<typeof useAllParentsWithAdminConverationsLazyQuery>;
+export type AllParentsWithAdminConverationsSuspenseQueryHookResult = ReturnType<typeof useAllParentsWithAdminConverationsSuspenseQuery>;
+export type AllParentsWithAdminConverationsQueryResult = ApolloReactCommon.QueryResult<AllParentsWithAdminConverationsQuery, AllParentsWithAdminConverationsQueryVariables>;
 export const CreateChildDocument = gql`
     mutation CreateChild($data: NewChildInput!) {
   createChild(data: $data) {
@@ -1886,6 +1843,7 @@ export const GetConversationDocument = gql`
       id
       first_name
       last_name
+      avatar
       children {
         firstName
         lastName
@@ -1898,6 +1856,7 @@ export const GetConversationDocument = gql`
       id
       first_name
       last_name
+      avatar
       children {
         firstName
         lastName
@@ -1907,6 +1866,7 @@ export const GetConversationDocument = gql`
       }
     }
     messages {
+      id
       date
       content
       author {
