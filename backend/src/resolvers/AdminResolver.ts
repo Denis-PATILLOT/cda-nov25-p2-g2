@@ -29,6 +29,16 @@ class AdminCounts {
 export class AdminResolver {
   @Authorized(UserRole.Admin)
   @Query(() => [User])
+  async allStaff(): Promise<User[]> {
+    const userRepo = db.getRepository(User);
+    return await userRepo.find({
+      where: { role: UserRole.Staff },
+      relations: { group: true },
+    });
+  }
+
+  @Authorized(UserRole.Admin)
+  @Query(() => [User])
   async allParents(): Promise<User[]> {
     const userRepo = db.getRepository(User);
     return await userRepo.find({

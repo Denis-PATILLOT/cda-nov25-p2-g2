@@ -1,0 +1,18 @@
+# Récupère la liste complète de tous les membres du staff avec leur groupe assigné
+# Utilisé dans : staffHistory.tsx (liste admin), staff/[id]/edit.tsx (fiche d'un membre)
+# Chaque membre contient : id, noms, email, téléphone, avatar, et son groupe (id + nom)
+# Contrairement aux parents, le staff a UN groupe propre directement sur l'entité
+query AllStaff {
+  allStaff {
+    id
+    first_name
+    last_name
+    email
+    phone
+    avatar
+    group {
+      id
+      name
+    }
+  }
+}

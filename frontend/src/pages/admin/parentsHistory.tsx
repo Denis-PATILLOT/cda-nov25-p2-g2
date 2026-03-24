@@ -1,16 +1,17 @@
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import AddParentModal from "@/components/admin/AddParentModal";
+import ConfirmDeleteModal from "@/components/admin/ConfirmDeleteModal";
+import PencilIcon from "@/components/admin/PencilIcon";
+import TrashIcon from "@/components/admin/TrashIcon";
 import Layout from "@/components/Layout";
 import { useAllParentsQuery, useDeleteUserMutation } from "@/graphql/generated/schema";
-import { useAuth } from "@/hooks/CurrentProfile";
+import { useAdminGuard } from "@/hooks/useAdminGuard";
 import { getGroupBg } from "@/utils/getGroupBg";
 
 export default function AdminParentsPage() {
   const router = useRouter();
-
-  const { user, loading: authLoading, isAdmin } = useAuth();
-  const shouldSkip = authLoading || !user || !isAdmin;
+  const { user, authLoading, isAdmin, shouldSkip } = useAdminGuard();
 
   const { data, loading, error, refetch } = useAllParentsQuery({
     fetchPolicy: "network-only",
@@ -18,12 +19,6 @@ export default function AdminParentsPage() {
   });
 
   const [deleteUser] = useDeleteUserMutation();
-
-  useEffect(() => {
-    if (authLoading) return;
-    if (!user) router.replace("/");
-    else if (!isAdmin) router.replace("/403");
-  }, [authLoading, user, isAdmin, router]);
 
   const parents = data?.allParents ?? [];
 
@@ -42,9 +37,11 @@ export default function AdminParentsPage() {
         setOpenMenuId(null);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
+    if (openMenuId !== null) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [openMenuId]);
 
   const groups = useMemo(() => {
     const map = new Map<string, string>();
@@ -106,80 +103,41 @@ export default function AdminParentsPage() {
       />
 
       {confirmDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-          <button
-            type="button"
-            className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"
-            onClick={() => setConfirmDelete(null)}
-            aria-label="Fermer"
-          />
-          <div className="relative w-full max-w-[340px] rounded-3xl bg-[#FEF9F6] border-2 border-(--color-primary) p-6 shadow-xl flex flex-col items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-50 border-2 border-red-200">
-              <svg
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-7 w-7 text-red-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                />
-              </svg>
-            </div>
-            {deleteSuccess ? (
-              <p className="text-[14px] font-semibold text-green-600">✓ Parent supprimé avec succès !</p>
-            ) : (
-              <div className="text-center">
-                <p className="text-[15px] font-semibold">Êtes-vous sûr de vouloir supprimer</p>
-                <p className="text-[15px] font-semibold">{confirmDelete.name} ?</p>
-                <p className="mt-1 text-[12px] opacity-60">Cette action est irréversible.</p>
-              </div>
-            )}
-            <div className="flex w-full gap-3">
-              <button
-                type="button"
-                onClick={() => setConfirmDelete(null)}
-                className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-              >
-                Annuler
-              </button>
-              <button
-                type="button"
-                onClick={confirmDeleteParent}
-                className="flex-1 rounded-xl border-2 border-red-200 bg-white py-2 text-[13px] text-red-500 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-              >
-                Supprimer
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDeleteModal
+          name={confirmDelete.name}
+          successMessage="✓ Parent supprimé avec succès !"
+          success={deleteSuccess}
+          onCancel={() => setConfirmDelete(null)}
+          onConfirm={confirmDeleteParent}
+        />
       )}
 
-      <div className="mx-auto w-full max-w-[420px] px-4 pt-2 pb-6">
-        <div className="flex items-center justify-between">
+      <div className="mx-auto w-full max-w-[420px] px-4 pt-2 pb-6 md:max-w-none md:px-16 md:pt-0 lg:px-24">
+        <div className="relative flex items-center justify-between md:mt-20">
           <button type="button" onClick={() => router.push("/admin")} className="p-0">
-            <div className="h-10 w-10 overflow-hidden flex items-center justify-center">
-              <img src="/admin/flechegauche.png" alt="Retour" className="h-16 w-16" />
+            <div className="h-10 w-10 overflow-hidden flex items-center justify-center md:h-20 md:w-20">
+              <img
+                src="/admin/flechegauche.png"
+                alt="Retour"
+                className="h-16 w-16 md:h-28 md:w-28"
+              />
             </div>
           </button>
 
-          <h1 className="text-[16px] font-semibold">Parents</h1>
+          <h1 className="text-[16px] font-semibold md:absolute md:left-1/2 md:-translate-x-1/2 md:text-[28px]">
+            Parents
+          </h1>
 
           <button
             type="button"
             onClick={() => setShowAddModal(true)}
-            className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+            className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:px-6 md:py-3 md:text-[17px] md:rounded-3xl"
           >
             + Ajouter un parent
           </button>
         </div>
 
-        <div className="mt-2 flex items-center h-9 rounded-lg bg-white/80 border-2 border-(--color-primary) px-3 shadow-sm">
+        <div className="mt-2 flex items-center h-9 rounded-lg bg-white/80 border-2 border-(--color-primary) px-3 shadow-sm md:mt-6 md:h-14 md:rounded-2xl md:px-5">
           <div className="h-8 w-8 overflow-hidden flex items-center justify-center shrink-0 mr-2">
             <img src="/admin/loupe.png" alt="Recherche" className="h-14 w-14 opacity-60" />
           </div>
@@ -187,15 +145,15 @@ export default function AdminParentsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Recherche un parent..."
-            className="w-full bg-transparent text-[13px] outline-none"
+            className="w-full bg-transparent text-[13px] outline-none md:text-[18px]"
           />
         </div>
 
-        <div className="mt-2 relative w-fit">
+        <div className="mt-2 relative w-fit md:mt-4">
           <button
             type="button"
             onClick={() => setGroupDropdownOpen((prev) => !prev)}
-            className="flex items-center w-full h-9 rounded-xl border-2 border-(--color-primary) bg-white/80 px-2 shadow-sm text-[12px] text-left outline-none gap-1"
+            className="flex items-center w-full h-9 rounded-xl border-2 border-(--color-primary) bg-white/80 px-2 shadow-sm text-[12px] text-left outline-none gap-1 md:h-12 md:text-[16px] md:px-4 md:rounded-2xl"
           >
             <div className="h-8 w-8 overflow-hidden flex items-center justify-center shrink-0">
               <img src="/admin/groupe.png" alt="Groupe" className="h-14 w-14 opacity-70" />
@@ -213,7 +171,17 @@ export default function AdminParentsPage() {
           </button>
 
           {groupDropdownOpen && (
-            <div className="absolute left-0 top-10 z-10 rounded-xl border-2 border-(--color-primary) bg-white overflow-hidden shadow-lg w-full">
+            <div className="absolute left-0 top-10 z-10 rounded-xl border-2 border-(--color-primary) bg-white overflow-hidden shadow-lg w-full md:top-14 md:rounded-2xl">
+              <button
+                type="button"
+                onClick={() => {
+                  setGroupFilter("ALL");
+                  setGroupDropdownOpen(false);
+                }}
+                className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 hover:bg-orange-50 md:text-[16px] md:px-5 md:py-3 ${groupFilter === "ALL" ? "font-semibold" : ""}`}
+              >
+                Tous les groupes
+              </button>
               {groups.map((g) => (
                 <button
                   key={g.id}
@@ -222,7 +190,7 @@ export default function AdminParentsPage() {
                     setGroupFilter(g.id);
                     setGroupDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 last:border-0 hover:bg-orange-50 ${groupFilter === g.id ? "font-semibold" : ""}`}
+                  className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 last:border-0 hover:bg-orange-50 md:text-[16px] md:px-5 md:py-3 ${groupFilter === g.id ? "font-semibold" : ""}`}
                 >
                   {g.name}
                 </button>
@@ -231,15 +199,19 @@ export default function AdminParentsPage() {
           )}
         </div>
 
-        {loading && <p className="mt-6 text-center text-[13px] opacity-70">Chargement...</p>}
+        {loading && (
+          <p className="mt-6 text-center text-[13px] opacity-70 md:text-[18px]">Chargement...</p>
+        )}
         {error && (
-          <p className="mt-6 text-center text-[13px] text-red-600">Erreur lors du chargement.</p>
+          <p className="mt-6 text-center text-[13px] text-red-600 md:text-[18px]">
+            Erreur lors du chargement.
+          </p>
         )}
 
         {!loading && !error && (
-          <div className="mt-4 flex flex-col gap-3">
+          <div className="mt-4 flex flex-col gap-3 md:gap-6 md:mt-8">
             {filteredParents.length === 0 && (
-              <div className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) p-4 text-[13px] text-center opacity-70">
+              <div className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) p-4 text-[13px] text-center opacity-70 md:text-[18px]">
                 Aucun parent trouvé.
               </div>
             )}
@@ -251,33 +223,31 @@ export default function AdminParentsPage() {
               return (
                 <div
                   key={parent.id}
-                  className="relative rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-3 py-3 shadow-md"
+                  className="relative rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-3 py-3 shadow-md md:px-6 md:py-5 md:rounded-3xl"
                 >
-                  {/* Ligne parent */}
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 md:gap-5">
                       <img
                         src={parent.avatar ?? "/admin/parentavatar.png"}
                         alt={`${parent.first_name} ${parent.last_name}`}
-                        className="h-12 w-12 rounded-full object-cover border-2 border-(--color-primary) shrink-0"
+                        className="h-12 w-12 rounded-full object-cover border-2 border-(--color-primary) shrink-0 md:h-20 md:w-20"
                       />
-                      <span className="text-[14px] font-semibold">
+                      <span className="text-[14px] font-semibold md:text-[20px]">
                         {parent.first_name} {parent.last_name}
                       </span>
                     </div>
 
-                    {/* ••• */}
-                    <div ref={openMenuId === menuKey ? menuRef : null}>
+                    <div ref={openMenuId === menuKey ? menuRef : null} className="relative">
                       <button
                         type="button"
                         onClick={() => setOpenMenuId(openMenuId === menuKey ? null : menuKey)}
-                        className="text-[20px] px-2 opacity-60 hover:opacity-100"
+                        className="text-[20px] px-2 opacity-60 hover:opacity-100 md:text-[28px]"
                       >
                         •••
                       </button>
 
                       {openMenuId === menuKey && (
-                        <div className="absolute right-3 top-12 z-10 flex flex-col rounded-2xl bg-white border-2 border-(--color-tertiary) shadow-md overflow-hidden text-[13px] min-w-[140px]">
+                        <div className="absolute right-0 top-full mt-1 z-20 flex flex-col rounded-2xl bg-white border-2 border-(--color-tertiary) shadow-md overflow-hidden text-[13px] min-w-[140px] md:text-[16px] md:min-w-[180px]">
                           <button
                             type="button"
                             onClick={() => {
@@ -288,22 +258,7 @@ export default function AdminParentsPage() {
                             }}
                             className="flex items-center gap-3 px-4 py-2.5 text-left hover:bg-gray-50 border-b border-gray-100"
                           >
-                            <svg
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 shrink-0"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={1.5}
-                            >
-                              <title>Modifier</title>
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487z"
-                              />
-                            </svg>
+                            <PencilIcon />
                             Modifier
                           </button>
                           <button
@@ -313,22 +268,7 @@ export default function AdminParentsPage() {
                             }
                             className="flex items-center gap-3 px-4 py-2.5 text-left text-red-500 hover:bg-red-50"
                           >
-                            <svg
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 shrink-0"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={1.5}
-                            >
-                              <title>Supprimer</title>
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                              />
-                            </svg>
+                            <TrashIcon />
                             Supprimer
                           </button>
                         </div>
@@ -336,27 +276,33 @@ export default function AdminParentsPage() {
                     </div>
                   </div>
 
-                  {/* Enfants */}
                   {parentChildren.length > 0 && (
-                    <div className="mt-2 flex flex-col gap-1 pl-[60px]">
+                    <div className="mt-2 flex flex-col gap-1 pl-[60px] md:pl-[100px] md:mt-3 md:gap-2">
                       {parentChildren.map((child) => (
-                        <div key={child.id} className="flex items-center gap-2">
-                          <img
-                            src={child.picture}
-                            alt={`${child.firstName} ${child.lastName}`}
-                            className="h-6 w-6 rounded-full object-cover bg-gray-100 border border-(--color-primary) shrink-0"
-                          />
-                          <span className="text-[12px] opacity-70 truncate">
-                            {child.firstName} {child.lastName}
-                          </span>
-                          {child.group && (
-                            <span
-                              className="rounded-full border-2 border-white px-2 py-0.5 text-[10px] font-medium shadow-sm whitespace-nowrap"
-                              style={{ backgroundColor: getGroupBg(String(child.group.id)) }}
-                            >
-                              {child.group.name}
+                        <div
+                          key={child.id}
+                          className="flex items-center gap-2 md:grid md:grid-cols-[3fr_2fr] md:gap-3"
+                        >
+                          <div className="flex items-center gap-2 md:gap-3">
+                            <img
+                              src={child.picture}
+                              alt={`${child.firstName} ${child.lastName}`}
+                              className="h-6 w-6 rounded-full object-cover bg-gray-100 border border-(--color-primary) shrink-0 md:h-9 md:w-9"
+                            />
+                            <span className="text-[12px] opacity-70 truncate md:text-[15px]">
+                              {child.firstName} {child.lastName}
                             </span>
-                          )}
+                          </div>
+                          <span
+                            className="justify-self-start rounded-full border-2 border-white px-2 py-0.5 text-[10px] font-medium shadow-sm whitespace-nowrap md:text-[13px] md:px-3"
+                            style={{
+                              backgroundColor: child.group
+                                ? getGroupBg(String(child.group.id))
+                                : "transparent",
+                            }}
+                          >
+                            {child.group?.name ?? ""}
+                          </span>
                         </div>
                       ))}
                     </div>
