@@ -1,5 +1,6 @@
 import {
   Arg,
+  Ctx,
   Field,
   InputType,
   Int,
@@ -9,9 +10,11 @@ import {
 } from "type-graphql";
 import { Group } from "../entities/Group";
 import { Planning } from "../entities/Planning";
-import { NotFoundError } from "../errors"; // Ajuste le chemin
+import { ForbiddenError, NotFoundError } from "../errors"; // Ajuste le chemin
 import { IsDate, IsNotEmpty, IsNumber } from "class-validator";
 import { GraphQLError } from "graphql";
+import { GraphQLContext } from "../types";
+import { getCurrentUser } from "../auth";
 
 
 @InputType()
@@ -84,13 +87,19 @@ export class PlanningResolver {
   }
 
   @Query(() => Planning)
-  async getPlanningById(@Arg("id", () => Int) id: number): Promise<Planning> {
+  async getPlanningById(@Arg("id", () => Int) id: number, @Ctx() context: GraphQLContext): Promise<Planning> {
+
+    const user = await getCurrentUser(context);
+
     const planning = await Planning.findOne({
-      where: { id: id },
+      where: {id: id},
       relations: ["group"],
     });
 
-    if (!planning) throw new NotFoundError();
+    if (!planning) throw new NotFoundError({message: "planning is not found"});
+
+    if(Number(planning?.group.id) !== Number(user.group?.id)) throw new ForbiddenError({message: "you can't access this planning"});
+
     return planning;
   }
 

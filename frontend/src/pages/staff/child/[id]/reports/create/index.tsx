@@ -1,6 +1,8 @@
 import Layout from "@/components/Layout";
 import { NewReportInput, useChildByIdQuery, useChildWithGroupAndPlanningsQuery, useCreateReportMutation } from "@/graphql/generated/schema";
+import { GraphQLError } from "graphql/error";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -16,7 +18,7 @@ const CreateReportPage = () => {
 
     const child = dataChild?.child || null;
 
-    const [createReport, {error: errorReport}] = useCreateReportMutation();
+    const [createReport, {error: errorReport} ] = useCreateReportMutation();
 
     const [isPresent, setIsPresent] = useState(false);
     const [errorSubmit, setErrorSubmit] = useState(false);
@@ -47,7 +49,8 @@ const CreateReportPage = () => {
         } 
         catch(err) {
                 setErrorSubmit(true); // permet affichage erreur et sa disparition
-                console.error(err);
+                // console.log("Erreur captée dans le catch : " , err);
+                // console.dir(err);
         }
     }
 
@@ -55,12 +58,17 @@ const CreateReportPage = () => {
         window.scroll({top: 0}); // remonte en haut de page à chaque modif de "errorSubmit"
     },[errorSubmit]);
     
+    console.dir(errorReport);
+
     return(
         <Layout pageTitle={`Staff - nouveau compte-rendu`}>
             <div className="max-w-full mx-auto md:max-w-[600px]">
                 {errorSubmit && errorReport && (
-                    <p className="text-red-500 text-center px-5 mx-5 my-2 alert bg-red-100 border relative border-red-500 md:text-xl md:mx-52">
-                    {errorReport.message || "Une erreur est survenue..."}
+                    <p className="text-red-500 px-5 mx-5 my-2 alert bg-red-100 border relative border-red-500 md:text-xl md:mx-52">
+                    {/* message spécifique si on a une erreur de planning inexistant pour ce comptet-rendu : on offre un lien pour créer un planning avec cette date */}
+                    {errorReport.message.match(/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/) && <span>Planning inexistant pour cette date<br /> Pour créer un planning à cette date, cliquer sur ce <Link href={`http://localhost:3000/staff/planning/create?date=${errorReport.message.match(/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/)![0]}`} as={"http://localhost:3000/staff/planning/create"} className="text-[#1b3c79] hover:underline">lien</Link></span>}
+                    {errorReport.errors[0].extensions.code === "REPORT ALREADY EXISTED" && "Compte-rendu déjà créé pour l'enfant à cette date !"}
+                    
                     <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
                         <svg
                         className="fill-current h-6 w-6 text-red-500 cursor-pointer"

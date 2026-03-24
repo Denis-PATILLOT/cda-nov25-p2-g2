@@ -1,0 +1,9 @@
+query GetMessagesFromConversation($conversationId: Int!) {
+  messagesFromConversation(conversationId: $conversationId) {
+    author {
+      id
+    }
+    content
+    date
+  }
+}
