@@ -1,0 +1,21 @@
+query AllReports {
+  reports {
+    id
+    date
+    isPresent
+    baby_mood
+    staff_comment
+    picture
+    child {
+      id
+      firstName
+      lastName
+      picture
+      birthDate
+      group {
+        id
+        name
+      }
+    }
+  }
+}

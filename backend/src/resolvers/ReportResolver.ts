@@ -12,9 +12,7 @@ export default class ReportResolver {
   @Query(() => [Report])
   async reports() {
     return Report.find({
-      relations: [
-        "child", // parents ou admin ou assistante mat
-      ],
+      relations: ["child", "child.group"],
       order: { date: "DESC" },
     });
   }

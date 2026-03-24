@@ -1,78 +1,83 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import AddChildModal from "@/components/admin/AddChildModal";
-import AddParentModal from "@/components/admin/AddParentModal";
+import AddStaffModal from "@/components/admin/AddStaffModal";
 import EditableRow from "@/components/admin/EditableRow";
 import PencilIcon from "@/components/admin/PencilIcon";
-import TrashIcon from "@/components/admin/TrashIcon";
 import Layout from "@/components/Layout";
 import {
+  useAdminChildrenQuery,
   useAdminUpdateUserMutation,
-  useAllParentsQuery,
-  useLinkParentToChildMutation,
+  useAllGroupsQuery,
+  useAllStaffQuery,
 } from "@/graphql/generated/schema";
 import { useAdminGuard } from "@/hooks/useAdminGuard";
 import { getAge } from "@/utils/getAge";
+import { getGroupBg } from "@/utils/getGroupBg";
 
 type FormValues = { first_name: string; last_name: string; email: string; phone: string };
-type EditingField = "name" | "email" | "phone" | null;
+type EditingField = "name" | "email" | "phone" | "group" | null;
 
-export default function EditParentPage() {
+export default function EditStaffPage() {
   const router = useRouter();
   const { id } = router.query;
-  const parentIdNum = Number(id);
+  const staffIdNum = Number(id);
 
   const { user, authLoading, isAdmin } = useAdminGuard();
 
-  const { data: allParentsData, refetch: refetchParents } = useAllParentsQuery({
+  const { data: allStaffData, refetch: refetchStaff } = useAllStaffQuery({
     fetchPolicy: "network-only",
-    skip: !parentIdNum || Number.isNaN(parentIdNum),
+    skip: !staffIdNum || Number.isNaN(staffIdNum),
   });
 
+  const { data: childrenData } = useAdminChildrenQuery({
+    fetchPolicy: "network-only",
+    skip: !staffIdNum || Number.isNaN(staffIdNum),
+  });
+
+  const { data: groupsData } = useAllGroupsQuery();
+
   const [updateUser, { loading: saving }] = useAdminUpdateUserMutation();
-  const [unlinkChild] = useLinkParentToChildMutation();
 
   const { register, handleSubmit, reset, watch } = useForm<FormValues>();
 
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showAddChildModal, setShowAddChildModal] = useState(false);
+  const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [editingField, setEditingField] = useState<EditingField>(null);
+  const [groupDropdownOpen, setGroupDropdownOpen] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [unlinkSuccess, setUnlinkSuccess] = useState(false);
   const [serverError, setServerError] = useState("");
-  const [confirmUnlink, setConfirmUnlink] = useState<{
-    childId: number;
-    name: string;
-    parentIds: number[];
-  } | null>(null);
 
-  const parent = (allParentsData?.allParents ?? []).find((p) => p.id === parentIdNum);
+  const staffMember = (allStaffData?.allStaff ?? []).find((s) => s.id === staffIdNum);
 
   useEffect(() => {
-    if (parent) {
+    if (staffMember) {
       reset({
-        first_name: parent.first_name,
-        last_name: parent.last_name,
-        email: parent.email ?? "",
-        phone: parent.phone ?? "",
+        first_name: staffMember.first_name,
+        last_name: staffMember.last_name,
+        email: staffMember.email ?? "",
+        phone: staffMember.phone ?? "",
       });
+      setSelectedGroupId(staffMember.group ? Number(staffMember.group.id) : null);
     }
-  }, [parent?.id, reset]);
+  }, [staffMember?.id, reset]);
 
   function toggleField(field: EditingField) {
     setEditingField((prev) => (prev === field ? null : field));
+    if (field !== "group") setGroupDropdownOpen(false);
   }
 
   function handleCancel() {
-    if (!parent) return;
+    if (!staffMember) return;
     reset({
-      first_name: parent.first_name,
-      last_name: parent.last_name,
-      email: parent.email ?? "",
-      phone: parent.phone ?? "",
+      first_name: staffMember.first_name,
+      last_name: staffMember.last_name,
+      email: staffMember.email ?? "",
+      phone: staffMember.phone ?? "",
     });
+    setSelectedGroupId(staffMember.group ? Number(staffMember.group.id) : null);
     setEditingField(null);
+    setGroupDropdownOpen(false);
   }
 
   const onSubmit = async (values: FormValues) => {
@@ -81,109 +86,46 @@ export default function EditParentPage() {
       await updateUser({
         variables: {
           data: {
-            id: parentIdNum,
+            id: staffIdNum,
             first_name: values.first_name,
             last_name: values.last_name,
             email: values.email || null,
             phone: values.phone || null,
+            group_id: selectedGroupId,
           },
         },
+        refetchQueries: ["AllStaff"],
       });
       setSuccess(true);
+      setEditingField(null);
       setTimeout(() => setSuccess(false), 2000);
     } catch {
       setServerError("Erreur lors de la sauvegarde.");
     }
   };
 
-  async function handleUnlinkChild(childId: number, currentParentIds: number[]) {
-    const newParents = currentParentIds.filter((pid) => pid !== parentIdNum);
-    await unlinkChild({
-      variables: { id: childId, data: { parents: newParents.map((pid) => ({ id: pid })) } },
-      refetchQueries: ["AllParents"],
-    });
-  }
-
   if (authLoading) return null;
   if (!user || !isAdmin) return null;
 
-  const linkedChildren = parent?.children ?? [];
+  const groupChildren = (childrenData?.children ?? []).filter(
+    (c) => selectedGroupId && String(c.group?.id) === String(selectedGroupId),
+  );
+
+  const selectedGroupName =
+    groupsData?.getAllGroups.find((g) => Number(g.id) === selectedGroupId)?.name ?? null;
+
   const firstNameVal = watch("first_name");
   const lastNameVal = watch("last_name");
   const emailVal = watch("email");
   const phoneVal = watch("phone");
 
   return (
-    <Layout pageTitle="Modifier fiche parents - Admin">
-      {/* Modal confirmation déliaison */}
-      {confirmUnlink && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-          <button
-            type="button"
-            className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"
-            onClick={() => setConfirmUnlink(null)}
-            aria-label="Fermer"
-          />
-          <div className="relative w-full max-w-[340px] rounded-3xl bg-[#FEF9F6] border-2 border-(--color-primary) p-6 shadow-xl flex flex-col items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-50 border-2 border-red-200">
-              <TrashIcon />
-            </div>
-            {unlinkSuccess ? (
-              <p className="text-[14px] font-semibold text-green-600">
-                ✓ Enfant délié avec succès !
-              </p>
-            ) : (
-              <div className="text-center">
-                <p className="text-[15px] font-semibold">Délier l'enfant</p>
-                <p className="text-[15px] font-semibold">{confirmUnlink.name} ?</p>
-                <p className="mt-1 text-[12px] opacity-60">
-                  L'enfant ne sera plus associé à ce parent.
-                </p>
-              </div>
-            )}
-            {!unlinkSuccess && (
-              <div className="flex w-full gap-3">
-                <button
-                  type="button"
-                  onClick={() => setConfirmUnlink(null)}
-                  className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="button"
-                  onClick={async () => {
-                    await handleUnlinkChild(confirmUnlink.childId, confirmUnlink.parentIds);
-                    setUnlinkSuccess(true);
-                    setTimeout(() => {
-                      setUnlinkSuccess(false);
-                      setConfirmUnlink(null);
-                    }, 2000);
-                  }}
-                  className="flex-1 rounded-xl border-2 border-red-200 bg-white py-2 text-[13px] text-red-500 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-                >
-                  Délier
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      <AddParentModal
+    <Layout pageTitle="Modifier fiche membre - Admin">
+      <AddStaffModal
         open={showAddModal}
         onClose={() => {
           setShowAddModal(false);
-          refetchParents();
-        }}
-      />
-      <AddChildModal
-        open={showAddChildModal}
-        parentIds={[parentIdNum]}
-        showLinkTab
-        onClose={() => {
-          setShowAddChildModal(false);
-          refetchParents();
+          refetchStaff();
         }}
       />
 
@@ -193,7 +135,7 @@ export default function EditParentPage() {
           <div className="flex items-center justify-between md:mt-20">
             <button
               type="button"
-              onClick={() => router.push("/admin/parentsHistory")}
+              onClick={() => router.push("/admin/staffHistory")}
               className="p-0"
             >
               <div className="h-10 w-10 overflow-hidden flex items-center justify-center md:h-20 md:w-20">
@@ -209,18 +151,19 @@ export default function EditParentPage() {
               onClick={() => setShowAddModal(true)}
               className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:px-6 md:py-3 md:text-[17px] md:rounded-3xl"
             >
-              + Ajouter un parent
+              + Ajouter un membre
             </button>
           </div>
 
-          {/* Carte parent */}
-          {parent && (
+          {/* Carte staff */}
+          {staffMember && (
             <div className="mt-4 rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-4 py-3 shadow-md flex items-center gap-3 md:mt-6 md:px-6 md:py-5 md:rounded-3xl md:gap-6">
               <img
-                src={parent.avatar ?? "/admin/parentavatar.png"}
-                alt={`${parent.first_name} ${parent.last_name}`}
+                src={staffMember.avatar ?? "/admin/parentavatar.png"}
+                alt={`${staffMember.first_name} ${staffMember.last_name}`}
                 className="h-12 w-12 rounded-full object-cover border-2 border-(--color-primary) shrink-0 md:h-24 md:w-24"
               />
+
               <div className="flex-1 min-w-0">
                 {/* Nom */}
                 <EditableRow onToggle={() => toggleField("name")} borderBottom>
@@ -241,7 +184,8 @@ export default function EditParentPage() {
                     </div>
                   ) : (
                     <span className="text-[14px] font-semibold md:text-[20px]">
-                      {firstNameVal || parent.first_name} {lastNameVal || parent.last_name}
+                      {firstNameVal || staffMember.first_name}{" "}
+                      {lastNameVal || staffMember.last_name}
                     </span>
                   )}
                 </EditableRow>
@@ -262,7 +206,7 @@ export default function EditParentPage() {
                 </EditableRow>
 
                 {/* Téléphone */}
-                <EditableRow onToggle={() => toggleField("phone")}>
+                <EditableRow onToggle={() => toggleField("phone")} borderBottom>
                   {editingField === "phone" ? (
                     <input
                       type="tel"
@@ -273,6 +217,53 @@ export default function EditParentPage() {
                     />
                   ) : (
                     <span className="text-[12px] opacity-70 md:text-[16px]">{phoneVal || "—"}</span>
+                  )}
+                </EditableRow>
+
+                {/* Groupe */}
+                <EditableRow onToggle={() => toggleField("group")}>
+                  {editingField === "group" ? (
+                    <div className="flex-1 relative">
+                      <button
+                        type="button"
+                        onClick={() => setGroupDropdownOpen((prev) => !prev)}
+                        className="w-full rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[12px] text-left outline-none flex justify-between items-center bg-white"
+                      >
+                        <span>{selectedGroupName ?? "Sélectionner un groupe"}</span>
+                        <span
+                          className={`text-gray-400 transition-transform duration-200 ${groupDropdownOpen ? "rotate-180" : ""}`}
+                        >
+                          ▾
+                        </span>
+                      </button>
+                      {groupDropdownOpen && (
+                        <div className="absolute left-0 top-8 z-20 rounded-xl border-2 border-(--color-primary) bg-white overflow-hidden shadow-lg w-full">
+                          {groupsData?.getAllGroups.map((g) => (
+                            <button
+                              key={g.id}
+                              type="button"
+                              onClick={() => {
+                                setSelectedGroupId(Number(g.id));
+                                setGroupDropdownOpen(false);
+                                setEditingField(null);
+                              }}
+                              className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 last:border-0 hover:bg-orange-50 ${selectedGroupId === Number(g.id) ? "font-semibold" : ""}`}
+                            >
+                              {g.name}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : selectedGroupId && selectedGroupName ? (
+                    <span
+                      className="rounded-full border-2 border-white px-2 py-0.5 text-[11px] font-medium shadow-md md:text-[16px] md:px-4 md:py-1"
+                      style={{ backgroundColor: getGroupBg(String(selectedGroupId)) }}
+                    >
+                      {selectedGroupName}
+                    </span>
+                  ) : (
+                    <span className="text-[12px] opacity-70">—</span>
                   )}
                 </EditableRow>
               </div>
@@ -307,22 +298,19 @@ export default function EditParentPage() {
             </button>
           </div>
 
-          {/* Enfants liés */}
+          {/* Enfants du groupe */}
           <div className="mt-7 md:mt-10">
-            <div className="flex items-center justify-between">
-              <p className="text-[13px] font-semibold md:text-[20px]">Enfants liés</p>
-              <button
-                type="button"
-                onClick={() => setShowAddChildModal(true)}
-                className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:px-6 md:py-3 md:text-[17px] md:rounded-3xl"
-              >
-                + Ajouter un enfant
-              </button>
-            </div>
+            <p className="text-[13px] font-semibold md:text-[20px] md:mb-2">Enfants du groupe</p>
 
-            {linkedChildren.length > 0 && (
+            {groupChildren.length === 0 && (
+              <div className="mt-3 rounded-2xl bg-white/80 border-2 border-(--color-secondary) p-4 text-[13px] text-center opacity-70">
+                Aucun enfant dans ce groupe.
+              </div>
+            )}
+
+            {groupChildren.length > 0 && (
               <div className="mt-3 flex flex-col gap-3">
-                {linkedChildren.map((c) => (
+                {groupChildren.map((c) => (
                   <div
                     key={c.id}
                     className="relative flex items-center justify-between rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-3 py-3 shadow-md md:px-6 md:py-5 md:rounded-3xl"
@@ -344,7 +332,7 @@ export default function EditParentPage() {
                           {c.group && (
                             <span
                               className="rounded-full border-2 border-white px-2 py-0.5 text-[11px] font-medium shadow-md whitespace-nowrap md:text-[14px] md:px-4 md:py-1"
-                              style={{ backgroundColor: `var(--color-group${c.group.id})` }}
+                              style={{ backgroundColor: getGroupBg(String(c.group.id)) }}
                             >
                               {c.group.name}
                             </span>
@@ -352,27 +340,12 @@ export default function EditParentPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={() => router.push(`/admin/children/${c.id}/edit`)}
-                      >
-                        <PencilIcon />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setConfirmUnlink({
-                            childId: c.id,
-                            name: `${c.firstName} ${c.lastName}`,
-                            parentIds: c.parents.map((p) => p.id),
-                          })
-                        }
-                        className="opacity-40 hover:opacity-80 transition-opacity"
-                      >
-                        <TrashIcon />
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => router.push(`/admin/children/${c.id}/edit`)}
+                    >
+                      <PencilIcon />
+                    </button>
                   </div>
                 ))}
               </div>

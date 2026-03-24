@@ -48,7 +48,7 @@ export default function AddStaffModal({ open, onClose }: Props) {
         variables: {
           data: { ...values, password: tempPassword, role: "staff", group_id: selectedGroupId },
         },
-        refetchQueries: ["AdminCounts"],
+        refetchQueries: ["AdminCounts", "AllStaff"],
       });
     } catch {
       setServerError("Une erreur est survenue. Vérifiez les informations.");
@@ -70,7 +70,7 @@ export default function AddStaffModal({ open, onClose }: Props) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+    <div className="fixed inset-0 z-50 flex items-start justify-center px-4 py-8 overflow-y-auto">
       <button
         type="button"
         className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"
@@ -86,17 +86,13 @@ export default function AddStaffModal({ open, onClose }: Props) {
       />
 
       {/* Modal Card */}
-      <div className="relative w-full max-w-[400px] rounded-3xl bg-[#FEF9F6] border-2 border-(--color-secondary) p-5 shadow-xl">
+      <div className="relative w-full max-w-[400px] rounded-3xl bg-[#FEF9F6] border-2 border-(--color-secondary) p-5 shadow-xl my-auto md:max-w-[560px] md:p-8">
         {/* Header */}
         <div className="flex items-center gap-10">
-          <Image
-            src="/boutons/plus.png"
-            alt="Ajouter"
-            width={80}
-            height={80}
-            className="rounded-full"
-          />
-          <h2 className="text-[16px] font-semibold">
+          <div className="relative shrink-0 w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden">
+            <Image src="/boutons/plus.png" alt="Ajouter" fill className="object-cover" />
+          </div>
+          <h2 className="text-[16px] font-semibold md:text-[22px]">
             Ajouter un membre <br />
             du staff
           </h2>
@@ -104,75 +100,83 @@ export default function AddStaffModal({ open, onClose }: Props) {
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="mt-1 space-y-4">
-          <p className="text-[13px] font-medium">Informations</p>
+          <p className="text-[13px] font-medium md:text-[16px]">Informations</p>
 
           {/* Prénom / Nom */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label htmlFor="first_name" className="text-[12px] font-medium">
+              <label htmlFor="first_name" className="text-[12px] font-medium md:text-[14px]">
                 Prénom*
               </label>
               <input
                 id="first_name"
                 {...register("first_name", { required: "Champ requis" })}
-                className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none ${errors.first_name ? "border-red-400" : "border-(--color-primary)"}`}
+                className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none md:text-[15px] md:py-2 md:px-3 ${errors.first_name ? "border-red-400" : "border-(--color-primary)"}`}
               />
               {errors.first_name && (
-                <p className="text-[11px] text-red-500">{errors.first_name.message}</p>
+                <p className="text-[11px] text-red-500 md:text-[13px]">
+                  {errors.first_name.message}
+                </p>
               )}
             </div>
 
             <div className="space-y-1">
-              <label htmlFor="last_name" className="text-[12px] font-medium">
+              <label htmlFor="last_name" className="text-[12px] font-medium md:text-[14px]">
                 Nom*
               </label>
               <input
                 id="last_name"
                 {...register("last_name", { required: "Champ requis" })}
-                className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none ${errors.last_name ? "border-red-400" : "border-(--color-primary)"}`}
+                className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none md:text-[15px] md:py-2 md:px-3 ${errors.last_name ? "border-red-400" : "border-(--color-primary)"}`}
               />
               {errors.last_name && (
-                <p className="text-[11px] text-red-500">{errors.last_name.message}</p>
+                <p className="text-[11px] text-red-500 md:text-[13px]">
+                  {errors.last_name.message}
+                </p>
               )}
             </div>
           </div>
 
           {/* Adresse mail */}
           <div className="space-y-1">
-            <label htmlFor="email" className="text-[12px] font-medium">
+            <label htmlFor="email" className="text-[12px] font-medium md:text-[14px]">
               Adresse mail*
             </label>
             <input
               id="email"
               type="email"
               {...register("email", { required: "Champ requis" })}
-              className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none ${errors.email ? "border-red-400" : "border-(--color-primary)"}`}
+              className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none md:text-[15px] md:py-2 md:px-3 ${errors.email ? "border-red-400" : "border-(--color-primary)"}`}
             />
-            {errors.email && <p className="text-[11px] text-red-500">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-[11px] text-red-500 md:text-[13px]">{errors.email.message}</p>
+            )}
           </div>
 
           {/* Téléphone */}
           <div className="space-y-1">
-            <label htmlFor="phone" className="text-[12px] font-medium">
+            <label htmlFor="phone" className="text-[12px] font-medium md:text-[14px]">
               Téléphone*
             </label>
             <input
               id="phone"
               {...register("phone", { required: "Champ requis" })}
-              className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none ${errors.phone ? "border-red-400" : "border-(--color-primary)"}`}
+              className={`w-full rounded-xl border-2 bg-white px-2 py-1 text-[13px] outline-none md:text-[15px] md:py-2 md:px-3 ${errors.phone ? "border-red-400" : "border-(--color-primary)"}`}
             />
-            {errors.phone && <p className="text-[11px] text-red-500">{errors.phone.message}</p>}
+            {errors.phone && (
+              <p className="text-[11px] text-red-500 md:text-[13px]">{errors.phone.message}</p>
+            )}
           </div>
 
           {/* Groupe */}
           <div>
-            <p className="text-[13px] font-medium mb-1">Groupe*</p>
+            <p className="text-[13px] font-medium mb-1 md:text-[16px]">Groupe*</p>
 
             {/* Bouton */}
             <button
               type="button"
               onClick={() => setGroupDropdownOpen((prev) => !prev)}
-              className={`w-full rounded-xl border-2 bg-white px-3 py-1.5 text-[12px] text-left outline-none flex justify-between items-center ${groupError ? "border-red-400" : "border-(--color-primary)"}`}
+              className={`w-full rounded-xl border-2 bg-white px-3 py-1.5 text-[12px] text-left outline-none flex justify-between items-center md:text-[15px] md:py-2 ${groupError ? "border-red-400" : "border-(--color-primary)"}`}
             >
               <span className="text-gray-400">
                 {selectedGroupId ? "1 groupe sélectionné" : "Sélectionner un groupe"}
@@ -196,7 +200,7 @@ export default function AddStaffModal({ open, onClose }: Props) {
                       setGroupDropdownOpen(false);
                       setGroupError(false);
                     }}
-                    className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 last:border-0 hover:bg-orange-50 ${selectedGroupId === Number(g.id) ? "font-semibold" : ""}`}
+                    className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 last:border-0 hover:bg-orange-50 md:text-[15px] md:px-4 md:py-2.5 ${selectedGroupId === Number(g.id) ? "font-semibold" : ""}`}
                   >
                     {g.name}
                   </button>
@@ -207,7 +211,7 @@ export default function AddStaffModal({ open, onClose }: Props) {
             {/* Tag groupe sélectionné */}
             {selectedGroupId && (
               <div className="mt-2">
-                <span className="flex items-center gap-1 rounded-full bg-white border border-(--color-secondary) px-2 py-0.5 text-[11px] w-fit">
+                <span className="flex items-center gap-1 rounded-full bg-white border border-(--color-secondary) px-2 py-0.5 text-[11px] w-fit md:text-[13px]">
                   {groupsData?.getAllGroups.find((g) => Number(g.id) === selectedGroupId)?.name}
                   <button
                     type="button"
@@ -220,16 +224,18 @@ export default function AddStaffModal({ open, onClose }: Props) {
               </div>
             )}
 
-            {groupError && <p className="text-[11px] text-red-500">Champ requis</p>}
+            {groupError && <p className="text-[11px] text-red-500 md:text-[13px]">Champ requis</p>}
           </div>
 
           {success && (
-            <p className="text-center text-[12px] text-green-600 font-medium py-1">
+            <p className="text-center text-[12px] text-green-600 font-medium py-1 md:text-[14px]">
               ✓ Membre du staff créé avec succès !
             </p>
           )}
           {serverError && (
-            <p className="text-center text-[12px] text-red-500 font-medium py-1">{serverError}</p>
+            <p className="text-center text-[12px] text-red-500 font-medium py-1 md:text-[14px]">
+              {serverError}
+            </p>
           )}
 
           {/* Buttons */}
@@ -244,7 +250,7 @@ export default function AddStaffModal({ open, onClose }: Props) {
                 setServerError("");
                 onClose();
               }}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[16px] md:py-2.5"
             >
               Annuler
             </button>
@@ -252,7 +258,7 @@ export default function AddStaffModal({ open, onClose }: Props) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
+              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 md:text-[16px] md:py-2.5"
             >
               {isSubmitting ? "Création..." : "Créer staff"}
             </button>
