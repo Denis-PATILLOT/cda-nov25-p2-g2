@@ -188,22 +188,26 @@ export default function EditParentPage() {
       />
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mx-auto w-full max-w-[420px] px-4 pt-2 pb-10">
+        <div className="mx-auto w-full max-w-[420px] px-4 pt-2 pb-10 md:max-w-none md:px-16 lg:px-24">
           {/* Header */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between md:mt-20">
             <button
               type="button"
               onClick={() => router.push("/admin/parentsHistory")}
               className="p-0"
             >
-              <div className="h-10 w-10 overflow-hidden flex items-center justify-center">
-                <img src="/admin/flechegauche.png" alt="Retour" className="h-16 w-16" />
+              <div className="h-10 w-10 overflow-hidden flex items-center justify-center md:h-20 md:w-20">
+                <img
+                  src="/admin/flechegauche.png"
+                  alt="Retour"
+                  className="h-16 w-16 md:h-28 md:w-28"
+                />
               </div>
             </button>
             <button
               type="button"
               onClick={() => setShowAddModal(true)}
-              className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+              className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:px-6 md:py-3 md:text-[17px] md:rounded-3xl"
             >
               + Ajouter un parent
             </button>
@@ -211,11 +215,11 @@ export default function EditParentPage() {
 
           {/* Carte parent */}
           {parent && (
-            <div className="mt-4 rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-4 py-3 shadow-md flex items-center gap-3">
+            <div className="mt-4 rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-4 py-3 shadow-md flex items-center gap-3 md:mt-6 md:px-6 md:py-5 md:rounded-3xl md:gap-6">
               <img
                 src={parent.avatar ?? "/admin/parentavatar.png"}
                 alt={`${parent.first_name} ${parent.last_name}`}
-                className="h-12 w-12 rounded-full object-cover border-2 border-(--color-primary) shrink-0"
+                className="h-12 w-12 rounded-full object-cover border-2 border-(--color-primary) shrink-0 md:h-24 md:w-24"
               />
               <div className="flex-1 min-w-0">
                 {/* Nom */}
@@ -236,7 +240,7 @@ export default function EditParentPage() {
                       />
                     </div>
                   ) : (
-                    <span className="text-[14px] font-semibold">
+                    <span className="text-[14px] font-semibold md:text-[20px]">
                       {firstNameVal || parent.first_name} {lastNameVal || parent.last_name}
                     </span>
                   )}
@@ -253,7 +257,7 @@ export default function EditParentPage() {
                       className="flex-1 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[12px] outline-none"
                     />
                   ) : (
-                    <span className="text-[12px] opacity-70">{emailVal || "—"}</span>
+                    <span className="text-[12px] opacity-70 md:text-[16px]">{emailVal || "—"}</span>
                   )}
                 </EditableRow>
 
@@ -268,7 +272,7 @@ export default function EditParentPage() {
                       className="flex-1 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[12px] outline-none"
                     />
                   ) : (
-                    <span className="text-[12px] opacity-70">{phoneVal || "—"}</span>
+                    <span className="text-[12px] opacity-70 md:text-[16px]">{phoneVal || "—"}</span>
                   )}
                 </EditableRow>
               </div>
@@ -286,31 +290,31 @@ export default function EditParentPage() {
           )}
 
           {/* Annuler / Sauvegarder */}
-          <div className="mt-4 flex gap-3">
+          <div className="mt-4 flex gap-3 md:mt-8">
             <button
               type="button"
               onClick={handleCancel}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[17px] md:py-3 md:rounded-2xl"
             >
               Annuler
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50"
+              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 md:text-[17px] md:py-3 md:rounded-2xl"
             >
               {saving ? "Sauvegarde..." : "Sauvegarder"}
             </button>
           </div>
 
           {/* Enfants liés */}
-          <div className="mt-7">
+          <div className="mt-7 md:mt-10">
             <div className="flex items-center justify-between">
-              <p className="text-[13px] font-semibold">Enfants liés</p>
+              <p className="text-[13px] font-semibold md:text-[20px]">Enfants liés</p>
               <button
                 type="button"
                 onClick={() => setShowAddChildModal(true)}
-                className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+                className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:px-6 md:py-3 md:text-[17px] md:rounded-3xl"
               >
                 + Ajouter un enfant
               </button>
@@ -321,25 +325,25 @@ export default function EditParentPage() {
                 {linkedChildren.map((c) => (
                   <div
                     key={c.id}
-                    className="relative flex items-center justify-between rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-3 py-3 shadow-md"
+                    className="relative flex items-center justify-between rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-3 py-3 shadow-md md:px-6 md:py-5 md:rounded-3xl"
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 md:gap-5">
                       <img
                         src={c.picture}
                         alt={`${c.firstName} ${c.lastName}`}
-                        className="h-12 w-12 rounded-full object-cover bg-gray-100 border-2 border-(--color-primary)"
+                        className="h-12 w-12 rounded-full object-cover bg-gray-100 border-2 border-(--color-primary) md:h-20 md:w-20"
                       />
                       <div>
-                        <div className="text-[14px] font-semibold">
+                        <div className="text-[14px] font-semibold md:text-[20px]">
                           {c.firstName} {c.lastName}
                         </div>
                         <div className="mt-1 flex items-center gap-2">
-                          <span className="text-[10px] opacity-70">
+                          <span className="text-[10px] opacity-70 md:text-[15px]">
                             {getAge(String(c.birthDate))}
                           </span>
                           {c.group && (
                             <span
-                              className="rounded-full border-2 border-white px-2 py-0.5 text-[11px] font-medium shadow-md whitespace-nowrap"
+                              className="rounded-full border-2 border-white px-2 py-0.5 text-[11px] font-medium shadow-md whitespace-nowrap md:text-[14px] md:px-4 md:py-1"
                               style={{ backgroundColor: `var(--color-group${c.group.id})` }}
                             >
                               {c.group.name}

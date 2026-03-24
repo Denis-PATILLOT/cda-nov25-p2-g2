@@ -439,6 +439,11 @@ export type AllParentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AllParentsQuery = { __typename?: 'Query', allParents: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string, email: string, phone: string, avatar?: string | null, children?: Array<{ __typename?: 'Child', id: number, firstName: string, lastName: string, picture: string, birthDate: any, group: { __typename?: 'Group', id: string, name: string }, parents: Array<{ __typename?: 'User', id: number }> }> | null }> };
 
+export type AllReportsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllReportsQuery = { __typename?: 'Query', reports: Array<{ __typename?: 'Report', id: string, date: any, isPresent: boolean, baby_mood: string, staff_comment?: string | null, picture?: string | null, child: { __typename?: 'Child', id: number, firstName: string, lastName: string, picture: string, birthDate: any, group: { __typename?: 'Group', id: string, name: string } } }> };
+
 export type AllStaffQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -968,6 +973,61 @@ export type AllParentsQueryHookResult = ReturnType<typeof useAllParentsQuery>;
 export type AllParentsLazyQueryHookResult = ReturnType<typeof useAllParentsLazyQuery>;
 export type AllParentsSuspenseQueryHookResult = ReturnType<typeof useAllParentsSuspenseQuery>;
 export type AllParentsQueryResult = ApolloReactCommon.QueryResult<AllParentsQuery, AllParentsQueryVariables>;
+export const AllReportsDocument = gql`
+    query AllReports {
+  reports {
+    id
+    date
+    isPresent
+    baby_mood
+    staff_comment
+    picture
+    child {
+      id
+      firstName
+      lastName
+      picture
+      birthDate
+      group {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAllReportsQuery__
+ *
+ * To run a query within a React component, call `useAllReportsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllReportsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllReportsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllReportsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AllReportsQuery, AllReportsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<AllReportsQuery, AllReportsQueryVariables>(AllReportsDocument, options);
+      }
+export function useAllReportsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AllReportsQuery, AllReportsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<AllReportsQuery, AllReportsQueryVariables>(AllReportsDocument, options);
+        }
+export function useAllReportsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllReportsQuery, AllReportsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<AllReportsQuery, AllReportsQueryVariables>(AllReportsDocument, options);
+        }
+export type AllReportsQueryHookResult = ReturnType<typeof useAllReportsQuery>;
+export type AllReportsLazyQueryHookResult = ReturnType<typeof useAllReportsLazyQuery>;
+export type AllReportsSuspenseQueryHookResult = ReturnType<typeof useAllReportsSuspenseQuery>;
+export type AllReportsQueryResult = ApolloReactCommon.QueryResult<AllReportsQuery, AllReportsQueryVariables>;
 export const AllStaffDocument = gql`
     query AllStaff {
   allStaff {
