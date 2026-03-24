@@ -1,11 +1,11 @@
 import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
+import { getCurrentUser } from "../auth";
 import db from "../db";
 import { Child, NewChildInput, UpdateChildInput } from "../entities/Child";
 import { Report } from "../entities/Report";
 import { User } from "../entities/User";
 import { ForbiddenError, NotFoundError } from "../errors";
-import { GraphQLContext } from "../types";
-import { getCurrentUser } from "../auth";
+import type { GraphQLContext } from "../types";
 
 @Resolver()
 export default class ChildResolver {
@@ -17,36 +17,62 @@ export default class ChildResolver {
   }
 
   @Query(() => [Child])
-  async childrenByGroup(@Arg("groupId", () => Int) groupId: number, @Ctx()context: GraphQLContext ) {  // avoir les parents des enfants du groupe
-    
+  async childrenByGroup(
+    @Arg("groupId", () => Int) groupId: number,
+    @Ctx() context: GraphQLContext,
+  ) {
+    // avoir les parents des enfants du groupe
+
     const user = await getCurrentUser(context);
 
-    if(user.group?.id !== groupId) throw new ForbiddenError({message: "You can't access these informations"})
-    
+    if (user.group?.id !== groupId)
+      throw new ForbiddenError({
+        message: "You can't access these informations",
+      });
+
     return await Child.find({
-      relations: ["group", "parents", "parents.startedConversations", "parents.startedConversations.participant",  "parents.participatedConversations", "parents.participatedConversations.initiator"], 
-      where: {group: {id: groupId}}
+      relations: [
+        "group",
+        "parents",
+        "parents.startedConversations",
+        "parents.startedConversations.participant",
+        "parents.participatedConversations",
+        "parents.participatedConversations.initiator",
+      ],
+      where: { group: { id: groupId } },
     });
   }
 
   @Query(() => Child)
-  async child(@Arg("id", () => Int) id: number, @Ctx()context: GraphQLContext) {
-    
+  async child(
+    @Arg("id", () => Int) id: number,
+    @Ctx() context: GraphQLContext,
+  ) {
     const user = await getCurrentUser(context);
 
     const child = await Child.findOne({
       where: { id },
       relations: ["group", "reports", "parents", "group.plannings"],
-      order: { reports : {  // pour avoir les reports en ordre choronologique
-          date: "ASC" }
-      }
+      order: {
+        reports: {
+          // pour avoir les reports en ordre choronologique
+          date: "ASC",
+        },
+      },
     });
 
     if (!child) {
       throw new NotFoundError();
     }
 
-    if(child.group.id !== user.group?.id) throw new ForbiddenError({message: "you can't access this child"})
+    if (user.role === "staff" &&child.group.id !== user.group?.id)
+      throw new ForbiddenError({ message: "you can't access this child" });
+    if (
+      user.role === "parent" &&
+      !user.children?.map((child) => child.id).includes(child.id)
+    ) {
+      throw new ForbiddenError({ message: "You can't access this report" });
+    }
 
     return child;
   }

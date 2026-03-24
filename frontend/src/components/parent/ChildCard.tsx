@@ -7,7 +7,7 @@ type Props = {
     lastName: string;
     birthDate: string | number;
     picture: string;
-    group: { id: string; name: string };
+    group?: { id: string; name: string };
   };
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
@@ -34,21 +34,21 @@ function getAgeLabel(birthDate: string | number) {
 
   return `${years} ans et ${remainingMonths} mois`;
 }
+
 export default function ChildCard({ child, onClick }: Props) {
   const ageLabel = getAgeLabel(child.birthDate);
 
   return (
     <button type="button" onClick={onClick} className="relative flex w-full items-center text-left">
-      {/* PHOTO */}
       <div
         className="
-        relative z-10
-        h-[95px] w-[95px]
-        rounded-full
-        bg-gradient-to-b from-yellow-200 to-yellow-400
-        p-[6px]
-        shadow-[0_10px_18px_rgba(255,200,60,0.35)]
-      "
+          relative z-10
+          h-[95px] w-[95px]
+          rounded-full
+          bg-gradient-to-b from-yellow-200 to-yellow-400
+          p-[6px]
+          shadow-[0_10px_18px_rgba(255,200,60,0.35)]
+        "
       >
         <img
           src={child.picture}
@@ -62,24 +62,23 @@ export default function ChildCard({ child, onClick }: Props) {
         />
       </div>
 
-      {/* CARD TEXTE */}
       <div
         className="
-        -ml-6
-        flex-1
-        rounded-full
-        bg-[#f2dfa7]
-        pl-14 pr-6 py-3
-        shadow-[0_6px_12px_rgba(20,40,90,0.08)]
-      "
+          -ml-6
+          flex-1
+          rounded-full
+          bg-[#f2dfa7]
+          pl-14 pr-6 py-3
+          shadow-[0_6px_12px_rgba(20,40,90,0.08)]
+        "
       >
         <p className="text-[18px] font-medium text-[#244389] leading-tight">
           {child.firstName} {child.lastName}
         </p>
 
-        <p className="text-[16px] text-[#244389] leading-tight mt-1">{ageLabel}</p>
+        <p className="mt-1 text-[16px] leading-tight text-[#244389]">{ageLabel}</p>
 
-        <p className="text-[16px] text-[#244389] leading-tight">{child.group?.name ?? ""}</p>
+        <p className="text-[16px] leading-tight text-[#244389]">{child.group?.name ?? ""}</p>
       </div>
     </button>
   );

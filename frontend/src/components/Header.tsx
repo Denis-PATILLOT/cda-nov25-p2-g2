@@ -57,6 +57,8 @@ export default function Header({ user, refetch }: HeaderProps) {
 
   if (!user) return null;
 
+  const isParent = user.role === "parent";
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -79,10 +81,13 @@ export default function Header({ user, refetch }: HeaderProps) {
           <button
             type="button"
             onClick={() => setIsMenuOpen((prev) => !prev)}
-            className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-4 border-white/90 bg-pink-50 shadow-[0_8px_20px_rgba(20,40,90,0.15)] transition duration-200 cursor-pointer hover:scale-105 hover:border-yellow-200 md:h-20 md:w-20"
+            className="flex h-14 w-14 cursor-pointer items-center justify-center overflow-hidden rounded-full border-4 border-white/90 bg-pink-50 shadow-[0_8px_20px_rgba(20,40,90,0.15)] transition duration-200 hover:scale-105 hover:border-yellow-200 md:h-20 md:w-20"
+            aria-haspopup="menu"
+            aria-expanded={isMenuOpen}
+            aria-label="Ouvrir le menu profil"
           >
             {user.avatar ? (
-              // biome-ignore lint/performance/noImgElement: <explanation>
+              // biome-ignore lint/performance/noImgElement: image utilisateur
               <img
                 src={user.avatar}
                 alt={`Profil de ${user.first_name}`}
@@ -129,16 +134,17 @@ export default function Header({ user, refetch }: HeaderProps) {
             </div>
 
             <div className="p-2">
-              <Link
-                href={`/${user.role}/profile`}
-                className="flex items-center gap-3 rounded-2xl px-4 py-3 text-blue-900 transition hover:bg-sky-50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <span className="text-lg">👤</span>
-                <span className="font-medium">Voir mon profil</span>
-              </Link>
-
-              {user.role === "parent" && 
+              {isParent && (
+                <Link
+                  href={`/${user.role}/profile`}
+                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-blue-900 transition hover:bg-sky-50"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span className="text-lg">👤</span>
+                  <span className="font-medium">Voir mon profil</span>
+                </Link>
+              )}
+              {isParent && (
                 <Link
                   href={`/${user.role}/password`}
                   className="flex items-center gap-3 rounded-2xl px-4 py-3 text-blue-900 transition hover:bg-pink-50"
@@ -147,12 +153,22 @@ export default function Header({ user, refetch }: HeaderProps) {
                   <span className="text-lg">🔒</span>
                   <span className="font-medium">Changer de mot de passe</span>
                 </Link>
-              }
+              )}
+              {isParent && (
+                <Link
+                  href="/parent/contact"
+                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-blue-900 transition hover:bg-green-50"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span className="text-lg">📩</span>
+                  <span className="font-medium">Contact</span>
+                </Link>
+              )}
 
               <button
                 type="button"
                 onClick={handleLogout}
-                className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-red-500 transition hover:bg-red-50 cursor-pointer"
+                className="flex w-full cursor-pointer items-center gap-3 rounded-2xl px-4 py-3 text-left text-red-500 transition hover:bg-red-50"
               >
                 <span className="text-lg">🚪</span>
                 <span className="font-medium">Déconnexion</span>
