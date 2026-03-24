@@ -1,0 +1,48 @@
+query CurrentUserConversations {
+  myConversations {
+    id
+    creationDate
+    initiator {
+      id
+      first_name
+      last_name
+      role
+      group {
+        id
+      }
+      children {
+        firstName
+        lastName
+        group {
+          id
+        }
+      }
+      
+    }
+    participant {
+      id
+      first_name
+      last_name
+      role
+      group {
+        id
+      }
+      children {
+        firstName
+        lastName
+        group {
+          id
+        }
+      }
+    }
+    messages {
+      date
+      content
+      author {
+        id
+        first_name
+        last_name
+      }
+    }
+  }
+}

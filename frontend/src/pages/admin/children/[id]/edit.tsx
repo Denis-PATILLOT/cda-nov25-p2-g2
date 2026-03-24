@@ -1,32 +1,15 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import PencilIcon from "@/components/admin/PencilIcon";
 import Layout from "@/components/Layout";
 import {
   useAdminChildDetailQuery,
   useAllGroupsQuery,
   useUpdateChildMutation,
 } from "@/graphql/generated/schema";
-import { useAuth } from "@/hooks/CurrentProfile";
-
-// Calcule l'âge à partir d'une date de naissance.
-// Retourne "X mois" si moins d'un an, sinon "X ans".
-function getAge(birthDate: string) {
-  const d = new Date(birthDate);
-  const now = new Date();
-  let years = now.getFullYear() - d.getFullYear();
-  const m = now.getMonth() - d.getMonth();
-  if (m < 0 || (m === 0 && now.getDate() < d.getDate())) years--;
-  if (years < 1) {
-    const months =
-      (now.getFullYear() - d.getFullYear()) * 12 +
-      now.getMonth() -
-      d.getMonth() -
-      (now.getDate() < d.getDate() ? 1 : 0);
-    return `${months} mois`;
-  }
-  return `${years} ans`;
-}
+import { useAdminGuard } from "@/hooks/useAdminGuard";
+import { getAge } from "@/utils/getAge";
 
 // Formate une date en format lisible français (ex: "3 mars 2022")
 function formatDate(dateStr: string) {
@@ -36,26 +19,6 @@ function formatDate(dateStr: string) {
     year: "numeric",
   });
 }
-
-// Icône crayon en SVG (utilisée pour les boutons d'édition)
-const PencilIcon = () => (
-  <svg
-    aria-hidden="true"
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-4 w-4 opacity-50"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={1.5}
-  >
-    <title>Modifier</title>
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487z"
-    />
-  </svg>
-);
 
 // Type des valeurs du formulaire géré par react-hook-form
 type FormValues = {
@@ -76,7 +39,7 @@ export default function EditChildPage() {
   const childId = Number(id);
 
   // Vérifie que l'utilisateur est connecté et admin
-  const { user, loading: authLoading, isAdmin } = useAuth();
+  const { user, authLoading, isAdmin } = useAdminGuard();
 
   // Requête GraphQL : charge le détail de l'enfant (infos + parents + groupe)
   // skip : n'exécute pas la requête si l'id n'est pas encore disponible
@@ -128,11 +91,6 @@ export default function EditChildPage() {
     }
   }, [data, reset]);
 
-  // Redirection vers /403 si l'utilisateur n'est pas admin
-  useEffect(() => {
-    if (!authLoading && (!user || !isAdmin)) router.replace("/403");
-  }, [authLoading, user, isAdmin, router]);
-
   // Soumission du formulaire : envoie les modifications au serveur via la mutation GraphQL.
   // Après succès, redirige vers la liste des enfants
   const onSubmit = async (values: FormValues) => {
@@ -154,7 +112,7 @@ export default function EditChildPage() {
         refetchQueries: ["childById", "AdminChildren"],
       });
       setSuccess(true);
-      setTimeout(() => router.push("/admin/childrenHistory"), 1500);
+      setTimeout(() => router.push("/admin/childrenHistory"), 2000);
     } catch {
       setServerError("Erreur lors de la sauvegarde.");
     }
@@ -176,52 +134,83 @@ export default function EditChildPage() {
   const selectedGroupName =
     groupsData?.getAllGroups.find((g) => Number(g.id) === selectedGroupId)?.name ?? "—";
 
+  // Annuler : remet les valeurs originales du formulaire
+  function handleCancel() {
+    if (!child) return;
+    reset({
+      firstName: child.firstName,
+      lastName: child.lastName,
+      birthDate: new Date(child.birthDate).toISOString().split("T")[0],
+      healthRecord: child.healthRecord ?? "",
+    });
+    setSelectedGroupId(Number(child.group?.id) || null);
+    setEditingField(null);
+    setGroupDropdownOpen(false);
+  }
+
   return (
     <Layout pageTitle="Modifier fiche enfant - Admin">
       {/* Tout le contenu est dans un formulaire pour gérer la soumission globale */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mx-auto w-full max-w-[420px] px-4 pt-4 pb-10">
+        <div className="mx-auto w-full max-w-[420px] px-4 pt-2 pb-10 md:max-w-none md:px-16 lg:px-24">
+          {/* Flèche retour */}
+          <div className="mb-2 md:mt-20">
+            <button
+              type="button"
+              onClick={() => router.push("/admin/childrenHistory")}
+              className="p-0"
+            >
+              <div className="h-10 w-10 overflow-hidden flex items-center justify-center md:h-20 md:w-20">
+                <img
+                  src="/admin/flechegauche.png"
+                  alt="Retour"
+                  className="h-16 w-16 md:h-28 md:w-28"
+                />
+              </div>
+            </button>
+          </div>
+
           {/* Section avatar + nom + âge */}
-          <div className="flex flex-col items-center mt-2">
+          <div className="flex flex-col items-center mt-2 md:mt-4">
             <div className="relative">
               <img
                 src={child?.picture || "https://placehold.co/100x100/png"}
                 alt="Avatar enfant"
-                className="h-24 w-24 rounded-full object-cover border-4 border-(--color-primary) shadow-md"
+                className="h-24 w-24 rounded-full object-cover border-4 border-(--color-primary) shadow-md md:h-36 md:w-36"
               />
               {/* Bouton crayon sur la photo (modification photo — non implémenté) */}
               <button
                 type="button"
-                className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-white border-2 border-(--color-primary) shadow"
+                className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-white border-2 border-(--color-primary) shadow md:h-10 md:w-10"
               >
                 <PencilIcon />
               </button>
             </div>
-            <p className="mt-1 text-[11px] opacity-50">Modifier photo</p>
+            <p className="mt-1 text-[11px] opacity-50 md:text-[14px]">Modifier photo</p>
 
             {/* Nom */}
             <div className="mt-2 flex items-center gap-2">
               {editingField === "name" ? (
-                <div className="flex gap-1">
+                <div
+                  className="flex gap-1"
+                  onBlur={(e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget as Node)) setEditingField(null);
+                  }}
+                >
                   <input
                     {...register("firstName", { required: true })}
-                    className="w-24 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[14px] outline-none text-center"
+                    onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
+                    className="w-24 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[14px] outline-none text-center md:w-36 md:text-[18px]"
                   />
                   <input
                     {...register("lastName", { required: true })}
-                    className="w-24 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[14px] outline-none text-center"
+                    onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
+                    className="w-24 rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[14px] outline-none text-center md:w-36 md:text-[18px]"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setEditingField(null)}
-                    className="text-[11px] text-green-500 font-medium"
-                  >
-                    ✓
-                  </button>
                 </div>
               ) : (
                 <>
-                  <span className="text-[16px] font-semibold">
+                  <span className="text-[16px] font-semibold md:text-[26px]">
                     {firstNameVal || child?.firstName} {lastNameVal || child?.lastName}
                   </span>
                   <button type="button" onClick={() => setEditingField("name")}>
@@ -232,58 +221,37 @@ export default function EditChildPage() {
             </div>
 
             {/* Âge : calculé dynamiquement depuis birthDate */}
-            <div className="flex items-center gap-2">
-              {editingField === "birthDate" ? (
-                <div className="flex items-center gap-1">
-                  <input
-                    type="date"
-                    {...register("birthDate")}
-                    className="rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[12px] outline-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setEditingField(null)}
-                    className="text-[11px] text-green-500 font-medium"
-                  >
-                    ✓
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <span className="text-[13px] opacity-60">
-                    {birthDateVal
-                      ? getAge(birthDateVal)
-                      : child?.birthDate
-                        ? getAge(String(child.birthDate))
-                        : "—"}
-                  </span>
-                  <button type="button" onClick={() => setEditingField("birthDate")}>
-                    <PencilIcon />
-                  </button>
-                </>
-              )}
-            </div>
+            <span className="text-[13px] opacity-60 md:text-[18px]">
+              {birthDateVal
+                ? getAge(birthDateVal)
+                : child?.birthDate
+                  ? getAge(String(child.birthDate))
+                  : "—"}
+            </span>
           </div>
 
           {/* Carte parent(s) — affichée seulement si l'enfant a des parents enregistrés */}
           {child?.parents && child.parents.length > 0 && (
-            <div className="mt-5 rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-4 py-3 shadow-md">
+            <div className="mt-5 rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-4 py-3 shadow-md md:mt-8 md:px-6 md:py-5 md:rounded-3xl">
               {child.parents.map((p) => (
                 <div key={p.id} className="flex items-center gap-3">
                   <img
                     src={p.avatar || "https://placehold.co/50x50/png"}
                     alt="Parent"
-                    className="h-12 w-12 rounded-full object-cover border-2 border-(--color-primary) shrink-0"
+                    className="h-12 w-12 rounded-full object-cover border-2 border-(--color-primary) shrink-0 md:h-20 md:w-20"
                   />
                   <div className="flex-1">
-                    <p className="text-[12px] font-medium">
+                    <p className="text-[12px] font-medium md:text-[17px]">
                       Parents : {p.first_name} {p.last_name}
                     </p>
                     <div className="mt-2 flex gap-2">
                       {/* Boutons d'action parent (non implémentés pour l'instant) */}
                       <button
                         type="button"
-                        className="flex items-center gap-1 rounded-xl border-2 border-(--color-tertiary) bg-white px-2 py-1 text-[11px] shadow-sm transition-all hover:shadow-md hover:scale-[1.03] active:scale-95"
+                        onClick={() =>
+                          router.push(`/admin/parents/${p.id}/edit?childId=${childId}`)
+                        }
+                        className="flex items-center gap-1 rounded-xl border-2 border-(--color-tertiary) bg-white px-2 py-1 text-[11px] shadow-sm transition-all hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[14px] md:px-3 md:py-1.5 md:rounded-2xl"
                       >
                         <PencilIcon />
                         Modifier
@@ -318,8 +286,10 @@ export default function EditChildPage() {
           )}
 
           {/* Section Infos de l'enfant */}
-          <div className="mt-5">
-            <h2 className="text-center text-[14px] font-semibold mb-3">Infos de l&apos;enfant</h2>
+          <div className="mt-5 md:mt-8">
+            <h2 className="text-center text-[14px] font-semibold mb-3 md:text-[20px] md:mb-5">
+              Infos de l&apos;enfant
+            </h2>
 
             {/* Conteneur principal du bloc */}
             <div
@@ -332,7 +302,7 @@ export default function EditChildPage() {
                 <button
                   type="button"
                   onClick={() => setActiveTab("infos")}
-                  className={`flex-1 py-1.5 text-[12px] font-medium rounded-xl transition-all duration-200 ${activeTab === "infos" ? "shadow-sm text-gray-700" : "text-gray-400"}`}
+                  className={`flex-1 py-1.5 text-[12px] font-medium rounded-xl transition-all duration-200 md:text-[16px] md:py-2.5 ${activeTab === "infos" ? "shadow-sm text-gray-700" : "text-gray-400"}`}
                   style={activeTab === "infos" ? { backgroundColor: "var(--color-secondary)" } : {}}
                 >
                   Informations
@@ -340,7 +310,7 @@ export default function EditChildPage() {
                 <button
                   type="button"
                   onClick={() => setActiveTab("sante")}
-                  className={`flex-1 py-1.5 text-[12px] font-medium rounded-xl transition-all duration-200 ${activeTab === "sante" ? "shadow-sm text-gray-700" : "text-gray-400"}`}
+                  className={`flex-1 py-1.5 text-[12px] font-medium rounded-xl transition-all duration-200 md:text-[16px] md:py-2.5 ${activeTab === "sante" ? "shadow-sm text-gray-700" : "text-gray-400"}`}
                   style={activeTab === "sante" ? { backgroundColor: "var(--color-secondary)" } : {}}
                 >
                   Carnet de santé
@@ -365,11 +335,13 @@ export default function EditChildPage() {
                         <input
                           type="date"
                           {...register("birthDate")}
+                          onBlur={() => setEditingField(null)}
+                          onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
                           className="flex-1 rounded-lg border-2 px-2 py-0.5 text-[12px] outline-none"
                           style={{ borderColor: "var(--color-primary)" }}
                         />
                       ) : (
-                        <span className="text-[13px]">
+                        <span className="text-[13px] md:text-[17px]">
                           Date de naissance :{" "}
                           {birthDateVal
                             ? formatDate(birthDateVal)
@@ -399,7 +371,7 @@ export default function EditChildPage() {
                         <div className="h-8 w-8 overflow-hidden flex items-center justify-center shrink-0">
                           <img src="/admin/groupe.png" alt="groupe" className="h-12 w-12" />
                         </div>
-                        <span className="text-[13px]">{selectedGroupName}</span>
+                        <span className="text-[13px] md:text-[17px]">{selectedGroupName}</span>
                       </div>
                       {/* Clic sur le crayon → ouvre/ferme le dropdown de sélection de groupe */}
                       <button
@@ -445,12 +417,14 @@ export default function EditChildPage() {
                       {editingField === "healthRecord" ? (
                         <input
                           {...register("healthRecord")}
+                          onBlur={() => setEditingField(null)}
+                          onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
                           className="flex-1 rounded-lg border-2 px-2 py-0.5 text-[12px] outline-none"
                           style={{ borderColor: "var(--color-primary)" }}
                           placeholder="Ex: allergie arachides..."
                         />
                       ) : (
-                        <span className="text-[13px]">
+                        <span className="text-[13px] md:text-[17px]">
                           Allergie : {healthRecordVal || child?.healthRecord || "RAS"}
                         </span>
                       )}
@@ -492,12 +466,12 @@ export default function EditChildPage() {
           )}
 
           {/* Boutons d'action */}
-          <div className="mt-6 flex gap-3">
-            {/* Annuler retour sur la liste des enfants */}
+          <div className="mt-6 flex gap-3 md:mt-8">
+            {/* Annuler : remet les valeurs originales */}
             <button
               type="button"
-              onClick={() => router.push("/admin/childrenHistory")}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+              onClick={handleCancel}
+              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[17px] md:py-3 md:rounded-2xl"
             >
               Annuler
             </button>
@@ -505,19 +479,11 @@ export default function EditChildPage() {
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50"
+              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 md:text-[17px] md:py-3 md:rounded-2xl"
             >
               {saving ? "Sauvegarde..." : "Sauvegarder"}
             </button>
           </div>
-
-          {/* Bouton Archiver (non implémenté pour l'instant) */}
-          <button
-            type="button"
-            className="mt-3 w-full rounded-xl border-2 border-(--color-primary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
-          >
-            Archiver
-          </button>
         </div>
       </form>
     </Layout>

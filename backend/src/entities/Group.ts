@@ -33,7 +33,6 @@ export class Group extends BaseEntity {
     (planning) => planning.group,
   )
   plannings: Planning[];
-  planning: any;
 
   @Field(() => [Child], { nullable: true })
   @OneToMany(

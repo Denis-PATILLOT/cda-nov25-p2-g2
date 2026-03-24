@@ -1,5 +1,7 @@
+# Modifie les infos d'un enfant existant (nom, date de naissance, groupe, dossier de santé...)
+# Utilisé dans : children/[id]/edit.tsx (sauvegarde du formulaire edit enfant)
 mutation UpdateChild($id: Int!, $data: UpdateChildInput!) {
-  updateAd(id: $id, data: $data) {
+  updateChild(id: $id, data: $data) {
     id
     firstName
     lastName

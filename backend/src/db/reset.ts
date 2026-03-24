@@ -31,7 +31,7 @@ async function main() {
   }).save();
 
   const group3 = await Group.create({
-    name: "grande section",
+    name: "Grande section",
     capacity: 18,
   }).save();
 
@@ -202,8 +202,8 @@ async function main() {
     afternoon_nap: "14h30 - 15h15",
     morning_activities: "Diamond painting",
     afternoon_activities: "Comptines + parcours sportif",
-    date: "03/10/2026",
-    group: { id: group1.id },
+    date: "02/11/2026",
+    group: { id: group2.id }
   }).save();
 
   // Report
@@ -240,9 +240,8 @@ async function main() {
 
   await Report.create({
     isPresent: true,
-    date: "03/10/2026",
-    staff_comment:
-      "un petit caprice pour faire la sieste mais bonne journée en globale",
+    date: "02/11/2026",
+    staff_comment: "un petit caprice pour faire la sieste mais bonne journée en globale",
     baby_mood: baby_moodFormat.Neutral,
     picture: "https://picsum.photos/200?random=10",
     child: child1,

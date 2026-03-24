@@ -1,6 +1,11 @@
-import { Arg, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
+import { getCurrentUser } from "../auth";
+import db from "../db";
 import { Child, NewChildInput, UpdateChildInput } from "../entities/Child";
-import { NotFoundError } from "../errors";
+import { Report } from "../entities/Report";
+import { User } from "../entities/User";
+import { ForbiddenError, NotFoundError } from "../errors";
+import type { GraphQLContext } from "../types";
 
 @Resolver()
 export default class ChildResolver {
@@ -11,16 +16,64 @@ export default class ChildResolver {
     });
   }
 
+  @Query(() => [Child])
+  async childrenByGroup(
+    @Arg("groupId", () => Int) groupId: number,
+    @Ctx() context: GraphQLContext,
+  ) {
+    // avoir les parents des enfants du groupe
+
+    const user = await getCurrentUser(context);
+
+    if (user.group?.id !== groupId)
+      throw new ForbiddenError({
+        message: "You can't access these informations",
+      });
+
+    return await Child.find({
+      relations: [
+        "group",
+        "parents",
+        "parents.startedConversations",
+        "parents.startedConversations.participant",
+        "parents.participatedConversations",
+        "parents.participatedConversations.initiator",
+      ],
+      where: { group: { id: groupId } },
+    });
+  }
+
   @Query(() => Child)
-  async child(@Arg("id", () => Int) id: number) {
+  async child(
+    @Arg("id", () => Int) id: number,
+    @Ctx() context: GraphQLContext,
+  ) {
+    const user = await getCurrentUser(context);
+
     const child = await Child.findOne({
       where: { id },
-      relations: ["group", "reports", "parents"],
+      relations: ["group", "reports", "parents", "group.plannings"],
+      order: {
+        reports: {
+          // pour avoir les reports en ordre choronologique
+          date: "ASC",
+        },
+      },
     });
 
     if (!child) {
       throw new NotFoundError();
     }
+
+    if (user.role === "staff" &&child.group.id !== user.group?.id)
+      throw new ForbiddenError({ message: "you can't access this child" });
+    if (
+      user.role === "parent" &&
+      !user.children?.map((child) => child.id).includes(child.id)
+    ) {
+      throw new ForbiddenError({ message: "You can't access this report" });
+    }
+
     return child;
   }
 
@@ -39,7 +92,7 @@ export default class ChildResolver {
   }
 
   @Mutation(() => Child)
-  async updateAd(
+  async updateChild(
     @Arg("id", () => Int) id: number,
     @Arg("data", () => UpdateChildInput, { validate: true })
     data: UpdateChildInput,
@@ -72,6 +125,20 @@ export default class ChildResolver {
       throw new NotFoundError();
     }
 
+    // Nettoyer la table de jointure representatives (ManyToMany avec User)
+    if (childToDelete.parents?.length) {
+      const parentIds = childToDelete.parents.map((p) => p.id);
+      await db
+        .getRepository(User)
+        .createQueryBuilder()
+        .relation(User, "children")
+        .of(parentIds)
+        .remove(childToDelete.id);
+    }
+    // Supprimer les reports liés avant l'enfant (contrainte FK)
+    if (childToDelete.reports?.length) {
+      await Report.remove(childToDelete.reports);
+    }
     await childToDelete.remove();
     return "Child has been deleted correctly !";
   }

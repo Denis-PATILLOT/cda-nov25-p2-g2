@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/CurrentProfile";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import getUserInitial from "@/utils/getUserInitial";
+import Link from "next/link";
 
 export default function StaffDashboard() {
   const router = useRouter();
@@ -49,22 +50,23 @@ export default function StaffDashboard() {
               </p>
             </div>
           </div>
-          <div className="flex w-full flex-wrap justify-start gap-3">
-            {(user.group?.children?.length as number) > 0 &&
+          <div className="w-[85%] flex flex-wrap justify-start gap-6 mx-auto">
+              {(user.group?.children?.length as number) > 0 &&
               user?.group?.children?.map((child) => (
-                <div
-                  key={child.id}
-                  className="w-[45%] pt-4 pb-2 mx-5 bg-[#FEF9F6] rounded-4xl border-5 border-[#FFD771] flex flex-col items-center justify-evenly"
-                >
-                  <div className="overflow-hidden h-[100px]">
-                    {/** biome-ignore lint/performance/noImgElement: <explanation> */}
+                <div key={child.id} className="w-[45%] pt-3 px-2 bg-[#FEF9F6] rounded-4xl border-3 border-[#FFD771] flex flex-col items-center justify-evenly hover:border-[#FFE771]">
+                  <div className="overflow-hidden h-[100px] rounded-2xl">
+                  {/** biome-ignore lint/performance/noImgElement: <explanation> */}
+                  <Link href={`/staff/child/${child.id}/reports`}>
                     <img
                       src={child.picture}
-                      alt=""
-                      className="h-[100px] object-contain shadow-gray-300 shadow-xl cursor-pointer  ease-in-out duration-300 hover:scale-110 "
+                      alt={`${child.firstName} ${child.lastName} reports`}
+                      title={`${child.firstName} ${child.lastName}`}
+                      className="h-[100px] object-contain shadow-gray-300 shadow-xl rounded-2xl cursor-pointer  ease-in-out duration-300 hover:scale-110 "
                     />
+                    
+                  </Link>
                   </div>
-                  <p className="mt-1  text-[#1b3c79]">{child.firstName}</p>
+                  <p>{child.firstName} {child.lastName[0].toUpperCase()}.</p>
                 </div>
               ))}
           </div>

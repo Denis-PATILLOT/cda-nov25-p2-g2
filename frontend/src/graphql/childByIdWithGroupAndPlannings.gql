@@ -1,0 +1,22 @@
+query ChildWithGroupAndPlannings($childId: Int!) {
+  child(id: $childId) {
+    id
+    firstName
+    birthDate
+    lastName
+    picture
+    reports {
+      id
+      date
+    }
+    group {
+      id
+      name
+      plannings {
+        id
+        date
+      }
+    }
+  }
+}
+

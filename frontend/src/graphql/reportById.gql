@@ -1,0 +1,25 @@
+query ReportById($reportId: Int!) {
+  report(id: $reportId) {
+    baby_mood
+    child {
+      id
+      picture
+      firstName
+      lastName
+      birthDate
+      picture
+      group {
+        id
+        name
+        plannings {
+          id
+          date
+        }
+      }
+    }
+    isPresent
+    picture
+    staff_comment
+    date
+  }
+}

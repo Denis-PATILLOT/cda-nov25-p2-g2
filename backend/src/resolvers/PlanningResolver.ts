@@ -1,5 +1,6 @@
 import {
   Arg,
+  Ctx,
   Field,
   InputType,
   Int,
@@ -9,33 +10,46 @@ import {
 } from "type-graphql";
 import { Group } from "../entities/Group";
 import { Planning } from "../entities/Planning";
-import { NotFoundError } from "../errors"; // Ajuste le chemin
+import { ForbiddenError, NotFoundError } from "../errors"; // Ajuste le chemin
+import { IsDate, IsNotEmpty, IsNumber } from "class-validator";
+import { GraphQLError } from "graphql";
+import { GraphQLContext } from "../types";
+import { getCurrentUser } from "../auth";
+
 
 @InputType()
 class PlanningInput {
   @Field()
+  @IsNotEmpty({message: "Le repas de midi doit être saisi"})
   meal: string;
 
   @Field()
+  @IsNotEmpty({message: "La période de sieste du matin doit être saisi"})
   morning_nap: string;
 
   @Field()
+  @IsNotEmpty({message: "La période de sieste de l'après-midi doit être saisi"})
   afternoon_nap: string;
 
   @Field()
+  @IsNotEmpty({message: "Le gôuter doit être saisi"})
   snack: string;
 
   @Field()
+  @IsDate({message: "Saisir une date correcte"})
   date: Date;
 
   @Field(() => Int)
+  @IsNumber({allowNaN: false}, {message: "L'id du groupe doit être de type entier"})
   groupId: number;
 
-  @Field({ nullable: true })
-  morning_activities: string;
+  @Field()
+  @IsNotEmpty({message: "Les activités du matin doivent être saisies"})
+  morning_activities: string
 
-  @Field({ nullable: true })
-  afternoon_activities: string;
+  @Field()
+  @IsNotEmpty({message: "Les activités de l'après-midi doivent être saisies"})
+  afternoon_activities: string
 }
 
 @InputType()
@@ -68,19 +82,32 @@ export class PlanningResolver {
   }
 
   @Query(() => [Planning])
-  async getAllPlanningsByGroup(
-    @Arg("groupId", () => Int) groupId: number,
-  ): Promise<Planning[]> {
-    return await Planning.find({
-      relations: ["group"],
-      where: { group: { id: groupId } },
-    });
+  async getAllPlanningsByGroup(@Arg("groupId", () => Int) groupId: number): Promise<Planning[]> {
+    return await Planning.find({ relations: ["group"], where: {group: { id : groupId} }, order: {date : "ASC"} });
   }
 
   @Query(() => Planning)
-  async getPlanningById(@Arg("id", () => Int) id: number): Promise<Planning> {
+  async getPlanningById(@Arg("id", () => Int) id: number, @Ctx() context: GraphQLContext): Promise<Planning> {
+
+    const user = await getCurrentUser(context);
+
     const planning = await Planning.findOne({
-      where: { id: id },
+      where: {id: id},
+      relations: ["group"],
+    });
+
+    if (!planning) throw new NotFoundError({message: "planning is not found"});
+
+    if(Number(planning?.group.id) !== Number(user.group?.id)) throw new ForbiddenError({message: "you can't access this planning"});
+
+    return planning;
+  }
+
+
+  @Query(() => Planning)
+  async getPlanningByGroupIdAndDate(@Arg("id", () => Int) id: number, @Arg("date", () => Date) date: Date): Promise<Planning> {
+    const planning = await Planning.findOne({
+      where: { group: {id: id }, date: date},
       relations: ["group"],
     });
 
@@ -88,13 +115,23 @@ export class PlanningResolver {
     return planning;
   }
 
+
   // CREATE
   @Mutation(() => Planning)
-  async createPlanning(@Arg("data") data: PlanningInput): Promise<Planning> {
+  async createPlanning(@Arg("data", {validate: true}) data: PlanningInput): Promise<Planning> {
     const group = await Group.findOneBy({ id: data.groupId });
 
     if (!group) {
       throw new NotFoundError({ message: "Group not found for this planning" });
+    }
+
+    const PlanningExistsAlready = await Planning.findOne({ 
+        relations: ["group"], 
+        where : { date : data.date, group: group },
+      });
+    if(PlanningExistsAlready) {
+      throw new GraphQLError("Planning already exists with this date", {
+        extensions: { code: "INVALID DATE", http: { status: 400 } } });
     }
 
     const newPlanning = Planning.create({

@@ -1,7 +1,16 @@
-import { Arg, Int, Mutation, Query, Resolver } from "type-graphql";
+// biome-ignore assist/source/organizeImports: <explanation>
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
+import {
+  baby_moodFormat,
+  NewReportInput,
+  Report,
+  UpdateReportInput,
+} from "../entities/Report";
+import { ForbiddenError, NotFoundError } from "../errors";
 import { Child } from "../entities/Child";
-import { NewReportInput, Report, UpdateReportInput } from "../entities/Report";
-import { NotFoundError } from "../errors";
+import { GraphQLError } from "graphql/error";
+import type { GraphQLContext } from "../types";
+import { getCurrentUser } from "../auth";
 
 @Resolver()
 export default class ReportResolver {
@@ -9,23 +18,40 @@ export default class ReportResolver {
   @Query(() => [Report])
   async reports() {
     return Report.find({
-      relations: [
-        "child", // parents ou admin ou assistante mat
-      ],
+      relations: ["child", "child.group"],
       order: { date: "DESC" },
     });
   }
 
-  // afficher un seul
+  // afficher un seul report
   @Query(() => Report, { nullable: true })
-  async report(@Arg("id") id: number) {
-    return Report.findOne({
+  async report(
+    @Arg("id", () => Int) id: number,
+    @Ctx() context: GraphQLContext,
+  ) {
+    const user = await getCurrentUser(context);
+
+    const report = await Report.findOne({
+      relations: {
+        child: {
+          group: {
+            plannings: true,
+          },
+        },
+      },
       where: { id },
-      relations: ["child"],
     });
+
+    if (!report) throw new NotFoundError({ message: "Report not found" });
+
+    if (user.role === "staff" && user.group?.id !== report.child.group.id)
+      throw new ForbiddenError({ message: "You can't access this report" });
+    if (!report) throw new NotFoundError({ message: "Report not found" });
+
+    return report;
   }
 
-  //   creer un report
+  // créer un report 
   @Mutation(() => Report)
   async createReport(
     @Arg("data", () => NewReportInput, { validate: true })
@@ -33,15 +59,30 @@ export default class ReportResolver {
   ): Promise<Report> {
     const child = await Child.findOne({
       where: { id: data.child?.id },
-      relations: ["child"],
+      relations: ["group", "group.plannings", "group.plannings.group"],
     });
+    if (!child) throw new NotFoundError();
 
-    if (!child) {
-      throw new NotFoundError();
-    }
+    const reportExistsAlready = await Report.findOne({
+      relations: ["child"],
+      where: { date: data.date, child: data.child },
+    });
+    if (reportExistsAlready)
+      throw new GraphQLError("Report already exists for this child", {
+        extensions: { code: "REPORT ALREADY EXISTED", argumentName: "report" },
+      });
+
+    const existingPlanning = child.group.plannings.some(
+      (p) => p.date.toISOString() === data.date.toISOString(),
+    ); // comparaison de date avec passage en string (car sinon 2 objets date ne seront jamais égaux entre eux !)
+    if (!existingPlanning)
+      throw new GraphQLError(
+        `No planning existed for that date and group : ${new Date(data.date).toLocaleDateString("FR-fr")}`,
+      );
+
     const newReport = new Report();
     Object.assign(newReport, data);
-    newReport.child = child;
+
     await newReport.save();
     return newReport;
   }
@@ -59,6 +100,13 @@ export default class ReportResolver {
     });
 
     if (!reportToUpdate) throw new NotFoundError();
+
+    // si pas présent (champ inaccessible dans data car pas coché dans le formulaire), on vide les données inutiles
+    if (!data.isPresent) {
+      data.baby_mood = baby_moodFormat.NA;
+      data.picture = null;
+      data.staff_comment = null;
+    }
 
     Object.assign(reportToUpdate, data);
     await reportToUpdate.save();

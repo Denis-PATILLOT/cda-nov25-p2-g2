@@ -9,10 +9,13 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Child } from "./Child";
 import { Group } from "./Group";
+import { Message } from "./Message";
+import { Conversation } from "./Conversation";
 
 export const UserRole = {
   Admin: "admin",
@@ -75,6 +78,18 @@ export class User extends BaseEntity {
     (child) => child.parents,
   )
   children?: Child[];
+
+  @Field(() => [Message])
+  @OneToMany(() => Message, message => message.author)
+  messages: [Message];
+
+  @Field(() => [Conversation], {nullable: true})
+  @OneToMany(() => Conversation, conversation => conversation.initiator,{nullable: true})
+  startedConversations: [Conversation]
+
+  @Field(() => [Conversation], {nullable: true})
+  @OneToMany(() => Conversation, conversation => conversation.participant, {nullable: true})
+  participatedConversations: [Conversation]
 }
 
 // Admin crée les comptes avec mdp temporaire

@@ -1,0 +1,12 @@
+query GetPlanningByGroupIdAndDate($date: DateTimeISO!, $groupId: Int!) {
+  getPlanningByGroupIdAndDate(date: $date, id: $groupId) {
+    id
+    meal
+    morning_activities
+    morning_nap
+    snack
+    date
+    afternoon_nap
+    afternoon_activities
+  }
+}

@@ -1,0 +1,13 @@
+query ReportByChild($childId: Int!) {
+  child(id: $childId) {
+    id
+    reports {
+      id
+      date
+      baby_mood
+      isPresent
+      picture
+      staff_comment
+    }
+  }
+}

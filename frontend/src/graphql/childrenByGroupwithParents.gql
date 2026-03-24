@@ -1,0 +1,21 @@
+query ChildrenByGroup($groupId: Int!) {
+  childrenByGroup(groupId: $groupId) {
+    firstName
+    lastName
+    parents {
+      id
+      first_name
+      last_name
+      participatedConversations {
+        initiator {
+          id
+        }
+      }
+      startedConversations {
+        participant {
+          id
+        }
+      }
+    }
+  }
+}
