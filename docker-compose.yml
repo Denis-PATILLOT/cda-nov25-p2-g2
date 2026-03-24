@@ -31,7 +31,6 @@ services:
     build: frontend
     env_file:
       - frontend/.env
-      - frontend/.env.local
 
     ports:
       - 3000:3000
