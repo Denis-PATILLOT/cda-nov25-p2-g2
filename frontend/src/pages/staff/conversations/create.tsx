@@ -33,7 +33,7 @@ const CreateConversationPage = () => {
       });
 
       await refetch();
-      if(data?.createConversation.id) router.push(`/staff/conversation/${data.createConversation.id}`);
+      if(data?.createConversation.id) router.push(`/staff/conversations/${data.createConversation.id}`);
 
     } catch(err:any) {
       setErrorMessage(err)
