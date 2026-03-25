@@ -23,7 +23,7 @@ const PlanningDetails = () => {
 
   return(
         <Layout pageTitle={`Staff - planning ${id}`}>
-            <div className="max-w-full mx-auto md:max-w-[600px]">
+            <div className="max-w-full mx-auto md:max-w-[1000px]">
                 {error &&  
                     <p className="text-red-500 px-5 mx-5 alert border-red-500">
                         { error instanceof TypeError && error?.message.includes("Network") && <>Erreur de connexion rencontrée.<br /> Merci de réessayer utlérieurement</> }

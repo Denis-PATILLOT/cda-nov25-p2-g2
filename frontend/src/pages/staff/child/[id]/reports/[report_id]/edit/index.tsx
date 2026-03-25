@@ -66,13 +66,13 @@ const EditReport = () => {
     
     return(
         <Layout pageTitle={`Staff - planning ${id}`}>
-            <div className="max-w-full mx-auto md:max-w-[600px]">
+            <div className="max-w-full mx-auto md:max-w-[1000px]">
                 {report && report.child && 
                             <div className="w-full flex justify-start items-center mt-5 mb-8 text-[#1b3c79]">
                                 {/* img car Image ne passe pas avec l'url de notre enfant */}
                                 <img src={report.child.picture} alt={`picture of ${report.child.firstName} ${report.child.lastName}`} className="h-[130px] ml-5 object-contain rounded-[50%] border-3 border-[#ffdd23] absolute" /> 
-                                <p className="w-[67%] h-[100px] rounded-4xl bg-[#FEF9F6] border-3 border-[#FFD771] ml-25 text-center pt-3 pl-5 flex justify-end">
-                                    <span className="inline-block w-[90%] text-left pl-5">
+                                <p className="w-[67%] h-[100px] rounded-4xl bg-[#FEF9F6] border-3 border-[#FFD771] ml-25 text-center pt-3 pl-5 flex justify-end md:w-[85%]">
+                                    <span className="inline-block w-[90%] text-left pl-5 md:text-center md:pl-0 md:pr-25">
                                     {report.child.firstName} {report.child.lastName}
                                     <br />
                                     {report.child.group.name}

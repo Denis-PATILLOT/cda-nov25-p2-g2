@@ -41,7 +41,7 @@ export default function StaffPlanning() {
 
         return(
                 <Layout pageTitle="Staff - plannings">
-                    <div className="max-w-full mx-auto md:max-w-[600px]">
+                    <div className="max-w-full mx-auto md:max-w-[1000px]">
                         <div className="w-[90%] p-4 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold text-center border-3 min-h-[600px] border-[#FFD771] mx-auto">
                             <h1 className="m-2 mb-2">
                                 <img src={"/calendrier.png"} width={50} className="inline-block" /> Plannings - {group.name}
@@ -49,6 +49,8 @@ export default function StaffPlanning() {
                             <Link href={"/staff/planning/create"}>
                                 <button className="bg-[#ffdd23] p-2 rounded-xl text-xs text-white hover:bg-[#ffbb25] cursor-pointer mb-2 text-right">Créer planning</button>
                             </Link>
+                            {groupPlannings && groupPlannings.length === 0 && <p>Aucun planning pour ce groupe</p> }
+                            {groupPlannings && groupPlannings.length > 0}
                             <div className="flex gap-5 justify-evenly">
                                 <div className="my-3">
                                     <select name="month" id="month" className="border-2 border-[#FFD771] py-1 px-2" value={planningMonth} onChange={handleChangeMonthSelect} >
@@ -74,11 +76,9 @@ export default function StaffPlanning() {
                                     </select>
                                 </div>
                             </div>
-                            <div className="flex w-full flex-wrap justify-start gap-3 mt-5">
+                            <div className="flex w-full flex-wrap justify-start gap-3 mt-5 md:justify-center">
                                 
-                                    { groupPlannings && 
-                                    
-                                    groupPlannings.length > 0 ? 
+                                    { 
                                     groupPlanningsFiltered && groupPlanningsFiltered.length > 0 ?
                                         groupPlanningsFiltered.map( planning => (
                                             <div key={planning.id} className="w-[30%] px-4 bg-[#FEF9F6]  text-xs rounded-2xl border-2 border-[#FFD771] hover:bg-[#FEE8B6]">
@@ -92,8 +92,7 @@ export default function StaffPlanning() {
                                     :
                                         <p>aucun planning pour cette période</p>
 
-                                    :
-                                        <p>Aucun planning pour ce groupe</p>
+                         
                             }
                             </div>
                         </div>

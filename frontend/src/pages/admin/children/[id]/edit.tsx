@@ -26,10 +26,11 @@ type FormValues = {
   lastName: string;
   birthDate: string;
   healthRecord: string;
+  photo: string;
 };
 
 // Champ actuellement en cours d'édition (null = aucun)
-type EditingField = "name" | "birthDate" | "group" | "healthRecord" | null;
+type EditingField = "name" | "birthDate" | "group" | "healthRecord" | "photo" | null;
 
 export default function EditChildPage() {
   const router = useRouter();
@@ -86,6 +87,7 @@ export default function EditChildPage() {
         // Conversion en format "YYYY-MM-DD" requis par <input type="date">
         birthDate: new Date(c.birthDate).toISOString().split("T")[0],
         healthRecord: c.healthRecord ?? "",
+        photo: c.picture
       });
       setSelectedGroupId(Number(c.group?.id) || null);
     }
@@ -104,6 +106,7 @@ export default function EditChildPage() {
             lastName: values.lastName,
             birthDate: new Date(values.birthDate),
             healthRecord: values.healthRecord || null,
+            picture: values.photo || null,
             // N'envoie le groupe que si un groupe est sélectionné
             ...(selectedGroupId ? { group: { id: selectedGroupId } } : {}),
           },
@@ -129,6 +132,7 @@ export default function EditChildPage() {
   const firstNameVal = watch("firstName");
   const lastNameVal = watch("lastName");
   const healthRecordVal = watch("healthRecord");
+  const pictureVal = watch("photo");
 
   // Nom du groupe sélectionné, pour l'affichage dans la ligne Groupe
   const selectedGroupName =
@@ -142,6 +146,7 @@ export default function EditChildPage() {
       lastName: child.lastName,
       birthDate: new Date(child.birthDate).toISOString().split("T")[0],
       healthRecord: child.healthRecord ?? "",
+      photo: child.picture
     });
     setSelectedGroupId(Number(child.group?.id) || null);
     setEditingField(null);
@@ -160,7 +165,7 @@ export default function EditChildPage() {
               onClick={() => router.push("/admin/childrenHistory")}
               className="p-0"
             >
-              <div className="h-10 w-10 overflow-hidden flex items-center justify-center md:h-20 md:w-20">
+              <div className="h-10 w-10 overflow-hidden cursor-pointer flex items-center justify-center md:h-20 md:w-20">
                 <img
                   src="/admin/flechegauche.png"
                   alt="Retour"
@@ -181,15 +186,30 @@ export default function EditChildPage() {
               {/* Bouton crayon sur la photo (modification photo — non implémenté) */}
               <button
                 type="button"
-                className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-white border-2 border-(--color-primary) shadow md:h-10 md:w-10"
+                className="absolute cursor-pointer bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-white border-2 border-(--color-primary) shadow md:h-10 md:w-10"
+                onClick={() => setEditingField("photo")}
               >
                 <PencilIcon />
               </button>
             </div>
-            <p className="mt-1 text-[11px] opacity-50 md:text-[14px]">Modifier photo</p>
+             {editingField === "photo" ? 
+                <div
+                  className="flex gap-1"
+                  onBlur={(e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget as Node)) setEditingField(null);
+                  }}
+                >
+                  <input
+                    {...register("photo", { required: true })}
+                    onKeyDown={(e) => e.key === "Enter" && setEditingField(null)}
+                    className="w-full rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[14px] outline-none text-center md:w-36 md:text-[18px]"
+                  />
+                  </div>
+                  : ""
+             }
 
             {/* Nom */}
-            <div className="mt-2 flex items-center gap-2">
+            <div className="mt-5 flex items-center gap-2">
               {editingField === "name" ? (
                 <div
                   className="flex gap-1"
@@ -213,7 +233,7 @@ export default function EditChildPage() {
                   <span className="text-[16px] font-semibold md:text-[26px]">
                     {firstNameVal || child?.firstName} {lastNameVal || child?.lastName}
                   </span>
-                  <button type="button" onClick={() => setEditingField("name")}>
+                  <button type="button" className="cursor-pointer" onClick={() => setEditingField("name")}>
                     <PencilIcon />
                   </button>
                 </>
@@ -244,19 +264,19 @@ export default function EditChildPage() {
                     <p className="text-[12px] font-medium md:text-[17px]">
                       Parents : {p.first_name} {p.last_name}
                     </p>
-                    <div className="mt-2 flex gap-2">
+                    <div className="mt-2 flex gap-2 justify-start">
                       {/* Boutons d'action parent (non implémentés pour l'instant) */}
                       <button
                         type="button"
                         onClick={() =>
                           router.push(`/admin/parents/${p.id}/edit?childId=${childId}`)
                         }
-                        className="flex items-center gap-1 rounded-xl border-2 border-(--color-tertiary) bg-white px-2 py-1 text-[11px] shadow-sm transition-all hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[14px] md:px-3 md:py-1.5 md:rounded-2xl"
+                        className="flex items-center cursor-pointer gap-1 rounded-xl border-2 border-(--color-tertiary) bg-white px-2 py-1 text-[11px] shadow-sm transition-all hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[14px] md:px-3 md:py-1.5 md:rounded-2xl"
                       >
                         <PencilIcon />
                         Modifier
                       </button>
-                      <button
+                      {/* <button
                         type="button"
                         className="flex items-center gap-1 rounded-xl border-2 border-(--color-tertiary) bg-white px-2 py-1 text-[11px] shadow-sm transition-all hover:shadow-md hover:scale-[1.03] active:scale-95"
                       >
@@ -277,7 +297,7 @@ export default function EditChildPage() {
                           />
                         </svg>
                         Envoyer un message
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 </div>
@@ -302,7 +322,7 @@ export default function EditChildPage() {
                 <button
                   type="button"
                   onClick={() => setActiveTab("infos")}
-                  className={`flex-1 py-1.5 text-[12px] font-medium rounded-xl transition-all duration-200 md:text-[16px] md:py-2.5 ${activeTab === "infos" ? "shadow-sm text-gray-700" : "text-gray-400"}`}
+                  className={`flex-1 py-1.5 text-[12px] cursor-pointer font-medium rounded-xl transition-all duration-200 md:text-[16px] md:py-2.5 ${activeTab === "infos" ? "shadow-sm text-gray-700" : "text-gray-400"}`}
                   style={activeTab === "infos" ? { backgroundColor: "var(--color-secondary)" } : {}}
                 >
                   Informations
@@ -310,7 +330,7 @@ export default function EditChildPage() {
                 <button
                   type="button"
                   onClick={() => setActiveTab("sante")}
-                  className={`flex-1 py-1.5 text-[12px] font-medium rounded-xl transition-all duration-200 md:text-[16px] md:py-2.5 ${activeTab === "sante" ? "shadow-sm text-gray-700" : "text-gray-400"}`}
+                  className={`flex-1 py-1.5 cursor-pointer text-[12px] font-medium rounded-xl transition-all duration-200 md:text-[16px] md:py-2.5 ${activeTab === "sante" ? "shadow-sm text-gray-700" : "text-gray-400"}`}
                   style={activeTab === "sante" ? { backgroundColor: "var(--color-secondary)" } : {}}
                 >
                   Carnet de santé
@@ -353,6 +373,7 @@ export default function EditChildPage() {
                     </div>
                     <button
                       type="button"
+                      className="cursor-pointer"
                       onClick={() =>
                         setEditingField(editingField === "birthDate" ? null : "birthDate")
                       }
@@ -376,6 +397,7 @@ export default function EditChildPage() {
                       {/* Clic sur le crayon → ouvre/ferme le dropdown de sélection de groupe */}
                       <button
                         type="button"
+                        className="cursor-pointer"
                         onClick={() => {
                           setEditingField(editingField === "group" ? null : "group");
                           setGroupDropdownOpen((p) => !p);
@@ -431,6 +453,7 @@ export default function EditChildPage() {
                     </div>
                     <button
                       type="button"
+                      className="cursor-pointer"
                       onClick={() =>
                         setEditingField(editingField === "healthRecord" ? null : "healthRecord")
                       }
@@ -471,7 +494,7 @@ export default function EditChildPage() {
             <button
               type="button"
               onClick={handleCancel}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[17px] md:py-3 md:rounded-2xl"
+              className="flex-1 rounded-xl cursor-pointer border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[17px] md:py-3 md:rounded-2xl"
             >
               Annuler
             </button>
@@ -479,7 +502,7 @@ export default function EditChildPage() {
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 md:text-[17px] md:py-3 md:rounded-2xl"
+              className="flex-1 rounded-xl cursor-pointer border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 md:text-[17px] md:py-3 md:rounded-2xl"
             >
               {saving ? "Sauvegarde..." : "Sauvegarder"}
             </button>
