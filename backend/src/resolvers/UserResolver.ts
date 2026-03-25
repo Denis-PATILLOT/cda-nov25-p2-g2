@@ -10,6 +10,7 @@ import {
   Resolver,
 } from "type-graphql";
 import { endSession, getCurrentUser, startSession } from "../auth";
+import { sendWelcomeEmail } from "../mailer";
 import { Group } from "../entities/Group";
 import {
   ChangePasswordInput,
@@ -86,7 +87,16 @@ export default class UserResolver {
       group,
     });
 
-    return await newUser.save();
+    const savedUser = await newUser.save();
+
+    // Envoi du mot de passe temporaire par email
+    await sendWelcomeEmail({
+      to: email,
+      firstName: data.first_name,
+      password: data.password,
+    });
+
+    return savedUser;
   }
 
   // Modifier un compte (infos, role, group)

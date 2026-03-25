@@ -146,7 +146,7 @@ export default function EditParentPage() {
                 <button
                   type="button"
                   onClick={() => setConfirmUnlink(null)}
-                  className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+                  className="flex-1 cursor-pointer rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
                 >
                   Annuler
                 </button>
@@ -160,7 +160,7 @@ export default function EditParentPage() {
                       setConfirmUnlink(null);
                     }, 2000);
                   }}
-                  className="flex-1 rounded-xl border-2 border-red-200 bg-white py-2 text-[13px] text-red-500 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
+                  className="flex-1 rounded-xl cursor-pointer border-2 border-red-200 bg-white py-2 text-[13px] text-red-500 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95"
                 >
                   Délier
                 </button>
@@ -196,7 +196,7 @@ export default function EditParentPage() {
               onClick={() => router.push("/admin/parentsHistory")}
               className="p-0"
             >
-              <div className="h-10 w-10 overflow-hidden flex items-center justify-center md:h-20 md:w-20">
+              <div className="h-10 w-10 cursor-pointer overflow-hidden flex items-center justify-center md:h-20 md:w-20">
                 <img
                   src="/admin/flechegauche.png"
                   alt="Retour"
@@ -207,7 +207,7 @@ export default function EditParentPage() {
             <button
               type="button"
               onClick={() => setShowAddModal(true)}
-              className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:px-6 md:py-3 md:text-[17px] md:rounded-3xl"
+              className="rounded-2xl cursor-pointer bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:px-6 md:py-3 md:text-[17px] md:rounded-3xl"
             >
               + Ajouter un parent
             </button>
@@ -294,14 +294,14 @@ export default function EditParentPage() {
             <button
               type="button"
               onClick={handleCancel}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[17px] md:py-3 md:rounded-2xl"
+              className="flex-1 rounded-xl cursor-pointer border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[17px] md:py-3 md:rounded-2xl"
             >
               Annuler
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 md:text-[17px] md:py-3 md:rounded-2xl"
+              className="flex-1 rounded-xl cursor-pointer border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 md:text-[17px] md:py-3 md:rounded-2xl"
             >
               {saving ? "Sauvegarde..." : "Sauvegarder"}
             </button>
@@ -314,7 +314,7 @@ export default function EditParentPage() {
               <button
                 type="button"
                 onClick={() => setShowAddChildModal(true)}
-                className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:px-6 md:py-3 md:text-[17px] md:rounded-3xl"
+                className="rounded-2xl cursor-pointer bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:px-6 md:py-3 md:text-[17px] md:rounded-3xl"
               >
                 + Ajouter un enfant
               </button>
@@ -355,6 +355,7 @@ export default function EditParentPage() {
                     <div className="flex items-center gap-1">
                       <button
                         type="button"
+                        className="cursor-pointer"
                         onClick={() => router.push(`/admin/children/${c.id}/edit`)}
                       >
                         <PencilIcon />
@@ -368,7 +369,7 @@ export default function EditParentPage() {
                             parentIds: c.parents.map((p) => p.id),
                           })
                         }
-                        className="opacity-40 hover:opacity-80 transition-opacity"
+                        className="opacity-40 hover:opacity-80 cursor-pointer transition-opacity"
                       >
                         <TrashIcon />
                       </button>

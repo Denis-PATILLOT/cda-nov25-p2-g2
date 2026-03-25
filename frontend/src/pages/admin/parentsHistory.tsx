@@ -115,7 +115,7 @@ export default function AdminParentsPage() {
       <div className="mx-auto w-full max-w-[420px] px-4 pt-2 pb-6 md:max-w-none md:px-16 md:pt-0 lg:px-24">
         <div className="relative flex items-center justify-between md:mt-20">
           <button type="button" onClick={() => router.push("/admin")} className="p-0">
-            <div className="h-10 w-10 overflow-hidden flex items-center justify-center md:h-20 md:w-20">
+            <div className="h-10 w-10 overflow-hidden flex cursor-pointer items-center justify-center md:h-20 md:w-20">
               <img
                 src="/admin/flechegauche.png"
                 alt="Retour"
@@ -131,7 +131,7 @@ export default function AdminParentsPage() {
           <button
             type="button"
             onClick={() => setShowAddModal(true)}
-            className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:px-6 md:py-3 md:text-[17px] md:rounded-3xl"
+            className="rounded-2xl bg-white/80 border-2 cursor-pointer border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:px-6 md:py-3 md:text-[17px] md:rounded-3xl"
           >
             + Ajouter un parent
           </button>
@@ -153,7 +153,7 @@ export default function AdminParentsPage() {
           <button
             type="button"
             onClick={() => setGroupDropdownOpen((prev) => !prev)}
-            className="flex items-center w-full h-9 rounded-xl border-2 border-(--color-primary) bg-white/80 px-2 shadow-sm text-[12px] text-left outline-none gap-1 md:h-12 md:text-[16px] md:px-4 md:rounded-2xl"
+            className="flex items-center w-full h-9 rounded-xl cursor-pointer border-2 border-(--color-primary) bg-white/80 px-2 shadow-sm text-[12px] text-left outline-none gap-1 md:h-12 md:text-[16px] md:px-4 md:rounded-2xl"
           >
             <div className="h-8 w-8 overflow-hidden flex items-center justify-center shrink-0">
               <img src="/admin/groupe.png" alt="Groupe" className="h-14 w-14 opacity-70" />
@@ -178,7 +178,7 @@ export default function AdminParentsPage() {
                   setGroupFilter("ALL");
                   setGroupDropdownOpen(false);
                 }}
-                className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 hover:bg-orange-50 md:text-[16px] md:px-5 md:py-3 ${groupFilter === "ALL" ? "font-semibold" : ""}`}
+                className={`w-full text-left px-3 py-2 text-[12px] border-b cursor-pointer border-gray-50 hover:bg-orange-50 md:text-[16px] md:px-5 md:py-3 ${groupFilter === "ALL" ? "font-semibold" : ""}`}
               >
                 Tous les groupes
               </button>
@@ -190,7 +190,7 @@ export default function AdminParentsPage() {
                     setGroupFilter(g.id);
                     setGroupDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 last:border-0 hover:bg-orange-50 md:text-[16px] md:px-5 md:py-3 ${groupFilter === g.id ? "font-semibold" : ""}`}
+                  className={`w-full text-left px-3 py-2 text-[12px] border-b cursor-pointer border-gray-50 last:border-0 hover:bg-orange-50 md:text-[16px] md:px-5 md:py-3 ${groupFilter === g.id ? "font-semibold" : ""}`}
                 >
                   {g.name}
                 </button>
@@ -241,7 +241,7 @@ export default function AdminParentsPage() {
                       <button
                         type="button"
                         onClick={() => setOpenMenuId(openMenuId === menuKey ? null : menuKey)}
-                        className="text-[20px] px-2 opacity-60 hover:opacity-100 md:text-[28px]"
+                        className="text-[20px] px-2 opacity-60 cursor-pointer hover:opacity-100 md:text-[28px]"
                       >
                         •••
                       </button>
@@ -256,7 +256,7 @@ export default function AdminParentsPage() {
                                 `/admin/parents/${parent.id}/edit?childId=${firstChild?.id ?? ""}`,
                               );
                             }}
-                            className="flex items-center gap-3 px-4 py-2.5 text-left hover:bg-gray-50 border-b border-gray-100"
+                            className="flex items-center gap-3 px-4 py-2.5 text-left cursor-pointer hover:bg-gray-50 border-b border-gray-100"
                           >
                             <PencilIcon />
                             Modifier
@@ -266,7 +266,7 @@ export default function AdminParentsPage() {
                             onClick={() =>
                               handleDelete(parent.id, `${parent.first_name} ${parent.last_name}`)
                             }
-                            className="flex items-center gap-3 px-4 py-2.5 text-left text-red-500 hover:bg-red-50"
+                            className="flex items-center gap-3 px-4 py-2.5 text-left cursor-pointer text-red-500 hover:bg-red-50"
                           >
                             <TrashIcon />
                             Supprimer

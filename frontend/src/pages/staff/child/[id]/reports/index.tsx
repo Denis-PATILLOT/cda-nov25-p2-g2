@@ -54,12 +54,12 @@ const ChildReports = () => {
                         
                     }
                     {child && !error &&
-                    <div className="max-w-full mx-auto md:max-w-[600px]">
-                        <div className="w-[full] flex justify-start items-center mt-5 mb-8 text-[#1b3c79] ">
+                    <div className="max-w-full mx-auto md:max-w-[1200px] ">
+                        <div className="w-[full] flex justify-start items-center mt-5 mb-8 text-[#1b3c79] md:w-[full] md:mx-auto">
                                 {/* img car Image ne passe pas avec l'url de notre enfant */}
-                                <img src={child.picture} alt={`picture of ${child.firstName} ${child.lastName}`} className="h-[130px] ml-5 object-contain rounded-[50%] border-3 border-[#ffdd23] absolute" /> 
+                                <img src={child.picture} alt={`picture of ${child.firstName} ${child.lastName}`} className="h-[130px] w-[130px] ml-5 object-cover rounded-[50%] border-3 border-[#ffdd23] absolute md:relative md:left-50 md:h-[200px] md:w-[200px] md:ml-0" /> 
                                 <p className="w-[67%] h-[100px] rounded-4xl bg-[#FEF9F6] border-3 border-[#FFD771] ml-25 text-center pt-3 pl-5 flex justify-end">
-                                    <span className="inline-block w-[90%] text-left pl-5">
+                                    <span className="inline-block w-[90%] text-left pl-5 md:text-center md:pl-0">
                                     {child.firstName} {child.lastName}
                                     <br />
                                     {child.group.name}
@@ -76,7 +76,9 @@ const ChildReports = () => {
                             </Link>
                             {loading && <p>Chargement des données</p>}
                             
-                            {child && 
+                            { childReports && childReports.length === 0 && <p className="md:text-center">Aucun compte-rendu pour cet enfant</p> }
+
+                            {child &&  childReports && childReports.length > 0 &&
                             <>
                             <div className="flex gap-5 justify-evenly">
                                 <div className="my-3">
@@ -103,11 +105,11 @@ const ChildReports = () => {
                                     </select>
                                 </div>
                             </div> 
-                            <div className="flex w-full mt-3 flex-wrap justify-start gap-3">
+                            <div className="flex w-full mt-3 flex-wrap justify-start gap-3 md:justify-center">
                                 
                                     { childReports && 
                                     
-                                    childReports.length > 0 ? 
+                                    
                                     childReportsFiltered && childReportsFiltered.length > 0 ?
                                         childReportsFiltered.map(report => (
                                             <div key={report.id} className="w-[30%] px-4 bg-[#FEF9F6]  text-xs rounded-2xl border-2 border-[#FFD771] hover:bg-[#FEE8B6]">
@@ -117,20 +119,15 @@ const ChildReports = () => {
                                                 <p>{new Date(report.date).toLocaleDateString("FR-fr", {year:"numeric"})}</p>
                                                 </Link>
                                             </div>
-                                    ))
-                                    :
-                                        <p>aucun compte-rendu pour cette période</p>
-
-                                    :
-                                        <p>Aucun compte-rendu pour cet enfant</p>
-                            }
-                            
+                                            ))
+                                            :
+                                            <p className="">aucun compte-rendu pour cette période</p>
+                                  
+                                    }
                             </div> 
-                            
                             </>
                             }
                         </div>
-        
                 </div> }
                 </Layout>
     );

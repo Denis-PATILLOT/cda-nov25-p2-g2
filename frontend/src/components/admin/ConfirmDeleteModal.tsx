@@ -59,14 +59,14 @@ export default function ConfirmDeleteModal({
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[16px] md:py-3"
+              className="flex-1 cursor-pointer rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[16px] md:py-3"
             >
               Annuler
             </button>
             <button
               type="button"
               onClick={onConfirm}
-              className="flex-1 rounded-xl border-2 border-red-200 bg-white py-2 text-[13px] text-red-500 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[16px] md:py-3"
+              className="flex-1 cursor-pointer rounded-xl border-2 border-red-200 bg-white py-2 text-[13px] text-red-500 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[16px] md:py-3"
             >
               Supprimer
             </button>

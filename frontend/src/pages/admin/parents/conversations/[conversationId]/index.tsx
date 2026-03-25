@@ -10,7 +10,7 @@ const Conversation = () => {
 
   const { user, isAdmin } = useAdminGuard();
 
-  const {data, error} = useGetConversationQuery({variables : {conversationId: Number(conversationId)}, pollInterval: 5000, fetchPolicy:"cache-and-network"})
+  const {data, error} = useGetConversationQuery({variables : {conversationId: Number(conversationId)}, pollInterval: 3000, fetchPolicy:"cache-and-network"})
 
   const parent = data?.conversation?.initiator.id !== user?.id ? data?.conversation?.initiator : data?.conversation?.participant;
   const conversation =  data?.conversation || null;
@@ -98,10 +98,12 @@ const Conversation = () => {
           m.author.id === user.id ?
             <div key={m.id} className="self-end rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-3 py-3 pl-10 shadow-md md:px-6 md:py-5 md:rounded-3xl md:w-[50%]">
                 {m.content}
+                <span className="block text-right text-xs italic">{new Date(m.date).toLocaleDateString("FR-fr", {hour:"2-digit", minute:"2-digit"})}</span>
             </div>
             :
             <div key={m.id} className="self-start rounded-2xl bg-white/80 border-2 border-(--color-primary) px-3 py-3 pr-10 shadow-md md:px-6 md:py-5 md:rounded-3xl md:w-[50%]">
                 {m.content}
+                <span className="block text-right text-xs italic">{new Date(m.date).toLocaleDateString("FR-fr", {hour:"2-digit", minute:"2-digit"})}</span>
             </div>
           )
         }

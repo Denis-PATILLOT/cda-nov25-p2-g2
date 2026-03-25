@@ -60,7 +60,7 @@ const CreatePlanningPage = () => {
         <Layout pageTitle={`Staff - new planning`}>
             <div className="max-w-full mx-auto md:max-w-[600px]">
             {errorSubmit && errors && (
-                <p className="text-red-500 px-5 mx-5 my-2 alert bg-red-100 border relative border-red-500 md:text-xl md:mx-52">
+                <p className="text-red-500 px-5 mx-5 my-2 alert bg-red-100 border relative border-red-500 md:text-xl md:mb-5">
                 {CombinedGraphQLErrors.is(error) && error.errors![0].extensions?.code === "INVALID DATE" && "Planning déjà existant pour cette date" }
                 {CombinedGraphQLErrors.is(error) && error.errors![0].extensions?.code !== "INVALID DATE"  && error.message}
                 { error instanceof TypeError && error.message.includes("Network") && <>Erreur de connexion rencontée<br /> Merci de réessayer utlérieurement</> }

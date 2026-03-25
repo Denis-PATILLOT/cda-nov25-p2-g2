@@ -42,9 +42,33 @@ export default function Footer() {
           className={getClass(planningPath)}
         />
       </Link>
-
-      <Link href={chatPath}>
-        <Image src="/chat.png" alt="" width={100} height={80} className={getClass(chatPath)} />
+      <Link
+        href={` ${
+          isAuthenticated && isStaff
+            ? `/${user?.role}/planning`
+            : isAuthenticated && isAdmin
+              ? `/${user?.role}/reportsHistory`
+              : "#"
+        }`}
+      >
+        <Image
+          src={"/calendrier.png"}
+          alt=""
+          width={120}
+          height={100}
+          title={isAuthenticated && isStaff ? "plannings" : ""}
+        />
+      </Link>
+      <Link
+        href={` ${isAuthenticated && isStaff ? `/${user?.role}/conversations` : isAuthenticated && isParent ? `/${user?.role}/messages` : isAuthenticated && isAdmin ? `/${user?.role}/parents/conversations` : "#"} `}
+      >
+        <Image
+          src={"/chat.png"}
+          alt=""
+          width={120}
+          height={100}
+          title={isAuthenticated && isStaff ? "conversations" : ""}
+        />
       </Link>
     </footer>
   );

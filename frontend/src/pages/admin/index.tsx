@@ -33,7 +33,7 @@ export default function AdminDashboard() {
         <div className="mt-3 grid grid-cols-3 gap-4 md:mt-12 md:gap-16">
           <button
             type="button"
-            className="flex items-center gap-2 border-2 border-(--color-primary) bg-white/80 rounded-2xl px-2 py-2 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 focus:outline-none md:h-[150px] md:gap-10 md:px-10 md:rounded-3xl"
+            className="flex items-center gap-2 border-2 border-(--color-primary) bg-white/80 rounded-2xl px-2 py-2 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 focus:outline-none md:h-[150px] md:gap-10 md:px-10 md:rounded-3xl cursor-pointer"
             onClick={() => router.push("/admin/childrenHistory")}
           >
             <Image
@@ -53,7 +53,7 @@ export default function AdminDashboard() {
 
           <button
             type="button"
-            className="flex items-center gap-2 border-2 border-(--color-primary) bg-white/80 rounded-2xl px-2 py-2 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 focus:outline-none md:h-[150px] md:gap-10 md:px-10 md:rounded-3xl"
+            className="flex items-center gap-2 border-2 border-(--color-primary) bg-white/80 rounded-2xl px-2 py-2 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 focus:outline-none md:h-[150px] md:gap-10 md:px-10 md:rounded-3xl cursor-pointer"
             onClick={() => router.push("/admin/staffHistory")}
           >
             <Image
@@ -73,7 +73,7 @@ export default function AdminDashboard() {
 
           <button
             type="button"
-            className="flex items-center gap-2 border-2 border-(--color-primary) bg-white/80 rounded-2xl px-2 py-2 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 focus:outline-none md:h-[150px] md:gap-10 md:px-10 md:rounded-3xl"
+            className="flex items-center gap-2 border-2 border-(--color-primary) bg-white/80 rounded-2xl px-2 py-2 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 focus:outline-none md:h-[150px] md:gap-10 md:px-10 md:rounded-3xl cursor-pointer"
             onClick={() => router.push("/admin/parentsHistory")}
           >
             <Image
@@ -101,7 +101,7 @@ export default function AdminDashboard() {
             <button
               onClick={() => setOpenChildModal(true)}
               type="button"
-              className="relative w-full h-[85px] rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-4 py-3 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:h-[160px] md:px-10 md:rounded-3xl"
+              className="relative w-full h-[85px] rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-4 py-3 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 cursor-pointer md:h-[160px] md:px-10 md:rounded-3xl"
             >
               <span className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-white/80 border-2 border-(--color-primary) flex items-center justify-center text-[14px] font-bold text-slate-500 shadow-sm md:h-10 md:w-10 md:text-[22px]">
                 +
@@ -126,7 +126,7 @@ export default function AdminDashboard() {
             <button
               onClick={() => setOpenStaffModal(true)}
               type="button"
-              className="relative w-full h-[85px] rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-4 py-3 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:h-[160px] md:px-10 md:rounded-3xl"
+              className="relative w-full h-[85px] rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-4 py-3 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 cursor-pointer md:h-[160px] md:px-10 md:rounded-3xl"
             >
               <span className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-white/80 border-2 border-(--color-primary) flex items-center justify-center text-[14px] font-bold text-slate-500 shadow-sm md:h-10 md:w-10 md:text-[22px]">
                 +
@@ -153,7 +153,7 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => setOpenParentModal(true)}
                   type="button"
-                  className="relative w-full h-[85px] rounded-2xl bg-white/70 border-2 border-(--color-secondary) px-4 py-3 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 focus:outline-none md:h-[160px] md:px-10 md:rounded-3xl"
+                  className="relative w-full h-[85px] rounded-2xl bg-white/70 border-2 border-(--color-secondary) px-4 py-3 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 cursor-pointer focus:outline-none md:h-[160px] md:px-10 md:rounded-3xl"
                 >
                   <span className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-white/80 border-2 border-(--color-primary) flex items-center justify-center text-[14px] font-bold text-slate-500 shadow-sm md:h-10 md:w-10 md:text-[22px]">
                     +
@@ -184,7 +184,7 @@ export default function AdminDashboard() {
           <button
             type="button"
             onClick={() => router.push("/admin/reportsHistory")}
-            className="mt-4 w-full rounded-2xl bg-white/80 py-3 text-[13px] shadow-sm border-2 border-(--color-primary) transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:py-7 md:text-[20px] md:mt-6"
+            className="mt-4 w-full rounded-2xl bg-white/80 py-3 text-[13px] shadow-sm border-2 border-(--color-primary) transition-all duration-200 cursor-pointer hover:shadow-md hover:scale-[1.03] active:scale-95 md:py-7 md:text-[20px] md:mt-6"
           >
             Voir tous les rapport
           </button>

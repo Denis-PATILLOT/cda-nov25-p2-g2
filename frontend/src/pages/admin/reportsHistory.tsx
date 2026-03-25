@@ -48,7 +48,7 @@ export default function AdminReportsPage() {
         {/* Header */}
         <div className="relative flex items-center justify-between md:mt-20">
           <button type="button" onClick={() => router.push("/admin")} className="p-0">
-            <div className="h-10 w-10 overflow-hidden flex items-center justify-center md:h-20 md:w-20">
+            <div className="h-10 w-10 overflow-hidden cursor-pointer flex items-center justify-center md:h-20 md:w-20">
               <img
                 src="/admin/flechegauche.png"
                 alt="Retour"
@@ -80,7 +80,7 @@ export default function AdminReportsPage() {
           <button
             type="button"
             onClick={() => setDateDropdownOpen((prev) => !prev)}
-            className="flex items-center h-9 rounded-xl border-2 border-(--color-primary) bg-white/80 px-3 shadow-sm text-[12px] gap-2 md:h-12 md:text-[16px] md:px-4 md:rounded-2xl"
+            className="flex items-center h-9 rounded-xl cursor-pointer border-2 border-(--color-primary) bg-white/80 px-3 shadow-sm text-[12px] gap-2 md:h-12 md:text-[16px] md:px-4 md:rounded-2xl"
           >
             <span className="text-gray-600">
               {selectedDate === today
@@ -113,7 +113,7 @@ export default function AdminReportsPage() {
                     setSelectedDate(d);
                     setDateDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 last:border-0 hover:bg-orange-50 md:text-[16px] md:px-5 md:py-3 ${selectedDate === d ? "font-semibold" : ""}`}
+                  className={`w-full text-left px-3 py-2 text-[12px] cursor-pointer border-b border-gray-50 last:border-0 hover:bg-orange-50 md:text-[16px] md:px-5 md:py-3 ${selectedDate === d ? "font-semibold" : ""}`}
                 >
                   {d === today
                     ? "Aujourd'hui"
@@ -187,7 +187,7 @@ export default function AdminReportsPage() {
                         {getAge(String(r.child.birthDate))}
                       </span>
                       <span
-                        className="rounded-full border-2 border-white px-2 py-0.5 text-[11px] font-medium shadow-md md:text-[14px] md:px-4 md:py-1"
+                        className="rounded-full border-2 border-white px-2 py-0.5 text-[11px] text-center font-medium shadow-md md:text-[14px] md:px-4 md:py-1"
                         style={{ backgroundColor: getGroupBg(String(r.child.group?.id)) }}
                       >
                         {r.child.group?.name ?? "—"}
@@ -199,7 +199,7 @@ export default function AdminReportsPage() {
                 <button
                   type="button"
                   onClick={() => router.push(`/staff/child/${r.child.id}/reports/${r.id}`)}
-                  className="mt-3 w-full border-t border-(--color-primary) pt-2 text-[13px] font-medium text-center hover:opacity-70 transition-opacity md:text-[16px] md:pt-3 md:mt-4"
+                  className="mt-3 w-full cursor-pointer border-t border-(--color-primary) pt-2 text-[13px] font-medium text-center hover:opacity-70 transition-opacity md:text-[16px] md:pt-3 md:mt-4"
                 >
                   Voir rapport
                 </button>

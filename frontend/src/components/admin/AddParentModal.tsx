@@ -196,7 +196,7 @@ export default function AddParentModal({ open, onClose }: Props) {
             <button
               type="button"
               onClick={() => setDropdownOpen((prev) => !prev)}
-              className="w-full rounded-xl border-2 border-(--color-primary) bg-white px-3 py-1.5 text-[12px] text-left outline-none flex justify-between items-center md:text-[15px] md:py-2"
+              className="w-full rounded-xl cursor-pointer border-2 border-(--color-primary) bg-white px-3 py-1.5 text-[12px] text-left outline-none flex justify-between items-center md:text-[15px] md:py-2"
             >
               <span className="text-gray-400">
                 {selectedChildIds.length === 0
@@ -302,7 +302,7 @@ export default function AddParentModal({ open, onClose }: Props) {
                 setDropdownOpen(false);
                 onClose();
               }}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[16px] md:py-2.5"
+              className="flex-1 rounded-xl cursor-pointer border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[16px] md:py-2.5"
             >
               Annuler
             </button>
@@ -310,7 +310,7 @@ export default function AddParentModal({ open, onClose }: Props) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 md:text-[16px] md:py-2.5"
+              className="flex-1 rounded-xl cursor-pointer border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 md:text-[16px] md:py-2.5"
             >
               {isSubmitting ? "Création..." : "Créer parent"}
             </button>
