@@ -266,6 +266,7 @@ export type Query = {
   adminCounts: AdminCounts;
   allParents: Array<User>;
   allParentsWithAdminConverations: Array<User>;
+  allStaff: Array<User>;
   child: Child;
   children: Array<Child>;
   childrenByGroup: Array<Child>;
@@ -461,6 +462,16 @@ export type AllParentsWithAdminConverationsQueryVariables = Exact<{ [key: string
 
 export type AllParentsWithAdminConverationsQuery = { __typename?: 'Query', allParentsWithAdminConverations: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string, avatar?: string | null, children?: Array<{ __typename?: 'Child', id: number, firstName: string, lastName: string, picture: string, birthDate: any, group: { __typename?: 'Group', id: string, name: string } }> | null, startedConversations?: Array<{ __typename?: 'Conversation', id: number, participant: { __typename?: 'User', id: number } }> | null, participatedConversations?: Array<{ __typename?: 'Conversation', id: number, initiator: { __typename?: 'User', id: number } }> | null }> };
 
+export type AllReportsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllReportsQuery = { __typename?: 'Query', reports: Array<{ __typename?: 'Report', id: string, date: any, isPresent: boolean, baby_mood: string, staff_comment?: string | null, picture?: string | null, child: { __typename?: 'Child', id: number, firstName: string, lastName: string, picture: string, birthDate: any, group: { __typename?: 'Group', id: string, name: string } } }> };
+
+export type AllStaffQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllStaffQuery = { __typename?: 'Query', allStaff: Array<{ __typename?: 'User', id: number, first_name: string, last_name: string, email: string, phone: string, avatar?: string | null, group?: { __typename?: 'Group', id: string, name: string } | null }> };
+
 export type CreateChildMutationVariables = Exact<{
   data: NewChildInput;
 }>;
@@ -618,6 +629,11 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
+export type MyConversationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyConversationsQuery = { __typename?: 'Query', myConversations: Array<{ __typename?: 'Conversation', id: number, creationDate: any, initiator: { __typename?: 'User', id: number, first_name: string }, participant: { __typename?: 'User', id: number, first_name: string } }> };
+
 export type GetPlanningByIdQueryVariables = Exact<{
   getPlanningById: Scalars['Int']['input'];
 }>;
@@ -722,6 +738,9 @@ export function useAdminChildDetailLazyQuery(baseOptions?: ApolloReactHooks.Lazy
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<AdminChildDetailQuery, AdminChildDetailQueryVariables>(AdminChildDetailDocument, options);
         }
+// @ts-ignore
+export function useAdminChildDetailSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AdminChildDetailQuery, AdminChildDetailQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AdminChildDetailQuery, AdminChildDetailQueryVariables>;
+export function useAdminChildDetailSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminChildDetailQuery, AdminChildDetailQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AdminChildDetailQuery | undefined, AdminChildDetailQueryVariables>;
 export function useAdminChildDetailSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminChildDetailQuery, AdminChildDetailQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<AdminChildDetailQuery, AdminChildDetailQueryVariables>(AdminChildDetailDocument, options);
@@ -763,6 +782,9 @@ export function useAdminCountsLazyQuery(baseOptions?: ApolloReactHooks.LazyQuery
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<AdminCountsQuery, AdminCountsQueryVariables>(AdminCountsDocument, options);
         }
+// @ts-ignore
+export function useAdminCountsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AdminCountsQuery, AdminCountsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AdminCountsQuery, AdminCountsQueryVariables>;
+export function useAdminCountsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminCountsQuery, AdminCountsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AdminCountsQuery | undefined, AdminCountsQueryVariables>;
 export function useAdminCountsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminCountsQuery, AdminCountsQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<AdminCountsQuery, AdminCountsQueryVariables>(AdminCountsDocument, options);
@@ -819,6 +841,9 @@ export function useAdminChildrenLazyQuery(baseOptions?: ApolloReactHooks.LazyQue
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<AdminChildrenQuery, AdminChildrenQueryVariables>(AdminChildrenDocument, options);
         }
+// @ts-ignore
+export function useAdminChildrenSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AdminChildrenQuery, AdminChildrenQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AdminChildrenQuery, AdminChildrenQueryVariables>;
+export function useAdminChildrenSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminChildrenQuery, AdminChildrenQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AdminChildrenQuery | undefined, AdminChildrenQueryVariables>;
 export function useAdminChildrenSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AdminChildrenQuery, AdminChildrenQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<AdminChildrenQuery, AdminChildrenQueryVariables>(AdminChildrenDocument, options);
@@ -932,6 +957,9 @@ export function useAllChildrenLazyQuery(baseOptions?: ApolloReactHooks.LazyQuery
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<AllChildrenQuery, AllChildrenQueryVariables>(AllChildrenDocument, options);
         }
+// @ts-ignore
+export function useAllChildrenSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AllChildrenQuery, AllChildrenQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AllChildrenQuery, AllChildrenQueryVariables>;
+export function useAllChildrenSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllChildrenQuery, AllChildrenQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AllChildrenQuery | undefined, AllChildrenQueryVariables>;
 export function useAllChildrenSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllChildrenQuery, AllChildrenQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<AllChildrenQuery, AllChildrenQueryVariables>(AllChildrenDocument, options);
@@ -972,6 +1000,9 @@ export function useAllGroupsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHo
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<AllGroupsQuery, AllGroupsQueryVariables>(AllGroupsDocument, options);
         }
+// @ts-ignore
+export function useAllGroupsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AllGroupsQuery, AllGroupsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AllGroupsQuery, AllGroupsQueryVariables>;
+export function useAllGroupsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllGroupsQuery, AllGroupsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AllGroupsQuery | undefined, AllGroupsQueryVariables>;
 export function useAllGroupsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllGroupsQuery, AllGroupsQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<AllGroupsQuery, AllGroupsQueryVariables>(AllGroupsDocument, options);
@@ -1030,6 +1061,9 @@ export function useAllParentsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryH
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<AllParentsQuery, AllParentsQueryVariables>(AllParentsDocument, options);
         }
+// @ts-ignore
+export function useAllParentsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AllParentsQuery, AllParentsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AllParentsQuery, AllParentsQueryVariables>;
+export function useAllParentsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllParentsQuery, AllParentsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AllParentsQuery | undefined, AllParentsQueryVariables>;
 export function useAllParentsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllParentsQuery, AllParentsQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<AllParentsQuery, AllParentsQueryVariables>(AllParentsDocument, options);
@@ -1095,6 +1129,9 @@ export function useAllParentsWithAdminConverationsLazyQuery(baseOptions?: Apollo
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<AllParentsWithAdminConverationsQuery, AllParentsWithAdminConverationsQueryVariables>(AllParentsWithAdminConverationsDocument, options);
         }
+// @ts-ignore
+export function useAllParentsWithAdminConverationsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AllParentsWithAdminConverationsQuery, AllParentsWithAdminConverationsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AllParentsWithAdminConverationsQuery, AllParentsWithAdminConverationsQueryVariables>;
+export function useAllParentsWithAdminConverationsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllParentsWithAdminConverationsQuery, AllParentsWithAdminConverationsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AllParentsWithAdminConverationsQuery | undefined, AllParentsWithAdminConverationsQueryVariables>;
 export function useAllParentsWithAdminConverationsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllParentsWithAdminConverationsQuery, AllParentsWithAdminConverationsQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<AllParentsWithAdminConverationsQuery, AllParentsWithAdminConverationsQueryVariables>(AllParentsWithAdminConverationsDocument, options);
@@ -1103,6 +1140,115 @@ export type AllParentsWithAdminConverationsQueryHookResult = ReturnType<typeof u
 export type AllParentsWithAdminConverationsLazyQueryHookResult = ReturnType<typeof useAllParentsWithAdminConverationsLazyQuery>;
 export type AllParentsWithAdminConverationsSuspenseQueryHookResult = ReturnType<typeof useAllParentsWithAdminConverationsSuspenseQuery>;
 export type AllParentsWithAdminConverationsQueryResult = ApolloReactCommon.QueryResult<AllParentsWithAdminConverationsQuery, AllParentsWithAdminConverationsQueryVariables>;
+export const AllReportsDocument = gql`
+    query AllReports {
+  reports {
+    id
+    date
+    isPresent
+    baby_mood
+    staff_comment
+    picture
+    child {
+      id
+      firstName
+      lastName
+      picture
+      birthDate
+      group {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAllReportsQuery__
+ *
+ * To run a query within a React component, call `useAllReportsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllReportsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllReportsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllReportsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AllReportsQuery, AllReportsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<AllReportsQuery, AllReportsQueryVariables>(AllReportsDocument, options);
+      }
+export function useAllReportsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AllReportsQuery, AllReportsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<AllReportsQuery, AllReportsQueryVariables>(AllReportsDocument, options);
+        }
+// @ts-ignore
+export function useAllReportsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AllReportsQuery, AllReportsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AllReportsQuery, AllReportsQueryVariables>;
+export function useAllReportsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllReportsQuery, AllReportsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AllReportsQuery | undefined, AllReportsQueryVariables>;
+export function useAllReportsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllReportsQuery, AllReportsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<AllReportsQuery, AllReportsQueryVariables>(AllReportsDocument, options);
+        }
+export type AllReportsQueryHookResult = ReturnType<typeof useAllReportsQuery>;
+export type AllReportsLazyQueryHookResult = ReturnType<typeof useAllReportsLazyQuery>;
+export type AllReportsSuspenseQueryHookResult = ReturnType<typeof useAllReportsSuspenseQuery>;
+export type AllReportsQueryResult = ApolloReactCommon.QueryResult<AllReportsQuery, AllReportsQueryVariables>;
+export const AllStaffDocument = gql`
+    query AllStaff {
+  allStaff {
+    id
+    first_name
+    last_name
+    email
+    phone
+    avatar
+    group {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useAllStaffQuery__
+ *
+ * To run a query within a React component, call `useAllStaffQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllStaffQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllStaffQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllStaffQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<AllStaffQuery, AllStaffQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<AllStaffQuery, AllStaffQueryVariables>(AllStaffDocument, options);
+      }
+export function useAllStaffLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<AllStaffQuery, AllStaffQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<AllStaffQuery, AllStaffQueryVariables>(AllStaffDocument, options);
+        }
+// @ts-ignore
+export function useAllStaffSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<AllStaffQuery, AllStaffQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AllStaffQuery, AllStaffQueryVariables>;
+export function useAllStaffSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllStaffQuery, AllStaffQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<AllStaffQuery | undefined, AllStaffQueryVariables>;
+export function useAllStaffSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<AllStaffQuery, AllStaffQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<AllStaffQuery, AllStaffQueryVariables>(AllStaffDocument, options);
+        }
+export type AllStaffQueryHookResult = ReturnType<typeof useAllStaffQuery>;
+export type AllStaffLazyQueryHookResult = ReturnType<typeof useAllStaffLazyQuery>;
+export type AllStaffSuspenseQueryHookResult = ReturnType<typeof useAllStaffSuspenseQuery>;
+export type AllStaffQueryResult = ApolloReactCommon.QueryResult<AllStaffQuery, AllStaffQueryVariables>;
 export const CreateChildDocument = gql`
     mutation CreateChild($data: NewChildInput!) {
   createChild(data: $data) {
@@ -1333,6 +1479,9 @@ export function useGetAllPlanningsByGroupLazyQuery(baseOptions?: ApolloReactHook
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<GetAllPlanningsByGroupQuery, GetAllPlanningsByGroupQueryVariables>(GetAllPlanningsByGroupDocument, options);
         }
+// @ts-ignore
+export function useGetAllPlanningsByGroupSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<GetAllPlanningsByGroupQuery, GetAllPlanningsByGroupQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<GetAllPlanningsByGroupQuery, GetAllPlanningsByGroupQueryVariables>;
+export function useGetAllPlanningsByGroupSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetAllPlanningsByGroupQuery, GetAllPlanningsByGroupQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<GetAllPlanningsByGroupQuery | undefined, GetAllPlanningsByGroupQueryVariables>;
 export function useGetAllPlanningsByGroupSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetAllPlanningsByGroupQuery, GetAllPlanningsByGroupQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<GetAllPlanningsByGroupQuery, GetAllPlanningsByGroupQueryVariables>(GetAllPlanningsByGroupDocument, options);
@@ -1411,6 +1560,9 @@ export function useChildByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHo
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<ChildByIdQuery, ChildByIdQueryVariables>(ChildByIdDocument, options);
         }
+// @ts-ignore
+export function useChildByIdSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<ChildByIdQuery, ChildByIdQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ChildByIdQuery, ChildByIdQueryVariables>;
+export function useChildByIdSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ChildByIdQuery, ChildByIdQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ChildByIdQuery | undefined, ChildByIdQueryVariables>;
 export function useChildByIdSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ChildByIdQuery, ChildByIdQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<ChildByIdQuery, ChildByIdQueryVariables>(ChildByIdDocument, options);
@@ -1467,6 +1619,9 @@ export function useChildWithGroupAndPlanningsLazyQuery(baseOptions?: ApolloReact
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<ChildWithGroupAndPlanningsQuery, ChildWithGroupAndPlanningsQueryVariables>(ChildWithGroupAndPlanningsDocument, options);
         }
+// @ts-ignore
+export function useChildWithGroupAndPlanningsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<ChildWithGroupAndPlanningsQuery, ChildWithGroupAndPlanningsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ChildWithGroupAndPlanningsQuery, ChildWithGroupAndPlanningsQueryVariables>;
+export function useChildWithGroupAndPlanningsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ChildWithGroupAndPlanningsQuery, ChildWithGroupAndPlanningsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ChildWithGroupAndPlanningsQuery | undefined, ChildWithGroupAndPlanningsQueryVariables>;
 export function useChildWithGroupAndPlanningsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ChildWithGroupAndPlanningsQuery, ChildWithGroupAndPlanningsQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<ChildWithGroupAndPlanningsQuery, ChildWithGroupAndPlanningsQueryVariables>(ChildWithGroupAndPlanningsDocument, options);
@@ -1517,6 +1672,9 @@ export function useChildrenLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHoo
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<ChildrenQuery, ChildrenQueryVariables>(ChildrenDocument, options);
         }
+// @ts-ignore
+export function useChildrenSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<ChildrenQuery, ChildrenQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ChildrenQuery, ChildrenQueryVariables>;
+export function useChildrenSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ChildrenQuery, ChildrenQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ChildrenQuery | undefined, ChildrenQueryVariables>;
 export function useChildrenSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ChildrenQuery, ChildrenQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<ChildrenQuery, ChildrenQueryVariables>(ChildrenDocument, options);
@@ -1573,6 +1731,9 @@ export function useChildrenByGroupLazyQuery(baseOptions?: ApolloReactHooks.LazyQ
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<ChildrenByGroupQuery, ChildrenByGroupQueryVariables>(ChildrenByGroupDocument, options);
         }
+// @ts-ignore
+export function useChildrenByGroupSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<ChildrenByGroupQuery, ChildrenByGroupQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ChildrenByGroupQuery, ChildrenByGroupQueryVariables>;
+export function useChildrenByGroupSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ChildrenByGroupQuery, ChildrenByGroupQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ChildrenByGroupQuery | undefined, ChildrenByGroupQueryVariables>;
 export function useChildrenByGroupSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ChildrenByGroupQuery, ChildrenByGroupQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<ChildrenByGroupQuery, ChildrenByGroupQueryVariables>(ChildrenByGroupDocument, options);
@@ -1787,6 +1948,9 @@ export function useCurrentUserConversationsLazyQuery(baseOptions?: ApolloReactHo
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<CurrentUserConversationsQuery, CurrentUserConversationsQueryVariables>(CurrentUserConversationsDocument, options);
         }
+// @ts-ignore
+export function useCurrentUserConversationsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<CurrentUserConversationsQuery, CurrentUserConversationsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<CurrentUserConversationsQuery, CurrentUserConversationsQueryVariables>;
+export function useCurrentUserConversationsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<CurrentUserConversationsQuery, CurrentUserConversationsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<CurrentUserConversationsQuery | undefined, CurrentUserConversationsQueryVariables>;
 export function useCurrentUserConversationsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<CurrentUserConversationsQuery, CurrentUserConversationsQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<CurrentUserConversationsQuery, CurrentUserConversationsQueryVariables>(CurrentUserConversationsDocument, options);
@@ -1826,6 +1990,9 @@ export function useGetAdminUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQuer
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<GetAdminUserQuery, GetAdminUserQueryVariables>(GetAdminUserDocument, options);
         }
+// @ts-ignore
+export function useGetAdminUserSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<GetAdminUserQuery, GetAdminUserQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<GetAdminUserQuery, GetAdminUserQueryVariables>;
+export function useGetAdminUserSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetAdminUserQuery, GetAdminUserQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<GetAdminUserQuery | undefined, GetAdminUserQueryVariables>;
 export function useGetAdminUserSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetAdminUserQuery, GetAdminUserQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<GetAdminUserQuery, GetAdminUserQueryVariables>(GetAdminUserDocument, options);
@@ -1903,6 +2070,9 @@ export function useGetConversationLazyQuery(baseOptions?: ApolloReactHooks.LazyQ
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<GetConversationQuery, GetConversationQueryVariables>(GetConversationDocument, options);
         }
+// @ts-ignore
+export function useGetConversationSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<GetConversationQuery, GetConversationQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<GetConversationQuery, GetConversationQueryVariables>;
+export function useGetConversationSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetConversationQuery, GetConversationQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<GetConversationQuery | undefined, GetConversationQueryVariables>;
 export function useGetConversationSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetConversationQuery, GetConversationQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<GetConversationQuery, GetConversationQueryVariables>(GetConversationDocument, options);
@@ -1947,6 +2117,9 @@ export function useGetMessagesFromConversationLazyQuery(baseOptions?: ApolloReac
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<GetMessagesFromConversationQuery, GetMessagesFromConversationQueryVariables>(GetMessagesFromConversationDocument, options);
         }
+// @ts-ignore
+export function useGetMessagesFromConversationSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<GetMessagesFromConversationQuery, GetMessagesFromConversationQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<GetMessagesFromConversationQuery, GetMessagesFromConversationQueryVariables>;
+export function useGetMessagesFromConversationSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetMessagesFromConversationQuery, GetMessagesFromConversationQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<GetMessagesFromConversationQuery | undefined, GetMessagesFromConversationQueryVariables>;
 export function useGetMessagesFromConversationSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetMessagesFromConversationQuery, GetMessagesFromConversationQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<GetMessagesFromConversationQuery, GetMessagesFromConversationQueryVariables>(GetMessagesFromConversationDocument, options);
@@ -1995,6 +2168,9 @@ export function useGetPlanningByGroupIdAndDateLazyQuery(baseOptions?: ApolloReac
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<GetPlanningByGroupIdAndDateQuery, GetPlanningByGroupIdAndDateQueryVariables>(GetPlanningByGroupIdAndDateDocument, options);
         }
+// @ts-ignore
+export function useGetPlanningByGroupIdAndDateSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<GetPlanningByGroupIdAndDateQuery, GetPlanningByGroupIdAndDateQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<GetPlanningByGroupIdAndDateQuery, GetPlanningByGroupIdAndDateQueryVariables>;
+export function useGetPlanningByGroupIdAndDateSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetPlanningByGroupIdAndDateQuery, GetPlanningByGroupIdAndDateQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<GetPlanningByGroupIdAndDateQuery | undefined, GetPlanningByGroupIdAndDateQueryVariables>;
 export function useGetPlanningByGroupIdAndDateSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetPlanningByGroupIdAndDateQuery, GetPlanningByGroupIdAndDateQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<GetPlanningByGroupIdAndDateQuery, GetPlanningByGroupIdAndDateQueryVariables>(GetPlanningByGroupIdAndDateDocument, options);
@@ -2035,6 +2211,9 @@ export function useGetStaffUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQuer
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<GetStaffUserQuery, GetStaffUserQueryVariables>(GetStaffUserDocument, options);
         }
+// @ts-ignore
+export function useGetStaffUserSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<GetStaffUserQuery, GetStaffUserQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<GetStaffUserQuery, GetStaffUserQueryVariables>;
+export function useGetStaffUserSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetStaffUserQuery, GetStaffUserQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<GetStaffUserQuery | undefined, GetStaffUserQueryVariables>;
 export function useGetStaffUserSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetStaffUserQuery, GetStaffUserQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<GetStaffUserQuery, GetStaffUserQueryVariables>(GetStaffUserDocument, options);
@@ -2104,6 +2283,57 @@ export function useLogoutMutation(baseOptions?: ApolloReactHooks.MutationHookOpt
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = ApolloReactCommon.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const MyConversationsDocument = gql`
+    query MyConversations {
+  myConversations {
+    id
+    creationDate
+    initiator {
+      id
+      first_name
+    }
+    participant {
+      id
+      first_name
+    }
+  }
+}
+    `;
+
+/**
+ * __useMyConversationsQuery__
+ *
+ * To run a query within a React component, call `useMyConversationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyConversationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyConversationsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMyConversationsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MyConversationsQuery, MyConversationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<MyConversationsQuery, MyConversationsQueryVariables>(MyConversationsDocument, options);
+      }
+export function useMyConversationsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MyConversationsQuery, MyConversationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<MyConversationsQuery, MyConversationsQueryVariables>(MyConversationsDocument, options);
+        }
+// @ts-ignore
+export function useMyConversationsSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<MyConversationsQuery, MyConversationsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MyConversationsQuery, MyConversationsQueryVariables>;
+export function useMyConversationsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MyConversationsQuery, MyConversationsQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<MyConversationsQuery | undefined, MyConversationsQueryVariables>;
+export function useMyConversationsSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<MyConversationsQuery, MyConversationsQueryVariables>) {
+          const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useSuspenseQuery<MyConversationsQuery, MyConversationsQueryVariables>(MyConversationsDocument, options);
+        }
+export type MyConversationsQueryHookResult = ReturnType<typeof useMyConversationsQuery>;
+export type MyConversationsLazyQueryHookResult = ReturnType<typeof useMyConversationsLazyQuery>;
+export type MyConversationsSuspenseQueryHookResult = ReturnType<typeof useMyConversationsSuspenseQuery>;
+export type MyConversationsQueryResult = ApolloReactCommon.QueryResult<MyConversationsQuery, MyConversationsQueryVariables>;
 export const GetPlanningByIdDocument = gql`
     query GetPlanningById($getPlanningById: Int!) {
   getPlanningById(id: $getPlanningById) {
@@ -2146,6 +2376,9 @@ export function useGetPlanningByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQ
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<GetPlanningByIdQuery, GetPlanningByIdQueryVariables>(GetPlanningByIdDocument, options);
         }
+// @ts-ignore
+export function useGetPlanningByIdSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<GetPlanningByIdQuery, GetPlanningByIdQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<GetPlanningByIdQuery, GetPlanningByIdQueryVariables>;
+export function useGetPlanningByIdSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetPlanningByIdQuery, GetPlanningByIdQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<GetPlanningByIdQuery | undefined, GetPlanningByIdQueryVariables>;
 export function useGetPlanningByIdSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<GetPlanningByIdQuery, GetPlanningByIdQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<GetPlanningByIdQuery, GetPlanningByIdQueryVariables>(GetPlanningByIdDocument, options);
@@ -2213,6 +2446,9 @@ export function useProfileLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHook
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<ProfileQuery, ProfileQueryVariables>(ProfileDocument, options);
         }
+// @ts-ignore
+export function useProfileSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<ProfileQuery, ProfileQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ProfileQuery, ProfileQueryVariables>;
+export function useProfileSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ProfileQuery, ProfileQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ProfileQuery | undefined, ProfileQueryVariables>;
 export function useProfileSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ProfileQuery, ProfileQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<ProfileQuery, ProfileQueryVariables>(ProfileDocument, options);
@@ -2261,6 +2497,9 @@ export function useReportByChildLazyQuery(baseOptions?: ApolloReactHooks.LazyQue
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<ReportByChildQuery, ReportByChildQueryVariables>(ReportByChildDocument, options);
         }
+// @ts-ignore
+export function useReportByChildSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<ReportByChildQuery, ReportByChildQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ReportByChildQuery, ReportByChildQueryVariables>;
+export function useReportByChildSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ReportByChildQuery, ReportByChildQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ReportByChildQuery | undefined, ReportByChildQueryVariables>;
 export function useReportByChildSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ReportByChildQuery, ReportByChildQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<ReportByChildQuery, ReportByChildQueryVariables>(ReportByChildDocument, options);
@@ -2321,6 +2560,9 @@ export function useReportByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryH
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<ReportByIdQuery, ReportByIdQueryVariables>(ReportByIdDocument, options);
         }
+// @ts-ignore
+export function useReportByIdSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<ReportByIdQuery, ReportByIdQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ReportByIdQuery, ReportByIdQueryVariables>;
+export function useReportByIdSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ReportByIdQuery, ReportByIdQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<ReportByIdQuery | undefined, ReportByIdQueryVariables>;
 export function useReportByIdSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<ReportByIdQuery, ReportByIdQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<ReportByIdQuery, ReportByIdQueryVariables>(ReportByIdDocument, options);
@@ -2476,6 +2718,9 @@ export function useUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOpt
           const options = {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, options);
         }
+// @ts-ignore
+export function useUserSuspenseQuery(baseOptions?: ApolloReactHooks.SuspenseQueryHookOptions<UserQuery, UserQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<UserQuery, UserQueryVariables>;
+export function useUserSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<UserQuery, UserQueryVariables>): ApolloReactHooks.UseSuspenseQueryResult<UserQuery | undefined, UserQueryVariables>;
 export function useUserSuspenseQuery(baseOptions?: ApolloReactHooks.SkipToken | ApolloReactHooks.SuspenseQueryHookOptions<UserQuery, UserQueryVariables>) {
           const options = baseOptions === ApolloReactHooks.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return ApolloReactHooks.useSuspenseQuery<UserQuery, UserQueryVariables>(UserDocument, options);

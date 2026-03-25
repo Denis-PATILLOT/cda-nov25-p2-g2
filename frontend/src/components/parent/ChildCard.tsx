@@ -39,7 +39,18 @@ export default function ChildCard({ child, onClick }: Props) {
   const ageLabel = getAgeLabel(child.birthDate);
 
   return (
-    <button type="button" onClick={onClick} className="relative flex w-full items-center text-left">
+    <button
+      type="button"
+      onClick={onClick}
+      className="
+        relative flex w-full items-center text-left
+        cursor-pointer
+        transition-all duration-300
+        hover:-translate-y-1 hover:scale-[1.02]
+        active:scale-[0.98]
+      "
+    >
+      {/* PHOTO */}
       <div
         className="
           relative z-10
@@ -48,6 +59,8 @@ export default function ChildCard({ child, onClick }: Props) {
           bg-gradient-to-b from-yellow-200 to-yellow-400
           p-[6px]
           shadow-[0_10px_18px_rgba(255,200,60,0.35)]
+          transition-all duration-300
+          hover:shadow-[0_12px_22px_rgba(255,200,60,0.5)]
         "
       >
         <img
@@ -58,10 +71,13 @@ export default function ChildCard({ child, onClick }: Props) {
             rounded-full
             border-[4px] border-white
             object-cover
+            transition-transform duration-300
+            hover:scale-105
           "
         />
       </div>
 
+      {/* CARD */}
       <div
         className="
           -ml-6
@@ -70,6 +86,8 @@ export default function ChildCard({ child, onClick }: Props) {
           bg-[#f2dfa7]
           pl-14 pr-6 py-3
           shadow-[0_6px_12px_rgba(20,40,90,0.08)]
+          transition-all duration-300
+          hover:shadow-[0_10px_18px_rgba(20,40,90,0.15)]
         "
       >
         <p className="text-[18px] font-medium text-[#244389] leading-tight">
