@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import getUserInitial from "@/utils/getUserInitial";
 import Link from "next/link";
 
+// accueil d'un staff
 export default function StaffDashboard() {
   const router = useRouter();
   const { user, loading, isStaff } = useAuth();
@@ -25,8 +26,8 @@ export default function StaffDashboard() {
   if (user)
     return (
       <Layout pageTitle="Staff">
-        <div className="max-w-full md:max-w-[600px]">
-          <h2 className="p-4 text-right text-[#1b3c79] font-light">
+        <div className="max-w-full md:max-w-[1200px] md:mx-auto">
+          <h2 className="p-4 text-right text-[#1b3c79] font-light md:text-xl">
             {date.toLocaleDateString("fr-FR", {
               weekday: "long",
               day: "2-digit",
@@ -50,23 +51,23 @@ export default function StaffDashboard() {
               </p>
             </div>
           </div>
-          <div className="w-[85%] flex flex-wrap justify-start gap-6 mx-auto">
+          <div className="w-[85%] flex flex-wrap justify-start gap-6 mx-auto md:justify-center">
               {(user.group?.children?.length as number) > 0 &&
               user?.group?.children?.map((child) => (
-                <div key={child.id} className="w-[45%] pt-3 px-2 bg-[#FEF9F6] rounded-4xl border-3 border-[#FFD771] flex flex-col items-center justify-evenly hover:border-[#FFE771]">
-                  <div className="overflow-hidden h-[100px] rounded-2xl">
+                <div key={child.id} className="w-[45%] pt-3 px-2 bg-[#FEF9F6] rounded-4xl border-3 border-[#FFD771] flex flex-col items-center justify-evenly hover:border-[#FFE771] md:w-[33%]">
+                  <div className="overflow-hidden h-[100px] rounded-2xl md:h-[300px]">
                   {/** biome-ignore lint/performance/noImgElement: <explanation> */}
                   <Link href={`/staff/child/${child.id}/reports`}>
                     <img
                       src={child.picture}
                       alt={`${child.firstName} ${child.lastName} reports`}
                       title={`${child.firstName} ${child.lastName}`}
-                      className="h-[100px] object-contain shadow-gray-300 shadow-xl rounded-2xl cursor-pointer  ease-in-out duration-300 hover:scale-110 "
+                      className="h-[100px] object-cover w-[100px] shadow-gray-300 shadow-xl rounded-2xl cursor-pointer  ease-in-out duration-300 hover:scale-110 md:h-[300px] md:w-[300px] "
                     />
                     
                   </Link>
                   </div>
-                  <p>{child.firstName} {child.lastName[0].toUpperCase()}.</p>
+                  <p className="md:text-xl md:my-3">{child.firstName} {child.lastName[0].toUpperCase()}.</p>
                 </div>
               ))}
           </div>

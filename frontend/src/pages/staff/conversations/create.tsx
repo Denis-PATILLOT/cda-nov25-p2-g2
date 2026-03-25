@@ -45,8 +45,8 @@ const CreateConversationPage = () => {
     console.log(data.childrenByGroup);
     
     return(
-      <Layout pageTitle="Staff - plannings">
-        <div className="max-w-full mx-auto md:max-w-[600px]">
+      <Layout pageTitle="Staff - conversations (create)">
+        <div className="max-w-full mx-auto md:max-w-[1000px]">
           {errorMessage && 
             <p className="text-red-500 text-center px-5 mx-5 my-3 alert bg-red-100 border border-red-500 relative md:top-5 md:text-xl md:mx-52">
               {errorMessage.errors[0].extensions.code === "FORBIDDEN" && errorMessage.message.includes("conversation already exists") && "Cette conversation existe déjà !"}
@@ -71,9 +71,8 @@ const CreateConversationPage = () => {
                 </h1>
               
               <div className="w-full text-start">
-                {loading && Loader()}
                 {error && <p>{error.message}</p>}
-                {data.childrenByGroup.length === 0 && <p>Aucun enfant pour ce groupe</p>}
+                {!loading && data.childrenByGroup.length === 0 && <p>Aucun enfant pour ce groupe</p>}
                 
 
                 {!loading && data.childrenByGroup.length > 0 && data.childrenByGroup &&
@@ -82,7 +81,7 @@ const CreateConversationPage = () => {
                 // on enleve les enfants qui ont tous leurs parents qui ont au moins une conversation avec l'ass maternelle
                 data.childrenByGroup.filter(child => child.parents.some(p => p.startedConversations?.every(c => c.participant.id !== user?.id) && p.participatedConversations?.every(c => c.initiator.id !== user?.id)))
                 .map(child => 
-                    <div className="bg-[#fdf4e6]  border-[#FFD771] border-2" key={child.firstName + child.lastName}>
+                    <div className="bg-[#fdf4e6]  border-[#FFD771] border-2 mt-3 mb-10" key={child.firstName + child.lastName}>
                       <div className="bg-amber-50 px-15 py-2 border-b-2 border-[#FFD771] text-center">{child.firstName} {child.lastName}</div>
                         <ul>
                         {child.parents

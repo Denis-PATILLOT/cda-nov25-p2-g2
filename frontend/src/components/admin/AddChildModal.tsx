@@ -259,7 +259,7 @@ export default function AddChildModal({
               <button
                 type="button"
                 onClick={() => setGroupDropdownOpen((prev) => !prev)}
-                className={`w-full rounded-xl border-2 bg-white px-3 py-1.5 text-[12px] text-left outline-none flex justify-between items-center md:text-[15px] md:py-2 ${groupError ? "border-red-400" : "border-(--color-primary)"}`}
+                className={`w-full rounded-xl border-2 bg-white px-3 py-1.5 text-[12px] text-left outline-none flex cursor-pointer justify-between items-center md:text-[15px] md:py-2 ${groupError ? "border-red-400" : "border-(--color-primary)"}`}
               >
                 <span className="text-gray-400">
                   {selectedGroupId ? "1 groupe sélectionné" : "Sélectionner un groupe"}
@@ -282,7 +282,7 @@ export default function AddChildModal({
                         setGroupDropdownOpen(false);
                         setGroupError(false);
                       }}
-                      className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 last:border-0 hover:bg-orange-50 md:text-[15px] md:px-4 md:py-2.5 ${selectedGroupId === Number(g.id) ? "font-semibold" : ""}`}
+                      className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 last:border-0 hover:bg-orange-50 md:text-[15px] md:px-4 md:py-2.5 cursor-pointer ${selectedGroupId === Number(g.id) ? "font-semibold" : ""}`}
                     >
                       {g.name}
                     </button>
@@ -292,7 +292,7 @@ export default function AddChildModal({
 
               {selectedGroupId && (
                 <div className="mt-2">
-                  <span className="flex items-center gap-1 rounded-full bg-white border border-(--color-secondary) px-2 py-0.5 text-[11px] w-fit md:text-[13px]">
+                  <span className="flex items-center gap-1 rounded-full bg-white border border-(--color-secondary) px-2 py-0.5 text-[11px] w-fit md:text-[13px] ">
                     {groupsData?.getAllGroups.find((g) => Number(g.id) === selectedGroupId)?.name}
                     <button
                       type="button"
@@ -338,14 +338,14 @@ export default function AddChildModal({
               <button
                 type="button"
                 onClick={handleClose}
-                className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[16px] md:py-2.5"
+                className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 cursor-pointer hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[16px] md:py-2.5"
               >
                 Annuler
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 md:text-[16px] md:py-2.5"
+                className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-1 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 md:text-[16px] md:py-2.5"
               >
                 {isSubmitting ? "Création..." : "Créer enfant"}
               </button>

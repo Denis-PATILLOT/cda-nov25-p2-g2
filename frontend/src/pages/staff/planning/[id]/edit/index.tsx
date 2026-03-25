@@ -40,7 +40,7 @@ const EditPlanningPage = () => {
             
             
             {planning &&
-            <div className="max-w-full mx-auto md:max-w-[600px]">
+            <div className="max-w-full mx-auto md:max-w-[1000px]">
                 <div className="w-[90%] px-4 py-1 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold mx-auto border-3 border-[#FFD771]">
                 <form onSubmit={handleSubmit}>
                     <p className="text-right text-sm">{planning.group.name}</p>

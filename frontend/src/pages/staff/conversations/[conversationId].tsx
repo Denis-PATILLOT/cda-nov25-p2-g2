@@ -51,8 +51,8 @@ const ConversationId = () => {
     if(user && isAuthenticated) {
         return( 
             <Layout pageTitle={`Staff - conversation ${conversationId}`} >
-                <div className="max-w-full mx-auto md:max-w-[600px]">
-                    <h1 className="w-[90%] mx-auto text-center text-lg text-[#1b3c79]">Conversation  - {data && data.conversation!.initiator.id === user.id ? data.conversation?.participant.first_name + " " + data.conversation?.participant.last_name  : data && data.conversation?.initiator.first_name + " " + data.conversation?.initiator.last_name }</h1>
+                <div className="max-w-full mx-auto md:max-w-[1000px]">
+                    <h1 className="w-[90%] mx-auto text-center text-lg text-[#1b3c79] font-bold">Conversation  - {data && data.conversation!.initiator.id === user.id ? data.conversation?.participant.first_name + " " + data.conversation?.participant.last_name  : data && data.conversation?.initiator.first_name + " " + data.conversation?.initiator.last_name }</h1>
                     <p className="text-sm text-center mb-2 text-[#1b3c79]">{data?.conversation?.initiator.id === user.id ? `parent de ${data.conversation.participant.children?.filter(c => c.group.id === user.group?.id).map(c =>  c.firstName + " " + c.lastName) }`  : `parent de ${data?.conversation?.initiator.children?.filter(c => c.group.id === user.group?.id).map(c =>  c.firstName + " " + c.lastName) }` }</p>
                     <div className="w-[90%] p-4 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold text-center border-3 min-h-[500px] border-[#FFD771] mx-auto">
                     
@@ -63,12 +63,12 @@ const ConversationId = () => {
                     {data?.conversation &&
                     <p className="text-left text-[0.7em]">créée le {new Date(data?.conversation?.creationDate).toLocaleDateString()} par {data.conversation.initiator.first_name}</p>
                     }
-                    <div className="flex flex-col min-h-[420px] my-2">
+                    <div className="flex flex-col min-h-[420px] my-2 md:min-h-[580px]">
                     {data?.conversation?.messages?.length && data?.conversation?.messages?.length > 0 ?
                                 data.conversation.messages.map(m => 
                                     <Fragment key={m.author+m.date}>
                                         <span className={`${m.author.id === user.id ? "text-end mr-1" : "text-start ml-1"} text-[0.6em] mt-3`}>{new Date(m.date).toLocaleDateString("FR-fr", {hour:"2-digit", minute:"2-digit"})}</span>
-                                        <div className={`w-fit text-start  border-[#FFD771] border-2 px-2 py-1 rounded-xl mb-5 ${ m.author.id === user.id ? "bg-amber-200 self-end" : "bg-yellow-100 self-start"}`}>{m.content}
+                                        <div className={`w-fit text-start  border-[#FFD771] border-2 px-2 py-1 rounded-xl mb-5 md:text-xl md:p-3 ${ m.author.id === user.id ? "bg-amber-200 self-end" : "bg-yellow-100 self-start"}`}>{m.content}
                                         </div>
                                     </Fragment>
                                     

@@ -138,7 +138,7 @@ export default function EditStaffPage() {
               onClick={() => router.push("/admin/staffHistory")}
               className="p-0"
             >
-              <div className="h-10 w-10 overflow-hidden flex items-center justify-center md:h-20 md:w-20">
+              <div className="h-10 w-10 cursor-pointer overflow-hidden flex items-center justify-center md:h-20 md:w-20">
                 <img
                   src="/admin/flechegauche.png"
                   alt="Retour"
@@ -149,7 +149,7 @@ export default function EditStaffPage() {
             <button
               type="button"
               onClick={() => setShowAddModal(true)}
-              className="rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:px-6 md:py-3 md:text-[17px] md:rounded-3xl"
+              className="rounded-2xl cursor-pointer bg-white/80 border-2 border-(--color-secondary) px-2 py-1 text-[12px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:px-6 md:py-3 md:text-[17px] md:rounded-3xl"
             >
               + Ajouter un membre
             </button>
@@ -227,7 +227,7 @@ export default function EditStaffPage() {
                       <button
                         type="button"
                         onClick={() => setGroupDropdownOpen((prev) => !prev)}
-                        className="w-full rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[12px] text-left outline-none flex justify-between items-center bg-white"
+                        className="w-full cursor-pointer rounded-lg border-2 border-(--color-primary) px-2 py-0.5 text-[12px] text-left outline-none flex justify-between items-center bg-white"
                       >
                         <span>{selectedGroupName ?? "Sélectionner un groupe"}</span>
                         <span
@@ -247,7 +247,7 @@ export default function EditStaffPage() {
                                 setGroupDropdownOpen(false);
                                 setEditingField(null);
                               }}
-                              className={`w-full text-left px-3 py-2 text-[12px] border-b border-gray-50 last:border-0 hover:bg-orange-50 ${selectedGroupId === Number(g.id) ? "font-semibold" : ""}`}
+                              className={`w-full cursor-pointer text-left px-3 py-2 text-[12px] border-b border-gray-50 last:border-0 hover:bg-orange-50 ${selectedGroupId === Number(g.id) ? "font-semibold" : ""}`}
                             >
                               {g.name}
                             </button>
@@ -257,7 +257,7 @@ export default function EditStaffPage() {
                     </div>
                   ) : selectedGroupId && selectedGroupName ? (
                     <span
-                      className="rounded-full border-2 border-white px-2 py-0.5 text-[11px] font-medium shadow-md md:text-[16px] md:px-4 md:py-1"
+                      className="rounded-full cursor-pointer border-2 border-white px-2 py-0.5 text-[11px] font-medium shadow-md md:text-[16px] md:px-4 md:py-1"
                       style={{ backgroundColor: getGroupBg(String(selectedGroupId)) }}
                     >
                       {selectedGroupName}
@@ -285,14 +285,14 @@ export default function EditStaffPage() {
             <button
               type="button"
               onClick={handleCancel}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[17px] md:py-3 md:rounded-2xl"
+              className="flex-1 cursor-pointer rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 md:text-[17px] md:py-3 md:rounded-2xl"
             >
               Annuler
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 md:text-[17px] md:py-3 md:rounded-2xl"
+              className="flex-1 cursor-pointer rounded-xl border-2 border-(--color-tertiary) bg-white py-2 text-[13px] shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.03] active:scale-95 disabled:opacity-50 md:text-[17px] md:py-3 md:rounded-2xl"
             >
               {saving ? "Sauvegarde..." : "Sauvegarder"}
             </button>
@@ -342,6 +342,7 @@ export default function EditStaffPage() {
                     </div>
                     <button
                       type="button"
+                      className="cursor-pointer"
                       onClick={() => router.push(`/admin/children/${c.id}/edit`)}
                     >
                       <PencilIcon />

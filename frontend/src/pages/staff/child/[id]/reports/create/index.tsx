@@ -62,7 +62,7 @@ const CreateReportPage = () => {
 
     return(
         <Layout pageTitle={`Staff - nouveau compte-rendu`}>
-            <div className="max-w-full mx-auto md:max-w-[600px]">
+            <div className="max-w-full mx-auto md:max-w-[1000px]">
                 {errorSubmit && errorReport && (
                     <p className="text-red-500 px-5 mx-5 my-2 alert bg-red-100 border relative border-red-500 md:text-xl md:mx-52">
                     {/* message spécifique si on a une erreur de planning inexistant pour ce comptet-rendu : on offre un lien pour créer un planning avec cette date */}
@@ -86,8 +86,8 @@ const CreateReportPage = () => {
                 <div className="w-full flex justify-start items-center mt-5 mb-8 text-[#1b3c79]">
                     {/* img car Image ne passe pas avec l'url de notre enfant */}
                     <img src={child?.picture} alt={`picture of ${child?.firstName} ${child?.lastName}`} className="h-[130px] ml-5 object-contain rounded-[50%] border-3 border-[#ffdd23] absolute" /> 
-                                <p className="w-[67%] h-[100px] rounded-4xl bg-[#FEF9F6] border-3 border-[#FFD771] ml-25 text-center pt-3 pl-5 flex justify-end">
-                                    <span className="inline-block w-[90%] text-left pl-5">
+                                <p className="w-[67%] h-[100px] rounded-4xl bg-[#FEF9F6] border-3 border-[#FFD771] ml-25 text-center pt-3 pl-5 flex justify-end md:w-[85%]">
+                                    <span className="inline-block w-[90%] text-left pl-5 md:text-center md:pl-0 md:pr-25">
                                     {child?.firstName} {child?.lastName}
                                     <br />
                                     {child?.group.name}

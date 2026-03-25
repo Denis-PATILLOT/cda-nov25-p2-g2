@@ -136,11 +136,12 @@ const MessagingPage = () => {
     return (
         <Layout pageTitle="Parent - messages">
     
+        <div className="max-w-[600px] mx-auto md:max-w-[1000px]">
         {selectedChild && 
             <div className="w-full flex justify-start items-center mt-5 mb-8 text-[#1b3c79]">
                 <img src={selectedChild.picture} alt={`picture of ${selectedChild.firstName} ${selectedChild.lastName}`} className="h-[130px] w-[130px] ml-5 object-cover rounded-[50%] border-3 border-[#D58FFF] absolute" /> 
-                <p className="w-[67%] h-[100px] rounded-4xl bg-[#FEF9F6] border-3 border-[#D58FFF] ml-25 text-center pt-3 pl-5 flex justify-end">
-                    <span className="inline-block w-[90%] text-left pl-5 relative">
+                <p className="w-[67%] h-[100px] rounded-4xl bg-[#FEF9F6] border-3 border-[#D58FFF] ml-25 text-center pt-3 pl-5 flex justify-end md:w-[85%] md:justify-center">
+                    <span className="inline-block w-[90%] text-left pl-5 relative md:text-center md:pl-0 md:pr-25">
                         {selectedChild.firstName} {selectedChild.lastName}
                         <br />
                         {selectedChild.group.name}
@@ -167,7 +168,7 @@ const MessagingPage = () => {
             </div>
 
             {/* Liste des messages typée par author */}
-            <div className="flex flex-col p-6 min-h-[275px]">
+            <div className="flex flex-col p-6 min-h-[275px] md:min-h-[440px]">
             {!conversationFiltered && <p>aucune conversation existante</p>}
             {conversationFiltered && conversationFiltered.messages.length === 0 && <p>pas de message actuellement</p>}
             {conversationFiltered && messages && messages.map(m => 
@@ -186,6 +187,7 @@ const MessagingPage = () => {
                     <img src="/boutons/fleche.png" width={40} className={`opacity-70 ${!messageToSend ? "cursor-not-allowed" : "cursor-pointer hover:opacity-100"}`}  title="envoyer message" />
                 </button>
             </form>
+            </div>
         </div>
         </Layout>
     );

@@ -13,7 +13,7 @@ export default function EditableRow({ onToggle, borderBottom, children }: Editab
       style={borderBottom ? { borderBottom: "1px solid var(--color-primary)" } : undefined}
     >
       {children}
-      <button type="button" onClick={onToggle}>
+      <button type="button" className="cursor-pointer" onClick={onToggle}>
         <PencilIcon />
       </button>
     </div>
