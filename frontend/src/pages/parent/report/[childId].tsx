@@ -60,7 +60,6 @@ export default function ReportPage() {
     skip: !numericChildId,
   });
 
-  // ✅ planning du jour uniquement
   const planningForChild = useMemo(() => {
     const all = planningData?.getAllPlanningsByGroup ?? [];
     if (!all.length) return null;
@@ -80,7 +79,6 @@ export default function ReportPage() {
     );
   }, [planningData]);
 
-  // ✅ report du jour uniquement
   const reportOfToday = useMemo(() => {
     const reports = reportData?.child?.reports ?? [];
     if (!reports.length) return null;
@@ -108,12 +106,49 @@ export default function ReportPage() {
   if (authLoading) return null;
   if (!user || !isParent) return null;
 
+  if (!childId) {
+    return (
+      <Layout pageTitle="Report">
+        <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col px-4 pb-28 pt-8">
+          <div className="w-full rounded-2xl border-4 border-sky-300 bg-white/70 p-5 text-blue-900 shadow-sm transition-shadow duration-300 hover:shadow-md">
+            ID enfant manquant dans l’URL.
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!child) {
+    return (
+      <Layout pageTitle="Report">
+        <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col px-4 pb-28 pt-8">
+          <div className="w-full rounded-2xl border-4 border-sky-300 bg-white/70 p-5 text-blue-900 shadow-sm transition-shadow duration-300 hover:shadow-md">
+            Enfant introuvable.
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!groupId) {
+    return (
+      <Layout pageTitle="Report">
+        <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col px-4 pb-28 pt-8">
+          <div className="w-full rounded-2xl border-4 border-sky-300 bg-white/70 p-5 text-blue-900 shadow-sm transition-shadow duration-300 hover:shadow-md">
+            Groupe introuvable pour cet enfant.
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  const safeChild = child;
+
   return (
     <Layout pageTitle="Report">
       <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col px-4 pb-28 pt-8">
-        {/* 🔥 GRANDE CARD GLOBALE */}
         <div className="rounded-[42px] border-[4px] border-yellow-300 bg-[#fdfcfc]/88 px-4 py-6 shadow-[0_14px_28px_rgba(20,40,90,0.10)] space-y-4">
-          <ChildCard child={child} />
+          <ChildCard child={safeChild} />
 
           {isLoadingAny && (
             <div className="w-full rounded-2xl border-4 border-yellow-200 bg-white/80 p-5 text-blue-900 shadow-sm">
