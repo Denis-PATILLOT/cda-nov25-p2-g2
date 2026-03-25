@@ -10,7 +10,7 @@ const Conversation = () => {
 
   const { user, isAdmin } = useAdminGuard();
 
-  const {data, error} = useGetConversationQuery({variables : {conversationId: Number(conversationId)}, pollInterval: 5000, fetchPolicy:"cache-and-network"})
+  const {data, error} = useGetConversationQuery({variables : {conversationId: Number(conversationId)}, pollInterval: 3000, fetchPolicy:"cache-and-network"})
 
   const parent = data?.conversation?.initiator.id !== user?.id ? data?.conversation?.initiator : data?.conversation?.participant;
   const conversation =  data?.conversation || null;

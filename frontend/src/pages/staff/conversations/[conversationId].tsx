@@ -12,7 +12,7 @@ const ConversationId = () => {
 
     const {user, isAuthenticated, group, } = useAuth();
 
-    const {data, loading, error, refetch} = useGetConversationQuery({variables: {conversationId: Number(conversationId)}, pollInterval: 5000, fetchPolicy:"cache-and-network"}); // pour avoir les bonnes données de messages (ordre respecté)
+    const {data, loading, error, refetch} = useGetConversationQuery({variables: {conversationId: Number(conversationId)}, pollInterval: 3000, fetchPolicy:"cache-and-network"}); // pour avoir les bonnes données de messages (ordre respecté)
 
     // création d'un message pour l'utilisateur connecté
     const [createMessage, {error: errorMessageCreation}] = useCreateMessageMutation();

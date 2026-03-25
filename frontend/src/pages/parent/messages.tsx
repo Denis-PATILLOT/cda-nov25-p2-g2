@@ -51,7 +51,7 @@ const MessagingPage = () => {
         conversation => ((conversation.initiator.role === selectedRole && conversation.initiator.group?.id === selectedChild?.group.id) || (conversation.participant.role === selectedRole && conversation.participant.group?.id === selectedChild?.group.id)));
     
     
-    const {data: messagesData, error: messagesError, refetch} = useGetMessagesFromConversationQuery({variables: {conversationId: Number(conversationFiltered?.id)}, pollInterval: 5000, fetchPolicy:"cache-and-network"});
+    const {data: messagesData, error: messagesError, refetch} = useGetMessagesFromConversationQuery({variables: {conversationId: Number(conversationFiltered?.id)}, pollInterval: 3000, fetchPolicy:"cache-and-network"});
 
     const messages = messagesData?.messagesFromConversation;
 
