@@ -155,7 +155,7 @@ export default function Header({ user, refetch }: HeaderProps) {
                   <span className="font-medium">Changer de mot de passe</span>
                 </Link>
               )}
-              {isParent && (
+              {(isParent || isStaff) && (
                 <Link
                   href="/parent/contact"
                   className="flex items-center gap-3 rounded-2xl px-4 py-3 text-blue-900 transition hover:bg-green-50"

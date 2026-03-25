@@ -24,7 +24,9 @@ export default function StaffCommentCard({ text, mood }: Props) {
       <div className="flex items-center justify-between gap-3 rounded-3xl border-2 border-yellow-200 bg-white/60 px-5 py-4">
         <p className="text-base font-semibold text-blue-900/90">{text}</p>
 
-        <div className="grid h-12 w-12 place-items-center rounded-full ">{moodEmoji(mood)}</div>
+        <div className="grid h-12 w-12 place-items-center rounded-full text-3xl">
+          {moodEmoji(mood)}
+        </div>
       </div>
     </section>
   );

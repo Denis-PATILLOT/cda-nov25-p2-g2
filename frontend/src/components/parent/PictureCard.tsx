@@ -1,34 +1,51 @@
-type Props = {
-  title?: string;
-  imageUrl?: string;
-  onGalleryClick?: () => void;
+import Image from "next/image";
+
+type PictureCardProps = {
+  imageUrl?: string | null;
+  onGalleryClick: () => void;
 };
 
-export default function PictureCard({ title = "Photo du jour", imageUrl, onGalleryClick }: Props) {
+export default function PictureCard({ imageUrl, onGalleryClick }: PictureCardProps) {
+  const hasImage = Boolean(imageUrl);
+
   return (
-    <section className="w-full max-w-md rounded-[34px] border-4 border-yellow-200 bg-white/80 p-4 shadow-[0_20px_45px_rgba(20,40,90,0.15)]">
-      <div className="flex items-center justify-between px-2">
-        <h3 className="text-xl font-extrabold text-blue-900">{title}</h3>
+    <section className="w-full max-w-md rounded-[42px] border-[4px] border-yellow-300 bg-[#fdfcfc]/88 px-6 py-5 shadow-[0_14px_28px_rgba(20,40,90,0.10)]">
+      {/* HEADER */}
+      <div className="flex items-center justify-between">
+        {/* TITRE (un peu réduit) */}
+        <h2 className="text-[20px] sm:text-[24px] font-extrabold text-blue-900 whitespace-nowrap">
+          Photo du jour
+        </h2>
 
-        <button
-          type="button"
-          onClick={onGalleryClick}
-          className="rounded-full border-2 border-yellow-200 bg-white/70 px-4 py-2 text-sm font-extrabold text-blue-900 shadow-[0_8px_14px_rgba(20,40,90,0.06)]"
-        >
-          📸 Galerie
-        </button>
+        {/* BOUTON CENTRÉ VISUELLEMENT */}
+        <div className="flex justify-center items-center">
+          <button
+            type="button"
+            onClick={onGalleryClick}
+            className="flex items-center gap-2 cursor-pointer rounded-full border-[3px] border-yellow-300 bg-white px-4 py-2 font-bold text-blue-900 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-yellow-50 hover:shadow-lg active:scale-95"
+          >
+            <span>📸</span>
+            <span>Galerie</span>
+          </button>
+        </div>
       </div>
 
-      <div className="mt-3 overflow-hidden rounded-3xl border-4 border-yellow-200 bg-white/60">
-        {imageUrl ? (
-          // biome-ignore lint/performance/noImgElement: <explanation>
-          <img src={imageUrl} alt={title} className="h-56 w-full object-cover" />
-        ) : (
-          <div className="grid h-56 place-items-center text-blue-900/70">
-            Aucune photo pour aujourd’hui
-          </div>
-        )}
-      </div>
+      {/* IMAGE / EMPTY */}
+      {hasImage ? (
+        <div className="mt-4 overflow-hidden rounded-[28px] border-[4px] border-yellow-300 bg-white">
+          <Image
+            src={imageUrl as string}
+            alt="Photo du jour"
+            width={1200}
+            height={800}
+            className="h-auto w-full object-cover transition-transform duration-500 hover:scale-[1.02]"
+          />
+        </div>
+      ) : (
+        <div className="mt-4 flex h-[180px] items-center justify-center rounded-[28px] border-[4px] border-yellow-300 bg-white text-center font-semibold text-blue-900">
+          Aucune photo pour aujourd’hui 📷
+        </div>
+      )}
     </section>
   );
 }
