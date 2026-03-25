@@ -53,7 +53,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }),
       );
 
-      // 2. Préparation de la pièce jointe
       attachmentsForEmail.push({
         filename: file.originalFilename || "document",
         content: fileContent,
