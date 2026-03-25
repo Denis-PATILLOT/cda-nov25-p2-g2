@@ -20,7 +20,6 @@ export default function DashboardParents() {
   return (
     <Layout pageTitle="Accueil parent">
       <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col px-4 pb-28 pt-8">
-        {/* BLOC BIENVENUE */}
         <section className="mb-8">
           <div className="rounded-[26px] border-[4px] border-sky-200 bg-[#fffdfd]/95 px-6 py-5 text-center shadow-[0_8px_18px_rgba(20,40,90,0.14)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(20,40,90,0.18)]">
             <h1 className="text-[28px] font-extrabold text-blue-900 md:text-[32px]">
@@ -29,7 +28,6 @@ export default function DashboardParents() {
           </div>
         </section>
 
-        {/* CARTE PRINCIPALE */}
         <section className="rounded-[38px] border-[4px] border-sky-200 bg-[#fcf8f8]/90 px-4 py-7 shadow-[0_12px_26px_rgba(20,40,90,0.12)] transition-all duration-300 hover:shadow-[0_16px_30px_rgba(20,40,90,0.16)]">
           <div className="space-y-8">
             {user.children?.map((child) => (
