@@ -128,7 +128,7 @@ const ReportDetails = () => {
                                 </>
                             }
                             {report.picture && <img src={report.picture} alt="" className="border-2 border-amber-300 bg-[#FEE8B6] rounded-lg w-full inline-block mt-3"/>}
-                            {report.baby_mood === "na" ? <p className="text-center">non présent ce jour</p> : <img src={`/babymood/${report.baby_mood}.png`} alt={report.baby_mood} />}
+                            {report.baby_mood === "na" ? <p className="text-center">non présent ce jour</p> : <img src={`/babymood/${report.baby_mood}.png`} alt={report.baby_mood} className="md:w-[50%] md:m-auto" />}
                         </div>
                     </>
                     }

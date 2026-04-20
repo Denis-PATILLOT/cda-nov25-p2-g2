@@ -1,5 +1,6 @@
 import {
   Arg,
+  Authorized,
   Ctx,
   Field,
   InputType,
@@ -15,40 +16,42 @@ import { IsDate, IsNotEmpty, IsNumber } from "class-validator";
 import { GraphQLError } from "graphql";
 import { GraphQLContext } from "../types";
 import { getCurrentUser } from "../auth";
+import { UserRole } from "../entities/User";
+
 
 
 @InputType()
 class PlanningInput {
   @Field()
-  @IsNotEmpty({message: "Le repas de midi doit être saisi"})
+  @IsNotEmpty()
   meal: string;
 
   @Field()
-  @IsNotEmpty({message: "La période de sieste du matin doit être saisi"})
+  @IsNotEmpty()
   morning_nap: string;
 
   @Field()
-  @IsNotEmpty({message: "La période de sieste de l'après-midi doit être saisi"})
+  @IsNotEmpty()
   afternoon_nap: string;
 
   @Field()
-  @IsNotEmpty({message: "Le gôuter doit être saisi"})
+  @IsNotEmpty()
   snack: string;
 
   @Field()
-  @IsDate({message: "Saisir une date correcte"})
+  @IsDate()
   date: Date;
 
   @Field(() => Int)
-  @IsNumber({allowNaN: false}, {message: "L'id du groupe doit être de type entier"})
+  @IsNumber({allowNaN: false})
   groupId: number;
 
   @Field()
-  @IsNotEmpty({message: "Les activités du matin doivent être saisies"})
+  @IsNotEmpty()
   morning_activities: string
 
   @Field()
-  @IsNotEmpty({message: "Les activités de l'après-midi doivent être saisies"})
+  @IsNotEmpty()
   afternoon_activities: string
 }
 
@@ -78,7 +81,7 @@ export class PlanningResolver {
   // READ
   @Query(() => [Planning])
   async getAllPlannings(): Promise<Planning[]> {
-    return await Planning.find({ relations: ["group"] });
+    return await Planning.find();
   }
 
   @Query(() => [Planning])
@@ -117,6 +120,7 @@ export class PlanningResolver {
 
 
   // CREATE
+  @Authorized(UserRole.Staff)
   @Mutation(() => Planning)
   async createPlanning(@Arg("data", {validate: true}) data: PlanningInput): Promise<Planning> {
     const group = await Group.findOneBy({ id: data.groupId });
@@ -143,6 +147,7 @@ export class PlanningResolver {
   }
 
   // UPDATE
+  @Authorized(UserRole.Staff)
   @Mutation(() => Planning)
   async updatePlanning(
     @Arg("id", () => Int) id: number,

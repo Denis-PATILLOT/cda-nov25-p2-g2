@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { PlanningInput, useCreatePlanningMutation, useGetAllPlanningsByGroupQuery } from "@/graphql/generated/schema";
+import { GetAllPlanningsByGroupDocument, PlanningInput, useCreatePlanningMutation, useGetAllPlanningsByGroupQuery } from "@/graphql/generated/schema";
 import { useAuth } from "@/hooks/CurrentProfile";
 import { CombinedGraphQLErrors } from "@apollo/client";
 import Image from "next/image";
@@ -7,15 +7,15 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
+
 const CreatePlanningPage = () => {
     const router = useRouter();
 
     // récupération du param d'url date pour gérer la redirection depuis l'erreur de création d'un report avec un planning inexistant
     const date = router.query.date as string; 
-
     console.log(date);
 
-    const { user } = useAuth();
+    const { user, isStaff } = useAuth();
     const [errorSubmit, setErrorSubmit] = useState(false);
 
       // react hook form
@@ -26,7 +26,7 @@ const CreatePlanningPage = () => {
       } = useForm<PlanningInput>();
     
     // récupération plannings
-    const {refetch}= useGetAllPlanningsByGroupQuery({variables: {groupId: Number(user?.group?.id)}})
+    
 
     // gestion du hook pour la création d'un planning
     const [createPlanning, {error}] = useCreatePlanningMutation();
@@ -38,10 +38,10 @@ const CreatePlanningPage = () => {
             data.date = new Date(data.date);
             data.groupId = Number(user?.group?.id);
 
-            const result = await createPlanning({ variables: { data } });
+            const result = await createPlanning({ variables: { data }, refetchQueries: [{query: GetAllPlanningsByGroupDocument, variables: {groupId: data.groupId }}] }); // relance de la requête pour récupérer les plannings avec le nouveau
 
             if(result) {
-                await refetch(); 
+                
                 const id = result.data!.createPlanning.id;
                 router.push(`/staff/planning/${id}?created=true`, `/staff/planning/${id}`);    
             }
@@ -54,6 +54,13 @@ const CreatePlanningPage = () => {
     useEffect(() => {
         window.scroll({top: 0}); // remonte en haut de page à chaque modif de "errorSubmit"
     },[errorSubmit]);
+
+    useEffect(() => {
+        if (!user) router.replace("/");
+        else if (!isStaff) router.replace("/403");
+    }, [user, isStaff, router]);
+  
+  if (!user || !isStaff) return null;
     
     if(user) {
         return(
@@ -89,7 +96,7 @@ const CreatePlanningPage = () => {
                         required: "date à indiquer",
                         validate: (val) => [1,2,3,4,5].includes(new Date(val).getDay()),
                         })}                         
-                        type="date" defaultValue={date && date.split("/")[2]+'-'+date.split("/")[1]+'-'+date.split("/")[0]} id="date" name="date" className={`border-2 border-amber-300 bg-[#FEE8B6] p-2 rounded-lg w-full inline-block mt-1 mb-3 ${errors.date ? "focus-visible:outline-2 focus-visible:outline-red-500" : ""}` } />
+                        type="date" title="date du planning" defaultValue={date && date.split("/")[2]+'-'+date.split("/")[1]+'-'+date.split("/")[0]} id="date" name="date" className={`border-2 border-amber-300 bg-[#FEE8B6] p-2 rounded-lg w-full inline-block mt-1 mb-3 ${errors.date ? "focus-visible:outline-2 focus-visible:outline-red-500" : ""}` } />
                         <p className="text-red-500 mb-1 text-xs">{errors.date?.message as string}</p>
                         <p className="text-red-500 mb-1 text-xs">{errors.date?.type === "validate" && "choisir un jour de semaine valide"}</p>
                     </h1>

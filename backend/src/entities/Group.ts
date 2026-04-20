@@ -14,7 +14,7 @@ import { User } from "./User";
 @ObjectType()
 @Entity()
 export class Group extends BaseEntity {
-  @Field(() => ID)
+  @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
 

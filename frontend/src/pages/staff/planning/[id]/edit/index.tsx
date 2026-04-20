@@ -1,8 +1,9 @@
 import Layout from "@/components/Layout";
-import { UpdatePlanningInput, useGetPlanningByIdQuery, useUpdatePlanningMutation } from "@/graphql/generated/schema";
+import { PlanningInput, UpdatePlanningInput, useGetPlanningByIdQuery, useUpdatePlanningMutation } from "@/graphql/generated/schema";
 import { CombinedGraphQLErrors } from "@apollo/client";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 const EditPlanningPage = () => {
   const router = useRouter();
@@ -12,6 +13,9 @@ const EditPlanningPage = () => {
 
     // gestion du hook pour la mutation d'un planning
     const [updatePlanning, loading] = useUpdatePlanningMutation({ variables: {data: data as UpdatePlanningInput, updatePlanningId: Number(id) }});
+
+    // gestion d'erreurs validation en édition d'un planning
+    const [errorEdit, setErrorEdit] = useState<string|null>(null);
   
     const planning = data?.getPlanningById || null;
   
@@ -19,8 +23,39 @@ const EditPlanningPage = () => {
         e.preventDefault();
         console.log("formulaire 'update planning' soumis!");
         const formData = new FormData(e.currentTarget as unknown as any);
-        const data = Object.fromEntries(formData);
+        const data = Object.fromEntries(formData) as unknown as PlanningInput;
         console.log(data);
+
+        if(!data.morning_activities)  {
+            setErrorEdit("Veuillez renseigner les activités du matin");
+            return;
+        }
+
+        if(!data.morning_nap)  {
+            setErrorEdit("Veuillez renseigner les horaires de la sieste du matin");
+            return;
+        }
+
+        if(!data.meal)  {
+            setErrorEdit("Veuillez renseigner le repas de midi");
+            return;
+        }
+
+        if(!data.afternoon_activities)  {
+            setErrorEdit("Veuillez renseigner les activités de l'après-midi");
+            return;
+        }
+
+        if(!data.afternoon_nap)  {
+            setErrorEdit("Veuillez renseigner les horaires de la sieste de l'après-midi");
+            return;
+        }
+
+        if(!data.snack)  {
+            setErrorEdit("Veuillez renseigner le goûter");
+            return;
+        }
+
         await updatePlanning({variables: {
             updatePlanningId: Number(id),
             data: data
@@ -37,7 +72,24 @@ const EditPlanningPage = () => {
                 { error instanceof CombinedGraphQLErrors && error.errors[0].extensions?.code === "NOT_FOUND" && "Planning introuvable" }
             </p>
             }
-            
+
+            {/* erreurs de validation */}
+            {errorEdit && 
+                <p className="text-red-500 text-center px-5 mx-5 my-3 alert bg-red-100 border relative border-red-500 md:text-xl md:mx-52">
+                    {errorEdit}
+                    <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+                        <svg
+                            className="h-6 w-6 cursor-pointer fill-current text-red-500"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            onClick={() => setErrorEdit(null)}
+                        >
+                            <title>Close</title>
+                            <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                        </svg>
+                    </span>
+                </p>
+            }
             
             {planning &&
             <div className="max-w-full mx-auto md:max-w-[1000px]">

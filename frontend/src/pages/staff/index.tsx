@@ -47,8 +47,9 @@ export default function StaffDashboard() {
             <div className="text-[#1b3c79]">
               <p className="font-semibold text-2xl">{user.first_name}</p>
               <p>
-                {user.group?.name} ({user.group?.children?.length})
+                {user.group && user.group.name  }
               </p>
+              <p>{ user.group && user.group.children && user.group.children.length > 0 &&  user.group.children?.length > 1 ? `${user.group.children.length} enfants` : "1 enfant" }</p>
             </div>
           </div>
           <div className="w-[85%] flex flex-wrap justify-start gap-6 mx-auto md:justify-center">

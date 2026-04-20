@@ -52,7 +52,7 @@ export default function Home() {
       <img src="/babyboardlogo.png" alt="logo" className="md:w-[40%] md:m-auto md:max-w-[600px]" />
 
       {errorSubmit && error && (
-        <p className="text-red-500 px-5 mx-5 alert bg-red-100 border border-red-500 absolute top-3 left-0 right-0 md:top-5 md:text-xl md:mx-52">
+        <p data-testid="test-error" className="text-red-500 px-5 mx-5 alert bg-red-100 border border-red-500 absolute top-3 left-0 right-0 md:top-5 md:text-xl md:mx-52">
           { error instanceof TypeError && error.message.includes("Network") && <>Erreur de connexion rencontrée.<br /> Merci de réessayer utlérieurement</> }
           { error instanceof CombinedGraphQLErrors && error.errors[0].extensions?.code === "UNAUTHENTICATED" && "Identifiants incorrects" }
                     
@@ -91,7 +91,7 @@ export default function Home() {
             }`}
           />
 
-          <p className="mb-1 text-red-500">{errors.email?.message}</p>
+          <p data-testid="error-email" className="mb-1 text-red-500">{errors.email?.message}</p>
 
           {/* PASSWORD */}
           <div className="relative flex w-full flex-col items-center">
@@ -125,7 +125,7 @@ export default function Home() {
               onClick={handleClickEye}
             />
 
-            <p className="my-2 w-[70%] text-center text-red-500">{errors.password?.message}</p>
+            <p data-testid="error-password" className="my-2 w-[70%] text-center text-red-500">{errors.password?.message}</p>
 
             <Link href="/" className="hover:underline">
               <p className="text-[16px] md:text-2xl">mot de passe oublié ?</p>

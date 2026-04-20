@@ -7,27 +7,27 @@ on:
 
 jobs:
   client-tests:
-    uses: ComicScrip/cda-nov25-p2-g2/.github/workflows/test-frontend.yml@main
+    uses: Denis-PATILLOT/cda-nov25-p2-g2/.github/workflows/test-frontend.yml@main
 
 
 
   build-and-push-server:
-    uses: ComicScrip/cda-nov25-p2-g2/.github/workflows/build-backend.yml@main
+    uses: Denis-PATILLOT/cda-nov25-p2-g2/.github/workflows/build-backend.yml@main
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     with:
-      image_name: babyboard/cda-nov25-p2-g2-back:prod
+      image_name: babyboard-back:prod
 
   build-and-push-client:
     needs:
       - client-tests
-    uses: ComicScrip/cda-nov25-p2-g2/.github/workflows/build-frontend.yml@main
+    uses: Denis-PATILLOT/cda-nov25-p2-g2/.github/workflows/build-frontend.yml@main
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     with:
-      image_name: babyboard/cda-nov25-p2-g2-front:prod
+      image_name: babyboard-front:prod
 
   notify-vps:
     needs:
@@ -39,4 +39,4 @@ jobs:
         run: |
           curl -X POST \
             -H "X-Webhook-Secret: ${{ secrets.WEBHOOK_SECRET }}" \
-            https://ops.cda-nov25-p2g2.duckdns.org/hooks/redeploy-babyboard-prod
+            https://ops.babyboard.duckdns.org/hooks/redeploy-babyboard-prod

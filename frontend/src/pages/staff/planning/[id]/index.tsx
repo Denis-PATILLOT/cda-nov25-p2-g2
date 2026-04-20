@@ -36,7 +36,7 @@ const PlanningDetails = () => {
                 <div className="w-[90%] px-4 py-1 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold mx-auto border-3 border-[#FFD771]">
                    
                     {createdPlanning && 
-                    <p className="text-green-500 text-center px-3 mx-2 mt-3 alert bg-green-200 border border-green-500 relative md:text-xl md:w-full">
+                    <p data-testid="planning-created" className="text-green-500 text-center px-3 mx-2 mt-3 alert bg-green-200 border border-green-500 relative md:text-xl md:w-full">
                         Planning créé avec succès
                         <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
                             <svg
