@@ -21,7 +21,7 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     with:
-      image_name: babyboard-back:staging
+      image_name: den123456/babyboard-back:staging
 
   build-and-push-client:
     needs:
@@ -31,7 +31,7 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     with:
-      image_name: babyboard-front:staging
+      image_name: den123456/babyboard-front:staging
 
   notify-vps:
     needs:

@@ -2,7 +2,7 @@
 services:
 
   db:
-    container_name: ${DEPLOY_ENV:-staging}-db
+    container_name: ${DEPLOY_ENV:-staging}-db-bb
     image: postgres:18.1-alpine3.23
     environment:
       POSTGRES_PASSWORD: ${DB_PASS}
@@ -17,8 +17,8 @@ services:
 
  
   backend:
-    container_name: ${DEPLOY_ENV:-staging}-backend
-    image: babyboard/cda-nov25-p2-g2-back:${DEPLOY_ENV:-staging}
+    container_name: ${DEPLOY_ENV:-staging}-backend-bb
+    image: den123456/babyboard-back:${DEPLOY_ENV:-staging}
     depends_on:
       db:
         condition: service_healthy
@@ -36,8 +36,8 @@ services:
 
 
   frontend:
-    container_name: ${DEPLOY_ENV:-staging}-frontend
-    image: babyboard/cda-nov25-p2-g2-front:${DEPLOY_ENV:-staging}
+    container_name: ${DEPLOY_ENV:-staging}-frontend-bb
+    image: den123456/babyboard-front:${DEPLOY_ENV:-staging}
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:3000/ || exit 1"]
       interval: 2s
@@ -45,7 +45,7 @@ services:
       retries: 10
 
   gateway:
-    container_name: ${DEPLOY_ENV:-staging}-gateway
+    container_name: ${DEPLOY_ENV:-staging}-gateway-bb
     build:
       context: gateway
     depends_on:
@@ -64,4 +64,4 @@ services:
 
 volumes:
   db-data:
-    name: "${DEPLOY_ENV:-staging}-db-data"
+    name: "${DEPLOY_ENV:-staging}-db-data-bb"

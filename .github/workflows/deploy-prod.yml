@@ -9,15 +9,21 @@ jobs:
   client-tests:
     uses: Denis-PATILLOT/cda-nov25-p2-g2/.github/workflows/test-frontend.yml@main
 
+  server-tests:
+    uses: Denis-PATILLOT/cda-nov25-p2-g2/.github/workflows/integration-tests.yml@main
 
+  e2e-tests:
+    uses: Denis-PATILLOT/cda-nov25-p2-g2/.github/workflows/e2e-tests.yml@main
 
   build-and-push-server:
+    needs:
+        - server-tests
     uses: Denis-PATILLOT/cda-nov25-p2-g2/.github/workflows/build-backend.yml@main
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     with:
-      image_name: babyboard-back:prod
+      image_name: den123456/babyboard-back:prod
 
   build-and-push-client:
     needs:
@@ -27,7 +33,7 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     with:
-      image_name: babyboard-front:prod
+      image_name: den123456/babyboard-front:prod
 
   notify-vps:
     needs:
