@@ -1,0 +1,29 @@
+# Récupère la liste complète de tous les parents avec leurs enfants liés
+# Utilisé dans : parentsHistory.tsx (liste admin), parents/[id]/edit.tsx (fiche d'un parent)
+# Chaque parent contient : id, noms, email, téléphone, avatar
+# Et pour chaque enfant lié : id, noms, photo, date de naissance, groupe, et liste des ids parents
+#   (la liste parents.id est nécessaire pour la déliasion : on retire le parent courant de cette liste)
+query AllParents {
+  allParents {
+    id
+    first_name
+    last_name
+    email
+    phone
+    avatar
+    children {
+      id
+      firstName
+      lastName
+      picture
+      birthDate
+      group {
+        id
+        name
+      }
+      parents {
+        id
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "e2e-tests",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "rm -rf ./dist && tsc --incremental -p tsconfig.json",
+    "test": "npx playwright test -c dist/e2e-tests --trace on",
+    "test:ui": "npm run pretest && npx playwright test -c dist/e2e-tests --trace on --ui",
+    "test:headed": "npm run pretest && npx playwright test -c dist/e2e-tests --trace on --headed",
+    "app:start": "docker compose -f docker-compose.e2e-tests.yml up --build --wait",
+    "app:stop": "docker compose -f docker-compose.e2e-tests.yml down"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0",
+    "argon2": "^0.44.0",
+    "class-validator": "^0.15.1",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.20.0",
+    "reflect-metadata": "^0.2.2",
+    "ts-dotenv": "^0.9.1",
+    "type-graphql": "^2.0.0-rc.3",
+    "typeorm": "^0.3.28",
+    "typescript": "^5.4.5"
+  }
+}

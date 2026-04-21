@@ -15,4 +15,9 @@ export default load({
     type: Number,
     optional: true,
   },
+
+  MAILTRAP_HOST: String,
+  MAILTRAP_PORT: Number,
+  MAILTRAP_USER: String,
+  MAILTRAP_PASS: String,
 });

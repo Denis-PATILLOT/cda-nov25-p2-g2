@@ -1,0 +1,14 @@
+query MyConversations {
+  myConversations {
+    id
+    creationDate
+    initiator {
+      id
+      first_name
+    }
+    participant {
+      id
+      first_name
+    }
+  }
+}

@@ -1,54 +1,48 @@
-import { Field, ID, ObjectType } from "type-graphql";
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Field, Int, ObjectType } from "type-graphql";
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 import { Group } from "./Group";
 
 @ObjectType()
 @Entity()
 export class Planning extends BaseEntity {
-  @Field(() => ID)
+  @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field({ nullable: true })
-  @Column({ type: "text", nullable: true })
+  @Field()
+  @Column({ type: "text" })
   meal: string;
 
-  @Field({ nullable: true })
-  @Column({ type: "text", nullable: true })
+  @Field()
+  @Column({ type: "text" })
   morning_nap: string;
 
-  @Field({ nullable: true })
-  @Column({ type: "text", nullable: true })
+  @Field()
+  @Column({ type: "text" })
   afternoon_nap: string;
 
-  @Field({ nullable: true })
-  @Column({ type: "text", nullable: true })
+  @Field()
+  @Column({ type: "text" })
   morning_activities: string;
 
-  @Field({ nullable: true })
-  @Column({ type: "text", nullable: true })
+  @Field()
+  @Column({ type: "text" })
   afternoon_activities: string;
 
-  @Field({ nullable: true })
-  @Column({ type: "text", nullable: true })
+  @Field()
+  @Column({ type: "text" })
   snack: string;
 
   @Field()
   @Column()
   date: Date;
 
-  @Field(() => Group)
+  @Field(() => Group, {nullable: false})
   @ManyToOne(
     () => Group,
-    (group) => group.planning,
-    { onDelete: "CASCADE" },
+    (group) => group.plannings,
+    { onDelete: "CASCADE", nullable: false },
   )
   group: Group;
 }

@@ -10,6 +10,7 @@ import {
   Resolver,
 } from "type-graphql";
 import { endSession, getCurrentUser, startSession } from "../auth";
+import { sendWelcomeEmail } from "../mailer";
 import { Group } from "../entities/Group";
 import {
   ChangePasswordInput,
@@ -86,7 +87,16 @@ export default class UserResolver {
       group,
     });
 
-    return await newUser.save();
+    const savedUser = await newUser.save();
+
+    // Envoi du mot de passe temporaire par email
+    await sendWelcomeEmail({
+      to: email,
+      firstName: data.first_name,
+      password: data.password,
+    });
+
+    return savedUser;
   }
 
   // Modifier un compte (infos, role, group)
@@ -159,9 +169,18 @@ export default class UserResolver {
   @Authorized("admin")
   @Mutation(() => Boolean)
   async deleteUser(@Arg("id", () => Int) id: number) {
-    const user = await User.findOne({ where: { id } });
+    const user = await User.findOne({
+      where: { id },
+      relations: { children: true },
+    });
     if (!user) {
       throw new NotFoundError({ message: "User not found" });
+    }
+
+    // Vider la table de jointure avant suppression pour éviter la contrainte FK
+    if (user.children?.length) {
+      user.children = [];
+      await user.save();
     }
 
     await user.remove();
@@ -227,5 +246,28 @@ export default class UserResolver {
     await user.save();
 
     return true;
+  }
+
+  // récupérer l'id de l'admin (pour création conversation depuis la page messages d'un parent)
+  @Authorized() // juste être connecté
+  @Query(() => User)
+  async getAdminUser() {
+    const admin = User.findOneBy({role: "admin"});
+
+    if(!admin) throw new NotFoundError({ message: "User not found" });
+    return admin;
+  }
+
+  // récupérer l'id du staff member via un groupe d'un enfant (pour création conversation depuis la page messages d'un parent)
+  @Authorized() // juste être connecté
+  @Query(() => User)
+  async getStaffUser(@Arg("groupId", () => Int) groupId: number) {
+    const staffMember = User.findOne({ 
+        where : {role: "staff", group: {id: groupId }}, 
+        relations: ["group"]
+    });
+
+    if(!staffMember) throw new NotFoundError({ message: "User not found" });
+    return staffMember;
   }
 }

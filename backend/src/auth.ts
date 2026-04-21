@@ -1,9 +1,11 @@
+import "@fastify/cookie"; //à ajouter pour pouvoir faire les tests e2e qui ont besoin des méthodes de fastify pour les cookies
 import jwt from "jsonwebtoken";
 import type { AuthChecker } from "type-graphql";
 import { User } from "./entities/User";
 import env from "./env";
 import { ForbiddenError, UnauthenticatedError } from "./errors";
 import type { GraphQLContext } from "./types";
+import fastifyCookie from "@fastify/cookie";
 
 export interface JWTPayload {
   userId: number;
@@ -28,7 +30,7 @@ export const verifyJWT = (token: string): JWTPayload | null => {
 };
 
 // création du cookie authentification
-const cookieName = "authToken";
+export const cookieName = "authToken";
 // fn startSession (prend en param le context défini et un User)
 export async function startSession(context: GraphQLContext, user: User) {
   const token = await createJWT(user);
@@ -78,8 +80,8 @@ export const authChecker: AuthChecker<GraphQLContext> = async (
   { context },
   roles,
 ) => {
-  const currentUser = await getCurrentUser(context);
-  if (roles.length !== 0 && !roles.includes(currentUser.role.toString()))
+  const currentUser = await getCurrentUser(context);  // si pas connecté, on aura l'errerur UnauthenticatedError
+  if (roles.length !== 0 && !roles.includes(currentUser.role.toString())) 
     throw new ForbiddenError();
   return true;
 };

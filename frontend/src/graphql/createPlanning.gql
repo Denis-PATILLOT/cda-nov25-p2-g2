@@ -1,0 +1,5 @@
+mutation CreatePlanning($data: PlanningInput!) {
+  createPlanning(data: $data) {
+    id
+  }
+}
