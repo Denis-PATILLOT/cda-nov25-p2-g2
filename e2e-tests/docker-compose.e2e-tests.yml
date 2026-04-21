@@ -28,8 +28,8 @@ services:
       - DB_HOST=testDB  # le host est le nom du conteneur de la BDD soit 'testDB' ici
       - TEST_DB_PORT=5432  # on doit utiliser le port 5432 car c'est le port utilisé par le conteneur 'testDB'
     healthcheck:
-      test: 'curl --fail --request GET -H "content-type:application/json" --url "http://localhost:4000/?query=%7B__typename%7D" '  
-      interval: 1s
+      test: curl --fail --request GET -H "content-type:application/json" --url "http://localhost:4000/?query=%7B__typename%7D"
+      interval: 3s
       timeout: 2s
       retries: 30
     depends_on:
