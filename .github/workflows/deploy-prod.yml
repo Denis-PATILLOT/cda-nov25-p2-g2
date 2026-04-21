@@ -10,7 +10,7 @@ jobs:
     uses: Denis-PATILLOT/cda-nov25-p2-g2/.github/workflows/test-frontend.yml@main
 
   server-tests:
-    uses: Denis-PATILLOT/cda-nov25-p2-g2/.github/workflows/integration-tests.yml@main
+    uses: Denis-PATILLOT/cda-nov25-p2-g2/.github/workflows/test.backend.yml@main
 
   e2e-tests:
     uses: Denis-PATILLOT/cda-nov25-p2-g2/.github/workflows/e2e-tests.yml@main
