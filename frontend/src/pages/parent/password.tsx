@@ -34,7 +34,7 @@ const ChangePasswordPage = () => {
 
       if (result.data?.changePassword) {
         alert("Mot de passe modifié avec succès !");
-        router.push("/profil/profil");
+        router.push("/parent/profile");
       } else {
         alert("Erreur : Informations incorrectes.");
       }
