@@ -89,7 +89,7 @@ const ChangePasswordPage = () => {
                       onClick={() => setShowOld(!showOld)}
                     >
                       <Image
-                        src={showOld ? "/closeeye.png" : "/openeye.png"}
+                        src={showOld ? "/closeeye.webp" : "/openeye.webp"}
                         alt="Toggle"
                         width={24}
                         height={24}
@@ -117,7 +117,7 @@ const ChangePasswordPage = () => {
                       onClick={() => setShowNew(!showNew)}
                     >
                       <Image
-                        src={showNew ? "/closeeye.png" : "/openeye.png"}
+                        src={showNew ? "/closeeye.webp" : "/openeye.webp"}
                         alt="Toggle"
                         width={24}
                         height={24}
@@ -126,7 +126,7 @@ const ChangePasswordPage = () => {
                   </div>
                 </div>
 
-                <button type="submit" className="bb-btn-valider" disabled={loading}>
+                <button type="submit" className="bb-btn-valider cursor-pointer" disabled={loading}>
                   {loading ? "Chargement..." : "Valider"}
                 </button>
               </form>

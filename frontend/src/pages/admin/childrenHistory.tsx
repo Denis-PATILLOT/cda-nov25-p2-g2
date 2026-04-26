@@ -124,7 +124,7 @@ export default function AdminChildrenPage() {
           <button type="button" onClick={() => router.push("/admin")} className="p-0">
             <div className="h-10 w-10 overflow-hidden flex items-center justify-center md:h-20 md:w-20 cursor-pointer">
               <img
-                src="/admin/flechegauche.png"
+                src="/admin/flechegauche.webp"
                 alt="Retour"
                 className="h-16 w-16 md:h-28 md:w-28"
               />
@@ -147,7 +147,7 @@ export default function AdminChildrenPage() {
         {/* Barre de recherche */}
         <div className="mt-2 flex items-center h-9 rounded-lg bg-white/80 border-2 border-(--color-primary) px-3 shadow-sm md:mt-6 md:h-14 md:rounded-2xl md:px-5">
           <div className="h-8 w-8 overflow-hidden flex items-center justify-center shrink-0 mr-2">
-            <img src="/admin/loupe.png" alt="Recherche" className="h-14 w-14 opacity-60" />
+            <img src="/admin/loupe.webp" alt="Recherche" className="h-14 w-14 opacity-60" />
           </div>
           <input
             value={search}
@@ -165,7 +165,7 @@ export default function AdminChildrenPage() {
             className="flex items-center w-full h-9 rounded-xl border-2 cursor-pointer border-(--color-primary) bg-white/80 px-2 shadow-sm text-[12px] text-left outline-none gap-1 md:h-12 md:text-[16px] md:px-4 md:rounded-2xl"
           >
             <div className="h-8 w-8 overflow-hidden flex items-center justify-center shrink-0">
-              <img src="/admin/groupe.png" alt="Groupe" className="h-14 w-14 opacity-70" />
+              <img src="/admin/groupe.webp" alt="Groupe" className="h-14 w-14 opacity-70" />
             </div>
             <span className="text-gray-500">
               {groupFilter === "ALL"

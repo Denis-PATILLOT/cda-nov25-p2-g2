@@ -37,7 +37,7 @@ export default function AdminDashboard() {
             onClick={() => router.push("/admin/childrenHistory")}
           >
             <Image
-              src="/admin/bbavatar.png"
+              src="/admin/bbavatar.webp"
               width={64}
               height={64}
               className="w-16 h-16 object-contain md:w-28 md:h-28"
@@ -57,7 +57,7 @@ export default function AdminDashboard() {
             onClick={() => router.push("/admin/staffHistory")}
           >
             <Image
-              src="/admin/staffavatar.png"
+              src="/admin/staffavatar.webp"
               width={64}
               height={64}
               className="w-16 h-16 object-contain md:w-28 md:h-28"
@@ -77,7 +77,7 @@ export default function AdminDashboard() {
             onClick={() => router.push("/admin/parentsHistory")}
           >
             <Image
-              src="/admin/parentavatar.png"
+              src="/admin/parentavatar.webp"
               width={64}
               height={64}
               className="w-16 h-16 object-contain md:w-28 md:h-28"
@@ -109,7 +109,7 @@ export default function AdminDashboard() {
               <div className="flex items-center gap-6 h-full">
                 <div className="h-10 w-10 flex items-center justify-center md:h-28 md:w-28">
                   <Image
-                    src="/admin/bbavatar.png"
+                    src="/admin/bbavatar.webp"
                     width={64}
                     height={64}
                     className="w-16 h-16 object-contain md:w-28 md:h-28"
@@ -134,7 +134,7 @@ export default function AdminDashboard() {
               <div className="flex items-center gap-6 h-full">
                 <div className="h-10 w-10 flex items-center justify-center md:h-28 md:w-28">
                   <Image
-                    src="/admin/staffavatar.png"
+                    src="/admin/staffavatar.webp"
                     width={64}
                     height={64}
                     className="w-16 h-16 object-contain md:w-28 md:h-28"
@@ -161,7 +161,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center gap-6 h-full">
                     <div className="h-10 w-10 flex items-center justify-center md:h-28 md:w-28">
                       <Image
-                        src="/admin/parentavatar.png"
+                        src="/admin/parentavatar.webp"
                         width={64}
                         height={64}
                         className="w-16 h-16 object-contain md:w-28 md:h-28"

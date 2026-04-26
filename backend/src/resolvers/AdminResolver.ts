@@ -70,7 +70,7 @@ export class AdminResolver {
     // const userRepo = db.getRepository(User);
     const parents =  await User.find({
       relations: { children: { group: true  }, startedConversations : {participant: true}, participatedConversations: {initiator: true} },
-      where: { role: UserRole.Parent }
+      where: { role: UserRole.Parent },
     });
 
     // on renvoie les infos des parents avec seulement les conversations avec le user connecté (ici l'admin)

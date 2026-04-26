@@ -4,7 +4,7 @@ function DemoComponent() {
   return <div>hello</div>;
 }
 
-describe("sum", () => {
+describe("test", () => {
   it("prints out hello", () => {
     render(<DemoComponent />);
     expect(screen.getByText("hello")).toBeInTheDocument();

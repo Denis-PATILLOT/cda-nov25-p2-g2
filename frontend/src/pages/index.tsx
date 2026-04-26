@@ -40,7 +40,7 @@ export default function Home() {
       await refetch();
     } catch (err: unknown) {
       setErrorSubmit(true);
-   }
+    }
   };
 
   const handleClickEye = () => {
@@ -49,13 +49,14 @@ export default function Home() {
 
   return (
     <Layout pageTitle="Accueil">
-      <img src="/babyboardlogo.png" alt="logo" className="md:w-[40%] md:m-auto md:max-w-[600px]" />
+      <img src="/babyboardlogo.webp" alt="logo" className="md:w-[40%] md:m-auto md:max-w-[600px]" loading="lazy" />
 
       {errorSubmit && error && (
         <p data-testid="test-error" className="text-red-500 px-5 mx-5 alert bg-red-100 border border-red-500 absolute top-3 left-0 right-0 md:top-5 md:text-xl md:mx-52">
-          { error instanceof TypeError && error.message.includes("Network") && <>Erreur de connexion rencontrée.<br /> Merci de réessayer utlérieurement</> }
-          { error instanceof CombinedGraphQLErrors && error.errors[0].extensions?.code === "UNAUTHENTICATED" && "Identifiants incorrects" }
-                    
+          {error instanceof TypeError && error.message.includes("Network") && <>Erreur de connexion rencontrée.<br /> Merci de réessayer utlérieurement</>}
+          {error instanceof CombinedGraphQLErrors && error.errors[0].extensions?.code === "UNAUTHENTICATED" && "Identifiants incorrects"}
+          {error instanceof CombinedGraphQLErrors && error.errors[0].extensions?.code !== "UNAUTHENTICATED" && error.message}
+
           <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
             <svg
               className="h-6 w-6 cursor-pointer fill-current text-red-500"
@@ -86,9 +87,8 @@ export default function Home() {
             })}
             placeholder="Email"
             title="Email"
-            className={`mb-2 w-[75%] rounded-4xl bg-[#d4efff] px-2 py-3 text-center text-xl md:mb-6 md:rounded-[50] md:py-6 md:text-4xl ${
-              errors.email ? "focus-visible:outline-2 focus-visible:outline-red-500" : ""
-            }`}
+            className={`mb-2 w-[75%] rounded-4xl bg-[#d4efff] px-2 py-3 text-center text-xl md:mb-6 md:rounded-[50] md:py-6 md:text-4xl ${errors.email ? "focus-visible:outline-2 focus-visible:outline-red-500" : ""
+              }`}
           />
 
           <p data-testid="error-email" className="mb-1 text-red-500">{errors.email?.message}</p>
@@ -119,9 +119,10 @@ export default function Home() {
             />
 
             <img
-              src={visiblePassword ? "/closeeye.png" : "/openeye.png"}
+              src={visiblePassword ? "/closeeye.webp" : "/openeye.webp"}
               alt="Afficher mot de passe"
               className="absolute right-15 top-1 w-[30px] cursor-pointer md:right-25 md:w-[48px]"
+              loading="lazy"
               onClick={handleClickEye}
             />
 

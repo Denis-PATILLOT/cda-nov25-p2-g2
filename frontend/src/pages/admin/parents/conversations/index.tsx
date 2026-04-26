@@ -6,41 +6,41 @@ import { useAdminGuard } from "@/hooks/useAdminGuard";
 import { getGroupBg } from "@/utils/getGroupBg";
 import Link from "next/link";
 
-type Parent= {
-    __typename?: "User" | undefined;
+type Parent = {
+  __typename?: "User" | undefined;
+  id: number;
+  first_name: string;
+  last_name: string;
+  avatar?: string | null | undefined;
+  children?: {
+    __typename?: "Child" | undefined;
     id: number;
-    first_name: string;
-    last_name: string;
-    avatar?: string | null | undefined;
-    children?: {
-        __typename?: "Child" | undefined;
-        id: number;
-        firstName: string;
-        lastName: string;
-        picture: string;
-        birthDate: any;
-        group: {
-            __typename?: "Group" | undefined;
-            id: string;
-            name: string;
-        };
-    }[] | null | undefined;
-    startedConversations?: {
-        __typename?: "Conversation" | undefined;
-        id: number;
-        participant: {
-            __typename?: "User" | undefined;
-            id: number;
-        };
-    }[] | null | undefined;
-    participatedConversations?: {
-        __typename?: "Conversation" | undefined;
-        id: number;
-        initiator: {
-            __typename?: "User" | undefined;
-            id: number;
-        };
-    }[] | null | undefined
+    firstName: string;
+    lastName: string;
+    picture: string;
+    birthDate: any;
+    group: {
+      __typename?: "Group" | undefined;
+      id: string;
+      name: string;
+    };
+  }[] | null | undefined;
+  startedConversations?: {
+    __typename?: "Conversation" | undefined;
+    id: number;
+    participant: {
+      __typename?: "User" | undefined;
+      id: number;
+    };
+  }[] | null | undefined;
+  participatedConversations?: {
+    __typename?: "Conversation" | undefined;
+    id: number;
+    initiator: {
+      __typename?: "User" | undefined;
+      id: number;
+    };
+  }[] | null | undefined
 };
 
 
@@ -63,8 +63,8 @@ export default function AdminParentsPage() {
   const [groupFilter, setGroupFilter] = useState<string>("ALL");
   const [groupDropdownOpen, setGroupDropdownOpen] = useState(false);
 
-  const[errorConversation, setErrorConversation] = useState("");
-  
+  const [errorConversation, setErrorConversation] = useState("");
+
   const groups = useMemo(() => {
     const map = new Map<string, string>();
     for (const p of parents) {
@@ -74,7 +74,7 @@ export default function AdminParentsPage() {
         }
       }
     }
-    return Array.from(map.entries()).map(([id, name]) => ({ id, name })).sort((a,b) => Number(a.id) - Number(b.id));
+    return Array.from(map.entries()).map(([id, name]) => ({ id, name })).sort((a, b) => Number(a.id) - Number(b.id));
   }, [parents]);
 
   const filteredParents = useMemo(() => {
@@ -89,23 +89,25 @@ export default function AdminParentsPage() {
     });
   }, [parents, search, groupFilter]);
 
-  
+
   if (authLoading) return null;
   if (!user || !isAdmin) return null;
 
   // gestion d'une création de conversation
-  const createNewConversation = async (parent : Parent ) => {
-    
-    try {
-        console.log("nouvelle conversation à créer");
-        const {data} = await createConversation({ variables: {
-            initiatorId: user.id,
-            participantId: parent.id
-        }});
+  const createNewConversation = async (parent: Parent) => {
 
-        if(data?.createConversation.id) router.push(`/admin/parents/conversations/${data.createConversation.id}`)
-    } catch(err:any) {
-        setErrorConversation(err.message)
+    try {
+      console.log("nouvelle conversation à créer");
+      const { data } = await createConversation({
+        variables: {
+          initiatorId: user.id,
+          participantId: parent.id
+        }
+      });
+
+      if (data?.createConversation.id) router.push(`/admin/parents/conversations/${data.createConversation.id}`)
+    } catch (err: any) {
+      setErrorConversation(err.message)
     }
   }
 
@@ -114,34 +116,35 @@ export default function AdminParentsPage() {
 
       <div className="mx-auto w-full max-w-[420px] px-4 pt-2 pb-6 md:max-w-none md:px-16 md:pt-0 lg:px-24">
         <div className="relative flex items-center justify-between md:mt-20">
-       
+
           <button type="button" onClick={() => router.push("/admin")} className="p-0">
             <div className="h-10 w-10 overflow-hidden cursor-pointer flex items-center justify-center md:h-20 md:w-20">
               <img
-                src="/admin/flechegauche.png"
+                src="/admin/flechegauche.webp"
                 alt="Retour"
                 className="h-16 w-16 md:h-28 md:w-28"
               />
             </div>
           </button>
-          
+
           <h1 className="text-[16px] font-semibold md:absolute md:left-1/2 md:-translate-x-1/2 md:text-[28px]">
             Conversations - Parents
           </h1>
-          
+
         </div>
 
         <div className="mt-2 flex items-center h-9 rounded-lg bg-white/80 border-2 border-(--color-primary) px-3 shadow-sm md:mt-6 md:h-14 md:rounded-2xl md:px-5">
-        
+
           <div className="h-8 w-8 overflow-hidden flex items-center justify-center shrink-0 mr-2">
-            <img src="/admin/loupe.png" alt="Recherche" className="h-14 w-14 opacity-60" />
+            <img src="/admin/loupe.webp" alt="Recherche" className="h-14 w-14 opacity-60" />
           </div>
-          
+
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Recherche un parent..."
             className="w-full bg-transparent text-[13px] outline-none md:text-[18px]"
+            aria-label="recherche parent"
           />
         </div>
 
@@ -152,7 +155,7 @@ export default function AdminParentsPage() {
             className="flex items-center w-full h-9 cursor-pointer rounded-xl border-2 border-(--color-primary) bg-white/80 px-2 shadow-sm text-[12px] text-left outline-none gap-1 md:h-12 md:text-[16px] md:px-4 md:rounded-2xl"
           >
             <div className="h-8 w-8 overflow-hidden  flex items-center justify-center shrink-0">
-              <img src="/admin/groupe.png" alt="Groupe" className="h-14 w-14 opacity-70" />
+              <img src="/admin/groupe.webp" alt="Groupe" className="h-14 w-14 opacity-70" />
             </div>
             <span className="text-gray-500">
               {groupFilter === "ALL"
@@ -203,7 +206,7 @@ export default function AdminParentsPage() {
             Erreur lors du chargement.
           </p>
         )}
-        { errorConversation && <p className="mt-6 text-center text-[13px] text-red-600 md:text-[18px] border-red-100 alert bg-red-200">{errorConversation}</p>}
+        {errorConversation && <p className="mt-6 text-center text-[13px] text-red-600 md:text-[18px] border-red-100 alert bg-red-200">{errorConversation}</p>}
 
         {!loading && !error && (
           <div className="mt-4 flex flex-col gap-3 md:gap-6 md:mt-8">
@@ -224,21 +227,21 @@ export default function AdminParentsPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3 md:gap-5">
                       <img
-                        src={parent.avatar ?? "/admin/parentavatar.png"}
+                        src={parent.avatar ?? "/admin/parentavatar.webp"}
                         alt={`${parent.first_name} ${parent.last_name}`}
                         className="h-12 w-12 rounded-full object-cover border-2 border-(--color-primary) shrink-0 md:h-20 md:w-20"
                       />
                       <span className="text-[14px] font-semibold md:text-[20px]">
                         {parent.first_name} {parent.last_name}
                       </span>
-                      <Link href={` ${ conversationWithAdmin && conversationWithAdmin.id ? `/admin/parents/conversations/${conversationWithAdmin.id}` : 
-                            ""
+                      <Link href={` ${conversationWithAdmin && conversationWithAdmin.id ? `/admin/parents/conversations/${conversationWithAdmin.id}` :
+                        ""
                         } `} >
-                        {conversationWithAdmin ? 
-                            <img src="/boutons/chat.png" className="cursor-pointer absolute top-0 right-0 transition-all hover:scale-[140%]" alt="" title="ouvrir conversation" width={80}/> :
-                            <img src="/boutons/plus.png" className="cursor-pointer absolute top-0 right-5 transition-all hover:scale-[140%]" alt="" title="créer conversation" width={35} onClick={() => createNewConversation(parent)}/> 
-                        }    
-                        
+                        {conversationWithAdmin ?
+                          <img src="/boutons/chat.png" className="cursor-pointer absolute top-0 right-0 transition-all hover:scale-[140%]" alt="" title="ouvrir conversation" width={80} /> :
+                          <img src="/boutons/plus.png" className="cursor-pointer absolute top-0 right-5 transition-all hover:scale-[140%]" alt="" title="créer conversation" width={35} onClick={() => createNewConversation(parent)} />
+                        }
+
                       </Link>
                     </div>
                   </div>

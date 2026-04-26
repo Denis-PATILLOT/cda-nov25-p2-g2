@@ -14,6 +14,18 @@ const profileMock = {
   },
 };
 
+const user = {
+  id: 1,
+  first_name: "Den",
+  last_name: "PAT",
+  avatar: "https://cdn-icons-png.freepik.com/512/6813/6813537.png",
+  creation_date: new Date().toISOString(),
+  email: "den@den.fr",
+  phone: "0650412565",
+  role: "parent"
+};
+
+
 jest.mock("next/router", () => ({
   useRouter() {
     return {
@@ -23,13 +35,15 @@ jest.mock("next/router", () => ({
 }));
 
 describe("Header test", () => {
-  it("contains a img element in Header", async () => {
+  it("contains user info and logout button", async () => {
     render(
       <MockedProvider mocks={[profileMock]}>
-        <Header user={null} refetch={async () => null} />
+        <Header user={user}
+          refetch={async () => null} />
       </MockedProvider>,
     );
-
-    expect(screen.queryByRole("img")).toBe(null);
+    // screen.debug();
+    expect(screen.getAllByAltText("Profil de Den")).toHaveLength(2);
+    expect(screen.getByTestId("déconnexion")).toHaveTextContent("Déconnexion");
   });
 });

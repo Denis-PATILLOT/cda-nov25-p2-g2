@@ -1,5 +1,8 @@
 import Layout from "@/components/Layout";
-import { useGetPlanningByGroupIdAndDateQuery, useReportByIdQuery } from "@/graphql/generated/schema";
+import {
+    useGetPlanningByGroupIdAndDateQuery,
+    useReportByIdQuery,
+} from "@/graphql/generated/schema";
 import { CombinedGraphQLErrors } from "@apollo/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,27 +11,33 @@ import { useEffect, useState } from "react";
 
 const ReportDetails = () => {
     const router = useRouter();
-    const {id, report_id, created } = router.query; // on récupère les données voulues de l'url : valeur report_id pour le compte-rendu visualisé
+    const { id, report_id, created } = router.query; // on récupère les données voulues de l'url : valeur report_id pour le compte-rendu visualisé
 
     console.log("id :", id, " reportId :", report_id);
 
-    const [createdReport, setCreatedReport] = useState(false); 
-  
+    const [createdReport, setCreatedReport] = useState(false);
+
     // pour gérer le message de création de compte-rendu
     useEffect(() => {
-       created === "true" ? setCreatedReport(true) : null
+        created === "true" ? setCreatedReport(true) : null;
     }, [created]);
-  
-    const { data,loading, error } = useReportByIdQuery({variables: {reportId: Number(report_id)}})
+
+    const { data, loading, error } = useReportByIdQuery({
+        variables: { reportId: Number(report_id) },
+    });
     const report = data?.report || null;
-    
-    
-    const { data: planning} = useGetPlanningByGroupIdAndDateQuery({variables: { groupId: Number(report?.child.group.id), date: report?.date  } })
-    
-    return(
+
+    const { data: planning } = useGetPlanningByGroupIdAndDateQuery({
+        variables: {
+            groupId: Number(report?.child.group.id),
+            date: report?.date,
+        },
+    });
+
+    return (
         <Layout pageTitle={`Staff - planning ${id}`}>
             <div className="max-w-full mx-auto md:max-w-[1000px]">
-                {createdReport && 
+                {createdReport && (
                     <p className="text-green-500 text-center px-3 mx-2 mt-3 alert bg-green-200 border border-green-500 relative md:text-xl md:w-full">
                         Compte-rendu créé avec succès
                         <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
@@ -44,101 +53,272 @@ const ReportDetails = () => {
                             </svg>
                         </span>
                     </p>
-                }
+                )}
 
-                {report && report.child && 
-                            <div className="w-full flex justify-start items-center mt-5 mb-8 text-[#1b3c79]">
-                                {/* img car Image ne passe pas avec l'url de notre enfant */}
-                                <img src={report.child.picture} alt={`picture of ${report.child.firstName} ${report.child.lastName}`} className="h-[130px] ml-5 object-contain rounded-[50%] border-3 border-[#ffdd23] absolute" /> 
-                                <p className="w-[67%] h-[100px] rounded-4xl bg-[#FEF9F6] border-3 border-[#FFD771] ml-25 text-center pt-3 pl-5 flex justify-end md:w-[85%]">
-                                    <span className="inline-block w-[90%] text-left pl-5 md:text-center md:pl-0 md:pr-30">
-                                    {report.child.firstName} {report.child.lastName}
-                                    <br />
-                                    {report.child.group.name}
-                                    <br />
-                                    {new Date(report.child.birthDate).toLocaleDateString("fr-FR", {})}
-                                    </span>
-                                </p>
-                            </div>
-                }
-                {!loading && error && <p className="text-500-red alert bg-[#FEF9F6] border-red-500 m-2">
-                    { error instanceof TypeError && error?.message.includes("Network") && <>Erreur de connexion rencontrée.<br /> Merci de réessayer utlérieurement</> }
-                    { error instanceof CombinedGraphQLErrors && error.errors[0].extensions?.code === "FORBIDDEN"  && "Vous ne pouvez accéder à ce compte-rendu" }
-                    { error instanceof CombinedGraphQLErrors && error.errors[0].extensions?.code === "NOT_FOUND" && "Compte-rendu introuvable" }    
-                </p>}
-                { !loading && !error && Number(id) !== Number(report?.child.id) &&  <p className="text-500-red alert bg-[#FEF9F6] border-red-500 m-2">"Données incorrectes"</p> } 
-                 
-                
-                {report && Number(id) === Number(report?.child.id) &&
-                <div className="w-[90%] px-4 py-1 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold mx-auto border-3 border-[#FFD771]">
-                    {!planning && !error && <p>pas de planning correspondant à cette date</p>}
-
-                    {report && planning &&
-                    <>
-                        <div className="flex justify-end items-center">
-                            
-                            <p className="text-sm">{report!.child.group.name}</p>
-                        </div>
-                        <h1 className="">
-                            <Image src="/boutons/calendrier.png" alt="" width={35} height={25} className="inline-block m-2"/>
-                            {new Date(report!.date).toLocaleDateString("FR-fr", {weekday:"long", day:"2-digit", month:"long", year:"numeric"})}
-                        </h1>
-                        
-                        <p className="text-xs underline text-center">Résumé planning
-                            <Link href={`/staff/planning/${planning.getPlanningByGroupIdAndDate.id}/edit`} title="Modifier planning" className="inline" >
-                                <img src="/boutons/modifier.png" className="inline w-10 opacity-70 hover:opacity-100"/>
-                            </Link>
+                {report && report.child && (
+                    <div className="w-full flex justify-start items-center mt-5 mb-8 text-[#1b3c79]">
+                        {/* img car Image ne passe pas avec l'url de notre enfant */}
+                        <img
+                            src={report.child.picture}
+                            alt={`picture of ${report.child.firstName} ${report.child.lastName}`}
+                            className="h-[130px] ml-5 object-contain rounded-[50%] border-3 border-[#ffdd23] absolute"
+                            loading="lazy"
+                        />
+                        <p className="w-[67%] h-[100px] rounded-4xl bg-[#FEF9F6] border-3 border-[#FFD771] ml-25 text-center pt-3 pl-5 flex justify-end md:w-[85%]">
+                            <span className="inline-block w-[90%] text-left pl-5 md:text-center md:pl-0 md:pr-30">
+                                {report.child.firstName} {report.child.lastName}
+                                <br />
+                                {report.child.group.name}
+                                <br />
+                                {new Date(
+                                    report.child.birthDate,
+                                ).toLocaleDateString("fr-FR", {})}
+                            </span>
                         </p>
-                        
-                        <div className="w-[90%] mx-auto">
-                            <label className="w-[70%]inline-block">
-                                <Image src="/boutons/star.png" alt="" width={20} height={20} className="inline-block" />Activités
-                            </label>
-                            <textarea value={planning!.getPlanningByGroupIdAndDate.morning_activities! + "\n"  + planning!.getPlanningByGroupIdAndDate.afternoon_activities!} readOnly disabled className="border-2 border-amber-300 bg-[#FEE8B6] p-2 rounded-lg w-full inline-block mt-1 mb-3" />
-                        </div>
-
-                        <div className="w-[90%] mx-auto">
-                            <label className="w-[70%]inline-block">
-                                <Image src="/boutons/repas.png" alt="" width={20} height={20} className="inline-block" />Repas
-                            </label>
-                            <textarea value={planning!.getPlanningByGroupIdAndDate.meal! + "\n" + planning.getPlanningByGroupIdAndDate.snack} rows={3} readOnly disabled className="border-2 border-amber-300 bg-[#FEE8B6] p-2 rounded-lg w-full inline-block mt-1 mb-3" />
-                        </div>
-
-                        <div className="w-[90%] mx-auto">
-                            <label className="w-[70%]inline-block">
-                                <Image src="/boutons/dormir.png" alt="" width={20} height={20} className="inline-block" />Siestes
-                            </label>
-                            <textarea value={planning!.getPlanningByGroupIdAndDate.morning_nap! + "\n" + planning!.getPlanningByGroupIdAndDate.afternoon_nap} readOnly disabled className="border-2 border-amber-300 bg-[#FEE8B6] p-2 rounded-lg w-full inline-block mt-1 mb-3" />
-                        </div>
-
-                        <div className="w-[90%] mx-auto">
-                            <p className="text-xs underline text-center my-2">Compte-rendu
-                                <Link href={`/staff/child/${report.child.id}/reports/${report_id}/edit`} title="Modifier compte-rendu" className="inline" >
-                                    <img src="/boutons/modifier.png" className="inline w-10 opacity-70 hover:opacity-100"/>
-                                </Link>
-                            </p>
-
-                            {report.baby_mood !== "na" && 
+                    </div>
+                )}
+                {!loading && error && (
+                    <p className="text-500-red alert bg-[#FEF9F6] border-red-500 m-2">
+                        {error instanceof TypeError &&
+                            error?.message.includes("Network") && (
                                 <>
-                                    <label htmlFor="isPresent" className="mr-3 mb-3">Présent</label><input type="checkbox" id="isPresent" checked={report.isPresent} readOnly disabled />
-                                    <label className="w-[70%] block mt-3">
-                                        Commentaire journée
-                                    </label>
-                                    <textarea value={report.staff_comment!} readOnly disabled rows={4} className="border-2 border-amber-300 bg-[#FEE8B6] p-2 rounded-lg w-full inline-block mt-1 mb-3" />
+                                    Erreur de connexion rencontrée.
+                                    <br /> Merci de réessayer utlérieurement
                                 </>
-                            }
-                            {report.picture && <img src={report.picture} alt="" className="border-2 border-amber-300 bg-[#FEE8B6] rounded-lg w-full inline-block mt-3"/>}
-                            {report.baby_mood === "na" ? <p className="text-center">non présent ce jour</p> : <img src={`/babymood/${report.baby_mood}.png`} alt={report.baby_mood} className="md:w-[50%] md:m-auto" />}
-                        </div>
-                    </>
-                    }
-                </div>
-                
-                }
-                </div>
-            
+                            )}
+                        {error instanceof CombinedGraphQLErrors &&
+                            error.errors[0].extensions?.code === "FORBIDDEN" &&
+                            "Vous ne pouvez accéder à ce compte-rendu"}
+                        {error instanceof CombinedGraphQLErrors &&
+                            error.errors[0].extensions?.code === "NOT_FOUND" &&
+                            "Compte-rendu introuvable"}
+                    </p>
+                )}
+                {!loading &&
+                    !error &&
+                    Number(id) !== Number(report?.child.id) && (
+                        <p className="text-500-red alert bg-[#FEF9F6] border-red-500 m-2">
+                            "Données incorrectes"
+                        </p>
+                    )}
+
+                {report && Number(id) === Number(report?.child.id) && (
+                    <div className="w-[90%] px-4 py-1 bg-[#FEF9F6] rounded-2xl text-[#1b3c79] font-semibold mx-auto border-3 border-[#FFD771]">
+                        {!planning && !error && (
+                            <p>pas de planning correspondant à cette date</p>
+                        )}
+
+                        {report && planning && (
+                            <>
+                                <div className="flex justify-end items-center">
+                                    <p className="text-sm">
+                                        {report!.child.group.name}
+                                    </p>
+                                </div>
+                                <h1>
+                                    <Image
+                                        src="/boutons/calendrier.webp"
+                                        alt=""
+                                        width={35}
+                                        height={25}
+                                        className="inline-block m-2"
+                                    />
+                                    {new Date(report!.date).toLocaleDateString(
+                                        "FR-fr",
+                                        {
+                                            weekday: "long",
+                                            day: "2-digit",
+                                            month: "long",
+                                            year: "numeric",
+                                        },
+                                    )}
+                                </h1>
+
+                                <p className="text-xs underline text-center">
+                                    Résumé planning
+                                    <Link
+                                        href={`/staff/planning/${planning.getPlanningByGroupIdAndDate.id}/edit`}
+                                        title="Modifier planning"
+                                        className="inline"
+                                    >
+                                        <img
+                                            src="/boutons/modifier.webp"
+                                            alt="modifier planning"
+                                            className="inline w-10 opacity-70 hover:opacity-100"
+                                            loading="lazy"
+                                        />
+                                    </Link>
+                                </p>
+
+                                <div className="w-[90%] mx-auto">
+                                    <label
+                                        htmlFor="activities"
+                                        className="w-[70%]inline-block"
+                                    >
+                                        <Image
+                                            src="/boutons/star.webp"
+                                            alt=""
+                                            width={20}
+                                            height={20}
+                                            className="inline-block"
+                                        />
+                                        Activités
+                                    </label>
+                                    <textarea
+                                        value={
+                                            planning!
+                                                .getPlanningByGroupIdAndDate
+                                                .morning_activities! +
+                                            "\n" +
+                                            planning!
+                                                .getPlanningByGroupIdAndDate
+                                                .afternoon_activities!
+                                        }
+                                        readOnly
+                                        disabled
+                                        className="border-2 border-amber-300 bg-[#FEE8B6] p-2 rounded-lg w-full inline-block mt-1 mb-3"
+                                        id="activities"
+                                    />
+                                </div>
+
+                                <div className="w-[90%] mx-auto">
+                                    <label
+                                        htmlFor="repas"
+                                        className="w-[70%]inline-block"
+                                    >
+                                        <Image
+                                            src="/boutons/repas.webp"
+                                            alt=""
+                                            width={20}
+                                            height={20}
+                                            className="inline-block"
+                                        />
+                                        Repas
+                                    </label>
+                                    <textarea
+                                        value={
+                                            planning!
+                                                .getPlanningByGroupIdAndDate
+                                                .meal! +
+                                            "\n" +
+                                            planning.getPlanningByGroupIdAndDate
+                                                .snack
+                                        }
+                                        rows={3}
+                                        readOnly
+                                        disabled
+                                        id="repas"
+                                        className="border-2 border-amber-300 bg-[#FEE8B6] p-2 rounded-lg w-full inline-block mt-1 mb-3"
+                                    />
+                                </div>
+
+                                <div className="w-[90%] mx-auto">
+                                    <label
+                                        htmlFor="siestes"
+                                        className="w-[70%]inline-block"
+                                    >
+                                        <Image
+                                            src="/boutons/dormir.webp"
+                                            alt=""
+                                            width={20}
+                                            height={20}
+                                            className="inline-block"
+                                        />
+                                        Siestes
+                                    </label>
+                                    <textarea
+                                        value={
+                                            planning!
+                                                .getPlanningByGroupIdAndDate
+                                                .morning_nap! +
+                                            "\n" +
+                                            planning!
+                                                .getPlanningByGroupIdAndDate
+                                                .afternoon_nap
+                                        }
+                                        readOnly
+                                        disabled
+                                        id="siestes"
+                                        className="border-2 border-amber-300 bg-[#FEE8B6] p-2 rounded-lg w-full inline-block mt-1 mb-3"
+                                    />
+                                </div>
+
+                                <div className="w-[90%] mx-auto">
+                                    <p className="text-xs underline text-center my-2">
+                                        Compte-rendu
+                                        <Link
+                                            href={`/staff/child/${report.child.id}/reports/${report_id}/edit`}
+                                            title="Modifier compte-rendu"
+                                            className="inline"
+                                        >
+                                            <img
+                                                src="/boutons/modifier.webp"
+                                                alt="modifier compte-rendu"
+                                                className="inline w-10 opacity-70 hover:opacity-100"
+                                                loading="lazy"
+                                            />
+                                        </Link>
+                                    </p>
+
+                                    {report.baby_mood !== "na" && (
+                                        <>
+                                            <label
+                                                htmlFor="isPresent"
+                                                className="mr-3 mb-3"
+                                            >
+                                                Présent
+                                            </label>
+                                            <input
+                                                type="checkbox"
+                                                id="isPresent"
+                                                checked={report.isPresent}
+                                                readOnly
+                                                disabled
+                                            />
+                                            <label
+                                                htmlFor="commentaire"
+                                                className="w-[70%] block mt-3"
+                                            >
+                                                Commentaire journée
+                                            </label>
+                                            <textarea
+                                                value={report.staff_comment!}
+                                                readOnly
+                                                disabled
+                                                rows={4}
+                                                id="commentaire"
+                                                className="border-2 border-amber-300 bg-[#FEE8B6] p-2 rounded-lg w-full inline-block mt-1 mb-3"
+                                            />
+                                        </>
+                                    )}
+                                    {report.picture && (
+                                        <img
+                                            src={report.picture}
+                                            alt=""
+                                            className="border-2 border-amber-300 bg-[#FEE8B6] rounded-lg w-full inline-block mt-3"
+                                            loading="lazy"
+                                        />
+                                    )}
+                                    {report.baby_mood === "na" ? (
+                                        <p className="text-center">
+                                            non présent ce jour
+                                        </p>
+                                    ) : (
+                                        <img
+                                            src={`/babymood/${report.baby_mood}.webp`}
+                                            alt={report.baby_mood}
+                                            className="md:w-[50%] md:m-auto"
+                                            loading="lazy"
+                                        />
+                                    )}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                )}
+            </div>
         </Layout>
     );
-}
+};
 
 export default ReportDetails;

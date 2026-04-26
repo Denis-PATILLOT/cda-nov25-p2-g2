@@ -198,7 +198,7 @@ export default function EditParentPage() {
             >
               <div className="h-10 w-10 cursor-pointer overflow-hidden flex items-center justify-center md:h-20 md:w-20">
                 <img
-                  src="/admin/flechegauche.png"
+                  src="/admin/flechegauche.webp"
                   alt="Retour"
                   className="h-16 w-16 md:h-28 md:w-28"
                 />
@@ -217,7 +217,7 @@ export default function EditParentPage() {
           {parent && (
             <div className="mt-4 rounded-2xl bg-white/80 border-2 border-(--color-secondary) px-4 py-3 shadow-md flex items-center gap-3 md:mt-6 md:px-6 md:py-5 md:rounded-3xl md:gap-6">
               <img
-                src={parent.avatar ?? "/admin/parentavatar.png"}
+                src={parent.avatar ?? "/admin/parentavatar.webp"}
                 alt={`${parent.first_name} ${parent.last_name}`}
                 className="h-12 w-12 rounded-full object-cover border-2 border-(--color-primary) shrink-0 md:h-24 md:w-24"
               />

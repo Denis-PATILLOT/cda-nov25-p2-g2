@@ -17,19 +17,19 @@ type HeaderProps = {
     phone: string;
     role: string;
     children?:
-      | {
-          __typename?: "Child" | undefined;
-          id: number;
-        }[]
-      | null
-      | undefined;
+    | {
+      __typename?: "Child" | undefined;
+      id: number;
+    }[]
+    | null
+    | undefined;
     group?:
-      | {
-          __typename?: "Group" | undefined;
-          id: string;
-        }
-      | null
-      | undefined;
+    | {
+      __typename?: "Group" | undefined;
+      id: string;
+    }
+    | null
+    | undefined;
   } | null;
   refetch: (
     variables?: Partial<Exact<{ [key: string]: never }>> | undefined,
@@ -75,7 +75,7 @@ export default function Header({ user, refetch }: HeaderProps) {
     <header>
       <nav className="flex w-full items-center justify-between bg-transparent px-4 py-3 md:px-6">
         <Link href={`/${user.role || "/"}`} className="w-[48%] max-w-[220px] md:max-w-[300px]">
-          <img src="/logo-inline.png" alt="logo BabyBoard" />
+          <img src="/logo-inline.webp" alt="logo BabyBoard" />
         </Link>
 
         <div className="relative" ref={menuRef}>
@@ -103,11 +103,10 @@ export default function Header({ user, refetch }: HeaderProps) {
           </button>
 
           <div
-            className={`absolute right-0 z-50 mt-3 w-64 origin-top-right overflow-hidden rounded-[26px] border-2 border-sky-200 bg-white/95 shadow-[0_18px_40px_rgba(20,40,90,0.18)] backdrop-blur transition-all duration-200 ${
-              isMenuOpen
-                ? "visible translate-y-0 scale-100 opacity-100"
-                : "invisible -translate-y-2 scale-95 opacity-0"
-            }`}
+            className={`absolute right-0 z-50 mt-3 w-64 origin-top-right overflow-hidden rounded-[26px] border-2 border-sky-200 bg-white/95 shadow-[0_18px_40px_rgba(20,40,90,0.18)] backdrop-blur transition-all duration-200 ${isMenuOpen
+              ? "visible translate-y-0 scale-100 opacity-100"
+              : "invisible -translate-y-2 scale-95 opacity-0"
+              }`}
           >
             <div className="bg-gradient-to-r from-pink-50 via-white to-sky-50 px-4 py-4">
               <div className="flex items-center gap-3">
@@ -169,6 +168,7 @@ export default function Header({ user, refetch }: HeaderProps) {
               <button
                 type="button"
                 onClick={handleLogout}
+                data-testid="déconnexion"
                 className="flex w-full cursor-pointer items-center gap-3 rounded-2xl px-4 py-3 text-left text-red-500 transition hover:bg-red-50"
               >
                 <span className="text-lg">🚪</span>

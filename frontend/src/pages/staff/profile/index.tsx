@@ -34,13 +34,13 @@ export default function StaffProfile() {
                 className="cursor-pointer border-2 border-[#FFD771] text-[#1b3c79] rounded-2xl p-1 hover:bg-[#FFD771] md:text-xl"
                 onClick={handleLogout}
               >
-                <img alt="déconnexion" src="/porte.png" className="inline-block w-5 mr-1" />
+                <img alt="déconnexion" src="/porte.webp" className="inline-block w-5 mr-1" loading="lazy" />
                 Déconnexion
               </button>
             </div>
             <div className="w-25 h-25 mt-3 rounded-full flex items-center justify-center text-sm font-bold overflow-hidden border-4 border-[#FFD771] md:w-24 md:h-24">
               {user.avatar ? (
-                <img src={user.avatar} alt="" title={`${user.first_name} ${user.last_name}`} />
+                <img src={user.avatar} alt="" title={`${user.first_name} ${user.last_name}`} loading="lazy" />
               ) : (
                 getUserInitial(user.last_name)
               )}

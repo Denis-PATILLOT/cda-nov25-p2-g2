@@ -14,5 +14,5 @@ export function getAge(birthDate: string) {
       (now.getDate() < d.getDate() ? 1 : 0);
     return `${months} mois`;
   }
-  return `${years} ans`;
+  return years === 1 ? `${years} an` :  `${years} ans`;
 }

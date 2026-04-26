@@ -70,7 +70,7 @@ const ProfilPage = () => {
               <div className="bb-avatar-center-container">
                 <div className="bb-avatar-outline">
                   <img
-                    src={formData.avatar || "/avatarfille.png"}
+                    src={formData.avatar || "/avatarfille.webp"}
                     alt="User"
                     className="bb-avatar-img"
                   />
@@ -84,7 +84,7 @@ const ProfilPage = () => {
                     }}
                     style={{ border: "none", cursor: "pointer" }}
                   >
-                    <img src="/modifier.png" alt="Edit Avatar" />
+                    <img src="/modifier.webp" alt="Edit Avatar" />
                   </button>
                 </div>
               </div>
@@ -179,12 +179,12 @@ const ProfilPage = () => {
                       marginTop: "20px",
                     }}
                   >
-                    <button type="submit" className="bb-btn-valider" disabled={mutationLoading}>
+                    <button type="submit" className="bb-btn-valider cursor-pointer" disabled={mutationLoading}>
                       {mutationLoading ? "Enregistrement..." : "Valider les changements"}
                     </button>
                     <button
                       type="button"
-                      className="bb-btn-change-password"
+                      className="bb-btn-change-password cursor-pointer"
                       onClick={() => {
                         setIsEditing(false);
                         setShowAvatarInput(false);
@@ -197,7 +197,7 @@ const ProfilPage = () => {
                 ) : (
                   <button
                     type="button"
-                    className="bb-btn-change-password"
+                    className="bb-btn-change-password cursor-pointer hover:bg-blue-300"
                     style={{ marginTop: "20px" }}
                     onClick={() => setIsEditing(true)}
                   >

@@ -50,7 +50,7 @@ export default function AdminReportsPage() {
           <button type="button" onClick={() => router.push("/admin")} className="p-0">
             <div className="h-10 w-10 overflow-hidden cursor-pointer flex items-center justify-center md:h-20 md:w-20">
               <img
-                src="/admin/flechegauche.png"
+                src="/admin/flechegauche.webp"
                 alt="Retour"
                 className="h-16 w-16 md:h-28 md:w-28"
               />
@@ -65,7 +65,7 @@ export default function AdminReportsPage() {
         {/* Barre de recherche */}
         <div className="mt-2 flex items-center h-9 rounded-lg bg-white/80 border-2 border-(--color-primary) px-3 shadow-sm transition-all duration-200 hover:shadow-md focus-within:shadow-md focus-within:scale-[1.01] md:mt-6 md:h-14 md:rounded-2xl md:px-5">
           <div className="h-8 w-8 overflow-hidden flex items-center justify-center shrink-0 mr-2">
-            <img src="/admin/loupe.png" alt="Recherche" className="h-14 w-14 opacity-60" />
+            <img src="/admin/loupe.webp" alt="Recherche" className="h-14 w-14 opacity-60" />
           </div>
           <input
             value={search}
@@ -86,10 +86,10 @@ export default function AdminReportsPage() {
               {selectedDate === today
                 ? "Aujourd'hui"
                 : new Date(selectedDate).toLocaleDateString("fr-FR", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
             </span>
             <span
               className={`text-gray-400 transition-transform duration-200 ${dateDropdownOpen ? "rotate-180" : ""}`}
@@ -118,10 +118,10 @@ export default function AdminReportsPage() {
                   {d === today
                     ? "Aujourd'hui"
                     : new Date(d).toLocaleDateString("fr-FR", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
                 </button>
               ))}
             </div>
@@ -131,7 +131,7 @@ export default function AdminReportsPage() {
         {/* En-tête section date */}
         <div className="mt-4 flex items-center gap-2 md:mt-6">
           <img
-            src="/boutons/calendrier.png"
+            src="/boutons/calendrier.webp"
             alt="calendrier"
             className="h-8 w-8 object-contain md:h-10 md:w-10"
           />
@@ -139,13 +139,13 @@ export default function AdminReportsPage() {
             {selectedDate === today
               ? "Date du jour"
               : (() => {
-                  const s = new Date(selectedDate).toLocaleDateString("fr-FR", {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                  });
-                  return s.charAt(0).toUpperCase() + s.slice(1);
-                })()}
+                const s = new Date(selectedDate).toLocaleDateString("fr-FR", {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "long",
+                });
+                return s.charAt(0).toUpperCase() + s.slice(1);
+              })()}
           </span>
         </div>
 

@@ -40,7 +40,9 @@ main {
 }
 
 .home {
-  background-image: url("/chateau.png");
+  background-image: image-set(
+    url("/chateau.webp") type("image/webp")
+  );
   background-size: cover;
   background-position-x: 48%;
 }
@@ -55,17 +57,24 @@ main {
 }
 
 .group1 {
-  background-image: url("/orange.png");
-  background-size: cover;
+  background-image: image-set(
+      url("/orange.webp") type("image/webp")
+  );
+  background-size: cover;    
+      
 }
 
 .group2 {
-  background-image: url("/vert.png");
+  background-image: image-set(
+    url("/vert.webp") type("image/webp")
+  );
   background-size: cover;
 }
 
 .group3 {
-  background-image: url("/violet.png");
+  background-image: image-set(
+    url("/violet.webp") type("image/webp")
+  );
   background-size: cover;
 }
 

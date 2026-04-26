@@ -65,8 +65,8 @@ test('should be able to connect with good credentials (staff)', async ({ page })
     await User.create({
         email,
         hashedPassword: await hash(password),
-        first_name: "Den",
-        last_name: "Pat",
+        first_name: "Dave",
+        last_name: "Lopper",
         phone: "0660405030",
         role: UserRole.Staff,
         group: group

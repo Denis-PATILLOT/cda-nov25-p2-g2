@@ -173,7 +173,7 @@ export default function AddChildModal({
         {/* Header */}
         <div className="flex items-center gap-10">
           <div className="relative shrink-0 w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden">
-            <Image src="/boutons/plus.png" alt="Ajouter" fill className="object-cover" />
+            <Image src="/boutons/plus.webp" alt="Ajouter" fill className="object-cover" />
           </div>
           <h2 className="text-[16px] font-semibold md:text-[22px]">Ajouter un enfant</h2>
         </div>
